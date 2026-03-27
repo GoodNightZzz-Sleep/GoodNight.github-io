@@ -898,7 +898,7 @@
                 'loading-text': 'Analyzing image...',
                 'history-title': 'Screening History',
                 'clinic-title': 'Nearby Eye Clinics'
-            }
+            },
             id: {
                 'hero-subtitle': 'Pemeriksaan Retinopati Diabetik Bertenaga AI',
                 'hero-desc': 'Analisis retina canggih untuk deteksi dini retinopati diabetik. Unggah gambar fundus untuk pemeriksaan AI instan.',
@@ -1139,17 +1139,36 @@
             const langData = translations[currentLanguage];
             if (!langData) return;
 
-            // วนลูปเปลี่ยนข้อความตาม ID ที่กำหนดไว้ในฐานข้อมูลข้างบน
             Object.keys(langData).forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                         el.placeholder = langData[id];
                     } else {
-                        el.textContent = langData[id];
+                        el.innerText = langData[id];
                     }
                 }
             });
+
+            const langNames = { th: 'ไทย', en: 'English', id: 'Bahasa Indonesia', vi: 'Tiếng Việt', ph: 'Filipino', ms: 'Bahasa Melayu' };
+            const display = document.getElementById('current-lang');
+            if (display) display.textContent = langNames[currentLanguage];
+        }
+
+        function toggleLangDropdown() {
+            document.getElementById('lang-dropdown').classList.toggle('open');
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            updateUIText();
+            document.getElementById('lang-dropdown').classList.remove('open');
+        }
+         const currentLangDisplay = document.getElementById('current-lang');
+         if (currentLangDisplay) {
+             currentLangDisplay.textContent = langNames[currentLanguage];
+         }
+     }
 
             // เปลี่ยนชื่อภาษาบนปุ่ม Globe ใน Navbar
             const currentLangDisplay = document.getElementById('current-lang');
@@ -1173,49 +1192,67 @@
         // Navigation
         function navigateTo(page) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + page).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event?.target?.closest('.nav-item')?.classList.add('active');
-            
-            currentPage = page;
-            
-            // Update nav items manually
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.remove('hidden');
+
             document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.textContent.toLowerCase().includes(page)) {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick')?.includes(`'${page}'`)) {
                     item.classList.add('active');
                 }
             });
+            currentPage = page;
+            document.querySelector('.content-wrapper').scrollTop = 0;
         }
 
         // File handling
         function handleFileSelect(event) {
             const file = event.target.files?.[0];
             if (!file) return;
-
-            if (file.size > 5 * 1024 * 1024) {
-                alert('File size exceeds 5MB limit');
-                return;
-            }
-
             selectedFile = file;
             document.getElementById('file-name').textContent = file.name;
-            document.getElementById('file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
             document.getElementById('file-info').style.display = 'block';
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    document.getElementById('preview-image').src = e.target.result;
-                    document.getElementById('preview-image').classList.remove('hidden');
-                    document.getElementById('no-preview').style.display = 'none';
-                    document.getElementById('analyze-btn').disabled = false;
-                };
-                img.src = e.target.result;
+                const preview = document.getElementById('preview-image');
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                document.getElementById('no-preview').style.display = 'none';
+                document.getElementById('analyze-btn').disabled = false;
             };
             reader.readAsDataURL(file);
         }
+
+        async function analyzeImage() {
+            if (!selectedFile) return;
+            document.getElementById('loading-container').style.display = 'block';
+            document.getElementById('result-container').style.display = 'none';
+            
+            await new Promise(r => setTimeout(r, 2000)); // Simulate AI
+
+            document.getElementById('loading-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+            document.getElementById('result-time').innerText = new Date().toLocaleString();
+            document.getElementById('severity-badge').innerText = "No DR";
+            document.getElementById('confidence-value').innerText = "98%";
+            document.getElementById('confidence-bar').style.width = "98%";
+        }
+
+        // Initialize
+        window.onload = () => {
+            updateUIText();
+            // Background Animation
+            const bg = document.getElementById('retina-bg');
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'animated-dot';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 5 + 's';
+                bg.appendChild(dot);
+            }
+        };
 
         // Drag & drop
         const dropZone = document.getElementById('drop-zone');
