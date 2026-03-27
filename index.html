@@ -1,1660 +1,1332 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InsightRetina - DR Screening</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InsightRetina - DR Screening</title>
+<style>
+  /* ===== CSS Reset & Variables ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #dc2626;
+    --danger-light: #fecaca;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-        }
-
-        body {
-            background: #0a0a0a;
-            color: #f5f5f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        #app-wrapper {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Retinal background with animated dots */
-        .retina-bg {
-    position: fixed;
+  /* ===== Navbar ===== */
+  .navbar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
     top: 0;
-    left: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .navbar .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .nav-links button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .nav-links button:hover, .nav-links button.active {
+    background: #eff6ff;
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* ===== Language Dropdown ===== */
+  .lang-dropdown {
+    position: relative;
+  }
+  .lang-btn {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+  }
+  .lang-btn:hover { background: #e2e8f0; }
+  .lang-menu {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    overflow: hidden;
+    z-index: 200;
+  }
+  .lang-menu.show { display: block; }
+  .lang-menu button {
+    display: block;
     width: 100%;
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+  }
+  .lang-menu button:hover { background: #f1f5f9; }
+  .lang-menu button.active-lang { background: #eff6ff; color: var(--primary); font-weight: 600; }
+
+  /* ===== Sections ===== */
+  .section { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* ===== Hero ===== */
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  .hero h1 { font-size: 2.4rem; margin-bottom: 0.5rem; color: var(--primary); }
+  .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .feature-card h3 { margin-bottom: 0.3rem; }
+  .feature-card p { font-size: 0.9rem; color: var(--text-secondary); }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-secondary {
+    background: #f1f5f9;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: #e2e8f0; }
+
+  /* ===== Disclaimer ===== */
+  .disclaimer {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+  .disclaimer strong { color: #92400e; }
+  .disclaimer p { font-size: 0.9rem; color: #78350f; }
+
+  /* ===== Screening ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+  .card h2 { margin-bottom: 1rem; font-size: 1.3rem; }
+
+  /* Upload Area */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary);
+    background: #eff6ff;
+  }
+  .upload-area .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .upload-area input { display: none; }
+  .upload-area .sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+  /* Image Preview Grid */
+  .image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .image-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-align: center;
+  }
+  .image-box .label {
+    background: #f1f5f9;
+    padding: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .image-box .placeholder {
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+  }
+  .image-box .placeholder .big-icon { font-size: 2rem; display: block; margin-bottom: 0.3rem; }
+  .image-box img { width: 100%; display: block; max-height: 300px; object-fit: contain; background: #000; }
+
+  /* Results */
+  .result-section { display: none; }
+  .result-section.show { display: block; }
+
+  .severity-badge {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+  }
+  .severity-0 { background: #dcfce7; color: #166534; }
+  .severity-1 { background: #fef9c3; color: #854d0e; }
+  .severity-2 { background: #fed7aa; color: #9a3412; }
+  .severity-3 { background: #fecaca; color: #991b1b; }
+  .severity-4 { background: #fca5a5; color: #7f1d1d; }
+
+  .confidence-bar-container {
+    margin: 1rem 0;
+  }
+  .confidence-bar-container .label-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+  .bar-bg {
+    background: #e2e8f0;
+    border-radius: 8px;
+    height: 24px;
+    overflow: hidden;
+  }
+  .bar-fill {
     height: 100%;
-    /* ใส่รูปจอประสาทตาและทำให้มืดลง 75% เพื่อให้ตัวหนังสืออ่านง่าย */
-    background-image: linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.9)), 
-                      url('https://storage.googleapis.com/kaggle-datasets-images/131128/312839/f2a834dc8580f0788bea087e8d3a6dbe/dataset-thumbnail.jpeg?t=2019-03-04-05-49-08');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    z-index: 0;
+    border-radius: 8px;
+    transition: width 0.8s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 6px;
+    font-size: 0.75rem;
+    color: white;
+    font-weight: 600;
+  }
+
+  .prob-item { margin-bottom: 0.6rem; }
+  .prob-item .label-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 3px; }
+  .prob-bar-bg { background: #e2e8f0; border-radius: 6px; height: 14px; overflow: hidden; }
+  .prob-bar-fill { height: 100%; border-radius: 6px; transition: width 0.8s ease; }
+
+  .findings-box, .recommendation-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.8rem;
+  }
+  .findings-box h4, .recommendation-box h4 { margin-bottom: 0.5rem; }
+
+  .action-btns {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  /* Loading Overlay */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    justify-content: center;
+    align-items: center;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem 3rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== History ===== */
+  .filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  .filter-bar select, .filter-bar button {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .history-table th {
+    background: #f1f5f9;
+    text-align: left;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .history-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+  }
+  .history-table tr:hover { background: #f8fafc; }
+  .history-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; }
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+  }
+  .empty-state .big-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+  /* ===== Clinic ===== */
+  .clinic-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .clinic-controls select {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .map-placeholder {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+  }
+  .clinic-list { margin-top: 1rem; }
+  .clinic-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .clinic-item h4 { margin-bottom: 0.2rem; }
+  .clinic-item p { font-size: 0.85rem; color: var(--text-secondary); }
+
+  /* ===== Modal ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-content {
+    background: white;
+    border-radius: var(--radius);
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    .image-grid { grid-template-columns: 1fr; }
+    .navbar { padding: 0 1rem; }
+    .nav-links button { padding: 0.4rem 0.6rem; font-size: 0.85rem; }
+    .hero h1 { font-size: 1.6rem; }
+    .section { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="logo" onclick="showSection('home')">🔍 InsightRetina</div>
+  <div class="nav-links">
+    <button class="active" data-section="home" data-i18n="nav_home">Home</button>
+    <button data-section="screening" data-i18n="nav_screening">Screening</button>
+    <button data-section="history" data-i18n="nav_history">History</button>
+    <button data-section="clinic" data-i18n="nav_clinic">Clinic</button>
+  </div>
+  <div class="lang-dropdown">
+    <button class="lang-btn" id="langToggle">🌐 English ▾</button>
+    <div class="lang-menu" id="langMenu">
+      <button data-lang="th" onclick="setLanguage('th')">🇹🇭 ไทย</button>
+      <button data-lang="en" class="active-lang" onclick="setLanguage('en')">🇬🇧 English</button>
+      <button data-lang="id" onclick="setLanguage('id')">🇮🇩 Bahasa Indonesia</button>
+      <button data-lang="vi" onclick="setLanguage('vi')">🇻🇳 Tiếng Việt</button>
+      <button data-lang="ph" onclick="setLanguage('ph')">🇵🇭 Filipino</button>
+      <button data-lang="my" onclick="setLanguage('my')">🇲🇾 Bahasa Melayu</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div id="section-home" class="section active">
+  <div class="hero">
+    <h1>InsightRetina</h1>
+    <p data-i18n="hero_subtitle">AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection of diabetic retinopathy.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔬</div>
+        <h3 data-i18n="feat_ai">Advanced AI</h3>
+        <p data-i18n="feat_ai_desc">Deep learning classification for accurate DR detection</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 data-i18n="feat_fast">Fast Analysis</h3>
+        <p data-i18n="feat_fast_desc">Real-time preprocessing and instant results</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏥</div>
+        <h3 data-i18n="feat_clinic">Clinical Grade</h3>
+        <p data-i18n="feat_clinic_desc">Find nearby ophthalmology centers instantly</p>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="showSection('screening')" data-i18n="btn_start">Start Screening</button>
+    <div class="disclaimer">
+      <span>⚠️</span>
+      <div>
+        <strong data-i18n="disclaimer_title">Medical Disclaimer</strong>
+        <p data-i18n="disclaimer_text">This tool is for preliminary screening only and not a medical diagnosis. Always consult with a qualified ophthalmologist for clinical decisions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREENING ===== -->
+<div id="section-screening" class="section">
+  <div class="card">
+    <h2 data-i18n="screening_title">Diabetic Retinopathy Screening</h2>
+    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="screening_subtitle">Upload a fundus image for AI analysis</p>
+
+    <!-- Upload -->
+    <div class="upload-area" id="uploadArea">
+      <div class="icon">📸</div>
+      <p data-i18n="upload_text">Drag & drop your image here or click to browse</p>
+      <p class="sub" data-i18n="upload_sub">Supported formats: JPG, PNG (max 5MB)</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png">
+    </div>
+
+    <!-- Image Preview -->
+    <div class="image-grid" style="margin-top:1rem;">
+      <div class="image-box">
+        <div class="label" data-i18n="original_image">Original Image</div>
+        <div class="placeholder" id="origPlaceholder">
+          <span class="big-icon">👁️</span>
+          <span data-i18n="no_image">No image selected</span>
+        </div>
+        <img id="origImg" style="display:none;" alt="Original">
+      </div>
+      <div class="image-box">
+        <div class="label" data-i18n="preprocessed_image">Preprocessed Image</div>
+        <div class="placeholder" id="prepPlaceholder">
+          <span class="big-icon">🔄</span>
+          <span data-i18n="waiting_analysis">Waiting for analysis</span>
+        </div>
+        <canvas id="prepCanvas" style="display:none; width:100%; background:#000;"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;text-align:center;">
+      <button class="btn-primary" id="analyzeBtn" disabled onclick="analyzeImage()" data-i18n="btn_analyze">Analyze Image</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card result-section" id="resultCard">
+    <h2 data-i18n="screening_result">Screening Result</h2>
+    <div style="text-align:center;margin:1rem 0;">
+      <span class="severity-badge" id="severityBadge">No DR</span>
+    </div>
+
+    <!-- Confidence -->
+    <div class="confidence-bar-container">
+      <div class="label-row">
+        <span data-i18n="confidence">Confidence Score</span>
+        <span id="confPercent">0%</span>
+      </div>
+      <div class="bar-bg">
+        <div class="bar-fill" id="confBar" style="width:0%;background:var(--success);"></div>
+      </div>
+    </div>
+
+    <!-- Classification Probabilities -->
+    <h4 style="margin-top:1rem;" data-i18n="class_prob">Classification Probabilities</h4>
+    <div id="probBars"></div>
+
+    <!-- Findings -->
+    <div class="findings-box">
+      <h4 data-i18n="findings">Detected Findings</h4>
+      <p id="findingsText">No abnormalities detected</p>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="recommendation-box">
+      <h4 data-i18n="recommendation">Recommendation</h4>
+      <p id="recommendText">Routine eye examination recommended</p>
+    </div>
+
+    <div class="action-btns">
+      <button class="btn-primary" onclick="saveResult()" data-i18n="btn_save">Save Result</button>
+      <button class="btn-secondary" onclick="showSection('clinic')" data-i18n="btn_find_clinic">Find Clinic</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HISTORY ===== -->
+<div id="section-history" class="section">
+  <div class="card">
+    <h2 data-i18n="history_title">Screening History</h2>
+    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="history_subtitle">Review your diabetic retinopathy screening records</p>
+    <div class="filter-bar">
+      <select id="filterSeverity">
+        <option value="all" data-i18n="all_sev">All Severities</option>
+        <option value="No DR">No DR</option>
+        <option value="Mild">Mild</option>
+        <option value="Moderate">Moderate</option>
+        <option value="Severe">Severe</option>
+        <option value="Proliferative">Proliferative</option>
+      </select>
+      <select id="filterSort">
+        <option value="newest" data-i18n="newest">Newest First</option>
+        <option value="oldest" data-i18n="oldest">Oldest First</option>
+      </select>
+    </div>
+    <div id="historyContent">
+      <div class="empty-state">
+        <span class="big-icon">📋</span>
+        <p data-i18n="no_history">No screening history yet</p>
+        <button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')" data-i18n="btn_first_screening">Start First Screening</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CLINIC ===== -->
+<div id="section-clinic" class="section">
+  <div class="card">
+    <h2 data-i18n="clinic_title">Nearby Eye Clinics</h2>
+    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="clinic_subtitle">Find ophthalmology clinics and eye hospitals near your location</p>
+    <div class="clinic-controls">
+      <select id="clinicType">
+        <option value="all" data-i18n="all_types">All Types</option>
+        <option value="eye_clinic" data-i18n="eye_clinic">Eye Clinic</option>
+        <option value="hospital" data-i18n="hospital">Hospital</option>
+        <option value="medical_center" data-i18n="med_center">Medical Center</option>
+      </select>
+      <button class="btn-primary" onclick="searchClinics()" data-i18n="btn_search_clinics">Search Clinics</button>
+    </div>
+    <div class="map-placeholder" id="mapArea">🗺️ <span data-i18n="map_text">Map view will appear here</span></div>
+    <div class="clinic-list" id="clinicList"></div>
+  </div>
+</div>
+
+<!-- ===== LOADING OVERLAY ===== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p data-i18n="analyzing">Analyzing image...</p>
+    <p style="font-size:0.85rem;color:var(--text-secondary);" data-i18n="analyzing_steps">Preprocessing → Analysis → Classification</p>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2 data-i18n="record_details">Record Details</h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>© 2024 InsightRetina. <span data-i18n="footer">For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.</span></p>
+</footer>
+
+<script>
+// ===================================================================
+// ===== INTERNATIONALIZATION (i18n) =====
+// ===================================================================
+const translations = {
+  en: {
+    nav_home: "Home", nav_screening: "Screening", nav_history: "History", nav_clinic: "Clinic",
+    hero_subtitle: "AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection of diabetic retinopathy.",
+    feat_ai: "Advanced AI", feat_ai_desc: "Deep learning classification for accurate DR detection",
+    feat_fast: "Fast Analysis", feat_fast_desc: "Real-time preprocessing and instant results",
+    feat_clinic: "Clinical Grade", feat_clinic_desc: "Find nearby ophthalmology centers instantly",
+    btn_start: "Start Screening",
+    disclaimer_title: "Medical Disclaimer",
+    disclaimer_text: "This tool is for preliminary screening only and not a medical diagnosis. Always consult with a qualified ophthalmologist for clinical decisions.",
+    screening_title: "Diabetic Retinopathy Screening",
+    screening_subtitle: "Upload a fundus image for AI analysis",
+    upload_text: "Drag & drop your image here or click to browse",
+    upload_sub: "Supported formats: JPG, PNG (max 5MB)",
+    original_image: "Original Image", preprocessed_image: "Preprocessed Image",
+    no_image: "No image selected", waiting_analysis: "Waiting for analysis",
+    btn_analyze: "Analyze Image",
+    screening_result: "Screening Result",
+    confidence: "Confidence Score", class_prob: "Classification Probabilities",
+    findings: "Detected Findings", recommendation: "Recommendation",
+    btn_save: "Save Result", btn_find_clinic: "Find Clinic",
+    history_title: "Screening History", history_subtitle: "Review your diabetic retinopathy screening records",
+    all_sev: "All Severities", newest: "Newest First", oldest: "Oldest First",
+    no_history: "No screening history yet", btn_first_screening: "Start First Screening",
+    clinic_title: "Nearby Eye Clinics", clinic_subtitle: "Find ophthalmology clinics and eye hospitals near your location",
+    all_types: "All Types", eye_clinic: "Eye Clinic", hospital: "Hospital", med_center: "Medical Center",
+    btn_search_clinics: "Search Clinics", map_text: "Map view will appear here",
+    analyzing: "Analyzing image...", analyzing_steps: "Preprocessing → Analysis → Classification",
+    record_details: "Record Details",
+    footer: "For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.",
+    lang_label: "English",
+    sev_names: ["No DR", "Mild", "Moderate", "Severe", "Proliferative"],
+    findings_none: "No abnormalities detected",
+    findings_mild: "Microaneurysms detected",
+    findings_moderate: "Microaneurysms, hard exudates, retinal hemorrhages",
+    findings_severe: "Extensive hemorrhages, venous beading, IRMA",
+    findings_prolif: "Neovascularization, vitreous hemorrhage, fibrous proliferation",
+    rec_none: "Routine eye examination recommended",
+    rec_mild: "Follow-up in 12 months. Monitor blood sugar levels.",
+    rec_moderate: "Follow-up in 6 months. Consult ophthalmologist.",
+    rec_severe: "Urgent referral to ophthalmologist within 1 month.",
+    rec_prolif: "Immediate referral for treatment. Laser/injection may be required.",
+    saved_alert: "Result saved to history!",
+    th_image: "Image", th_date: "Date & Time", th_case: "Case ID", th_severity: "Severity", th_confidence: "Confidence", th_action: "Action",
+    btn_view: "View"
+  },
+  th: {
+    nav_home: "หน้าหลัก", nav_screening: "ตรวจคัดกรอง", nav_history: "ประวัติ", nav_clinic: "คลินิก",
+    hero_subtitle: "ระบบคัดกรองเบาหวานขึ้นจอประสาทตาด้วย AI วิเคราะห์ภาพจอประสาทตาขั้นสูงเพื่อการตรวจพบแต่เนิ่นๆ",
+    feat_ai: "AI ขั้นสูง", feat_ai_desc: "การจำแนกด้วย Deep Learning สำหรับการตรวจจับ DR อย่างแม่นยำ",
+    feat_fast: "วิเคราะห์รวดเร็ว", feat_fast_desc: "ประมวลผลแบบเรียลไทม์และผลลัพธ์ทันที",
+    feat_clinic: "ระดับคลินิก", feat_clinic_desc: "ค้นหาศูนย์จักษุวิทยาใกล้คุณได้ทันที",
+    btn_start: "เริ่มตรวจคัดกรอง",
+    disclaimer_title: "คำเตือนทางการแพทย์",
+    disclaimer_text: "เครื่องมือนี้ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยทางการแพทย์ กรุณาปรึกษาจักษุแพทย์ที่มีคุณวุฒิเสมอ",
+    screening_title: "ตรวจคัดกรองเบาหวานขึ้นจอประสาทตา",
+    screening_subtitle: "อัปโหลดภาพจอประสาทตาเพื่อวิเคราะห์ด้วย AI",
+    upload_text: "ลากและวางภาพที่นี่ หรือคลิกเพื่อเลือกไฟล์",
+    upload_sub: "รองรับ: JPG, PNG (สูงสุด 5MB)",
+    original_image: "ภาพต้นฉบับ", preprocessed_image: "ภาพหลังประมวลผล",
+    no_image: "ยังไม่ได้เลือกภาพ", waiting_analysis: "รอการวิเคราะห์",
+    btn_analyze: "วิเคราะห์ภาพ",
+    screening_result: "ผลการคัดกรอง",
+    confidence: "คะแนนความเชื่อมั่น", class_prob: "ความน่าจะเป็นของแต่ละระดับ",
+    findings: "ผลที่ตรวจพบ", recommendation: "คำแนะนำ",
+    btn_save: "บันทึกผล", btn_find_clinic: "ค้นหาคลินิก",
+    history_title: "ประวัติการตรวจคัดกรอง", history_subtitle: "ทบทวนบันทึกการตรวจคัดกรองของคุณ",
+    all_sev: "ทุกระดับความรุนแรง", newest: "ใหม่สุดก่อน", oldest: "เก่าสุดก่อน",
+    no_history: "ยังไม่มีประวัติการตรวจ", btn_first_screening: "เริ่มตรวจครั้งแรก",
+    clinic_title: "คลินิกตาใกล้เคียง", clinic_subtitle: "ค้นหาคลินิกจักษุและโรงพยาบาลตาใกล้คุณ",
+    all_types: "ทุกประเภท", eye_clinic: "คลินิกตา", hospital: "โรงพยาบาล", med_center: "ศูนย์การแพทย์",
+    btn_search_clinics: "ค้นหาคลินิก", map_text: "แผนที่จะแสดงที่นี่",
+    analyzing: "กำลังวิเคราะห์ภาพ...", analyzing_steps: "ประมวลผลภาพ → วิเคราะห์ → จำแนกระดับ",
+    record_details: "รายละเอียดผลตรวจ",
+    footer: "สำหรับการคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์เพื่อการวินิจฉัย",
+    lang_label: "ไทย",
+    sev_names: ["ไม่มี DR", "เล็กน้อย", "ปานกลาง", "รุนแรง", "ระยะแพร่กระจาย"],
+    findings_none: "ไม่พบความผิดปกติ",
+    findings_mild: "พบ Microaneurysms",
+    findings_moderate: "พบ Microaneurysms, hard exudates, เลือดออกในจอประสาทตา",
+    findings_severe: "พบเลือดออกอย่างมาก, venous beading, IRMA",
+    findings_prolif: "พบหลอดเลือดใหม่, เลือดออกในวุ้นตา, เนื้อเยื่อเส้นใย",
+    rec_none: "แนะนำตรวจตาตามปกติ",
+    rec_mild: "ติดตามผลใน 12 เดือน ควบคุมระดับน้ำตาลในเลือด",
+    rec_moderate: "ติดตามผลใน 6 เดือน ปรึกษาจักษุแพทย์",
+    rec_severe: "ส่งต่อจักษุแพทย์ด่วนภายใน 1 เดือน",
+    rec_prolif: "ส่งต่อเพื่อรับการรักษาทันที อาจต้องใช้เลเซอร์/ฉีดยา",
+    saved_alert: "บันทึกผลลงในประวัติแล้ว!",
+    th_image: "ภาพ", th_date: "วันที่ & เวลา", th_case: "รหัสเคส", th_severity: "ความรุนแรง", th_confidence: "ความเชื่อมั่น", th_action: "การดำเนินการ",
+    btn_view: "ดู"
+  },
+  id: {
+    nav_home: "Beranda", nav_screening: "Skrining", nav_history: "Riwayat", nav_clinic: "Klinik",
+    hero_subtitle: "Skrining Retinopati Diabetik berbasis AI. Analisis retina canggih untuk deteksi dini.",
+    feat_ai: "AI Canggih", feat_ai_desc: "Klasifikasi deep learning untuk deteksi DR yang akurat",
+    feat_fast: "Analisis Cepat", feat_fast_desc: "Preprocessing real-time dan hasil instan",
+    feat_clinic: "Kelas Klinis", feat_clinic_desc: "Temukan pusat oftalmologi terdekat dengan cepat",
+    btn_start: "Mulai Skrining",
+    disclaimer_title: "Peringatan Medis",
+    disclaimer_text: "Alat ini hanya untuk skrining awal, bukan diagnosis medis. Selalu konsultasikan dengan dokter mata.",
+    screening_title: "Skrining Retinopati Diabetik", screening_subtitle: "Unggah gambar fundus untuk analisis AI",
+    upload_text: "Seret & lepas gambar di sini atau klik untuk menelusuri", upload_sub: "Format: JPG, PNG (maks 5MB)",
+    original_image: "Gambar Asli", preprocessed_image: "Gambar Terproses",
+    no_image: "Belum ada gambar", waiting_analysis: "Menunggu analisis",
+    btn_analyze: "Analisis Gambar", screening_result: "Hasil Skrining",
+    confidence: "Skor Kepercayaan", class_prob: "Probabilitas Klasifikasi",
+    findings: "Temuan", recommendation: "Rekomendasi",
+    btn_save: "Simpan Hasil", btn_find_clinic: "Cari Klinik",
+    history_title: "Riwayat Skrining", history_subtitle: "Tinjau catatan skrining Anda",
+    all_sev: "Semua Tingkat", newest: "Terbaru", oldest: "Terlama",
+    no_history: "Belum ada riwayat", btn_first_screening: "Mulai Skrining Pertama",
+    clinic_title: "Klinik Mata Terdekat", clinic_subtitle: "Temukan klinik mata dan rumah sakit di sekitar Anda",
+    all_types: "Semua Jenis", eye_clinic: "Klinik Mata", hospital: "Rumah Sakit", med_center: "Pusat Medis",
+    btn_search_clinics: "Cari Klinik", map_text: "Peta akan muncul di sini",
+    analyzing: "Menganalisis gambar...", analyzing_steps: "Preprocessing → Analisis → Klasifikasi",
+    record_details: "Detail Rekam",
+    footer: "Hanya untuk skrining awal. Konsultasikan dengan dokter mata untuk diagnosis.",
+    lang_label: "Bahasa Indonesia",
+    sev_names: ["Tidak ada DR", "Ringan", "Sedang", "Berat", "Proliferatif"],
+    findings_none: "Tidak ditemukan kelainan", findings_mild: "Mikroaneurisma terdeteksi",
+    findings_moderate: "Mikroaneurisma, eksudat keras, perdarahan retina",
+    findings_severe: "Perdarahan luas, venous beading, IRMA",
+    findings_prolif: "Neovaskularisasi, perdarahan vitreus, proliferasi fibrosa",
+    rec_none: "Pemeriksaan mata rutin direkomendasikan", rec_mild: "Tindak lanjut dalam 12 bulan.",
+    rec_moderate: "Tindak lanjut dalam 6 bulan. Konsultasi dokter mata.",
+    rec_severe: "Rujukan mendesak ke dokter mata dalam 1 bulan.",
+    rec_prolif: "Rujukan segera untuk perawatan.",
+    saved_alert: "Hasil disimpan ke riwayat!",
+    th_image: "Gambar", th_date: "Tanggal", th_case: "ID Kasus", th_severity: "Tingkat", th_confidence: "Kepercayaan", th_action: "Aksi",
+    btn_view: "Lihat"
+  },
+  vi: {
+    nav_home: "Trang chủ", nav_screening: "Sàng lọc", nav_history: "Lịch sử", nav_clinic: "Phòng khám",
+    hero_subtitle: "Sàng lọc bệnh võng mạc tiểu đường bằng AI. Phân tích võng mạc tiên tiến.",
+    feat_ai: "AI Tiên tiến", feat_ai_desc: "Phân loại deep learning chính xác",
+    feat_fast: "Phân tích nhanh", feat_fast_desc: "Xử lý thời gian thực và kết quả tức thì",
+    feat_clinic: "Cấp lâm sàng", feat_clinic_desc: "Tìm trung tâm nhãn khoa gần bạn",
+    btn_start: "Bắt đầu sàng lọc",
+    disclaimer_title: "Tuyên bố y tế",
+    disclaimer_text: "Công cụ này chỉ dùng để sàng lọc sơ bộ. Luôn tham khảo bác sĩ nhãn khoa.",
+    screening_title: "Sàng lọc bệnh võng mạc tiểu đường", screening_subtitle: "Tải lên hình ảnh đáy mắt để phân tích",
+    upload_text: "Kéo & thả hình ảnh hoặc nhấp để chọn", upload_sub: "Định dạng: JPG, PNG (tối đa 5MB)",
+    original_image: "Ảnh gốc", preprocessed_image: "Ảnh đã xử lý",
+    no_image: "Chưa chọn ảnh", waiting_analysis: "Đang chờ phân tích",
+    btn_analyze: "Phân tích ảnh", screening_result: "Kết quả sàng lọc",
+    confidence: "Điểm tin cậy", class_prob: "Xác suất phân loại",
+    findings: "Phát hiện", recommendation: "Khuyến nghị",
+    btn_save: "Lưu kết quả", btn_find_clinic: "Tìm phòng khám",
+    history_title: "Lịch sử sàng lọc", history_subtitle: "Xem lại hồ sơ sàng lọc",
+    all_sev: "Tất cả mức độ", newest: "Mới nhất", oldest: "Cũ nhất",
+    no_history: "Chưa có lịch sử", btn_first_screening: "Bắt đầu sàng lọc đầu tiên",
+    clinic_title: "Phòng khám mắt gần đây", clinic_subtitle: "Tìm phòng khám và bệnh viện mắt",
+    all_types: "Tất cả loại", eye_clinic: "Phòng khám mắt", hospital: "Bệnh viện", med_center: "Trung tâm y tế",
+    btn_search_clinics: "Tìm phòng khám", map_text: "Bản đồ sẽ hiển thị ở đây",
+    analyzing: "Đang phân tích...", analyzing_steps: "Tiền xử lý → Phân tích → Phân loại",
+    record_details: "Chi tiết hồ sơ",
+    footer: "Chỉ dùng để sàng lọc sơ bộ. Tham khảo bác sĩ nhãn khoa.",
+    lang_label: "Tiếng Việt",
+    sev_names: ["Không DR", "Nhẹ", "Trung bình", "Nặng", "Tăng sinh"],
+    findings_none: "Không phát hiện bất thường", findings_mild: "Phát hiện vi phình mạch",
+    findings_moderate: "Vi phình mạch, xuất tiết cứng, xuất huyết võng mạc",
+    findings_severe: "Xuất huyết rộng, tĩnh mạch chuỗi, IRMA",
+    findings_prolif: "Tân mạch, xuất huyết dịch kính, tăng sinh xơ",
+    rec_none: "Khám mắt định kỳ", rec_mild: "Tái khám sau 12 tháng.",
+    rec_moderate: "Tái khám sau 6 tháng.", rec_severe: "Chuyển viện khẩn cấp trong 1 tháng.",
+    rec_prolif: "Chuyển viện ngay để điều trị.",
+    saved_alert: "Đã lưu kết quả!",
+    th_image: "Ảnh", th_date: "Ngày", th_case: "Mã ca", th_severity: "Mức độ", th_confidence: "Tin cậy", th_action: "Hành động",
+    btn_view: "Xem"
+  },
+  ph: {
+    nav_home: "Home", nav_screening: "Screening", nav_history: "Kasaysayan", nav_clinic: "Klinika",
+    hero_subtitle: "AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis para sa maagang pagtuklas.",
+    feat_ai: "Advanced AI", feat_ai_desc: "Deep learning classification para sa tumpak na DR detection",
+    feat_fast: "Mabilis na Pagsusuri", feat_fast_desc: "Real-time preprocessing at instant na resulta",
+    feat_clinic: "Clinical Grade", feat_clinic_desc: "Maghanap ng malapit na ophthalmology center",
+    btn_start: "Magsimula ng Screening",
+    disclaimer_title: "Babala sa Medikal", disclaimer_text: "Ang tool na ito ay para sa preliminary screening lamang. Kumonsulta sa ophthalmologist.",
+    screening_title: "Diabetic Retinopathy Screening", screening_subtitle: "Mag-upload ng fundus image para sa AI analysis",
+    upload_text: "I-drag & drop ang image dito o i-click para mag-browse", upload_sub: "Mga format: JPG, PNG (max 5MB)",
+    original_image: "Orihinal na Larawan", preprocessed_image: "Na-process na Larawan",
+    no_image: "Walang napiling larawan", waiting_analysis: "Naghihintay ng pagsusuri",
+    btn_analyze: "Suriin ang Larawan", screening_result: "Resulta ng Screening",
+    confidence: "Confidence Score", class_prob: "Mga Probabilidad ng Klasipikasyon",
+    findings: "Mga Natuklasan", recommendation: "Rekomendasyon",
+    btn_save: "I-save ang Resulta", btn_find_clinic: "Maghanap ng Klinika",
+    history_title: "Kasaysayan ng Screening", history_subtitle: "Suriin ang iyong mga screening record",
+    all_sev: "Lahat ng Kalubhaan", newest: "Pinakabago", oldest: "Pinakaluma",
+    no_history: "Walang screening history pa", btn_first_screening: "Magsimula ng Unang Screening",
+    clinic_title: "Malapit na Eye Clinic", clinic_subtitle: "Maghanap ng ophthalmology clinic at eye hospital",
+    all_types: "Lahat ng Uri", eye_clinic: "Eye Clinic", hospital: "Ospital", med_center: "Medical Center",
+    btn_search_clinics: "Maghanap ng Klinika", map_text: "Lalabas dito ang mapa",
+    analyzing: "Sinusuri ang larawan...", analyzing_steps: "Preprocessing → Pagsusuri → Klasipikasyon",
+    record_details: "Mga Detalye ng Record", footer: "Para sa preliminary screening lamang.",
+    lang_label: "Filipino",
+    sev_names: ["Walang DR", "Banayad", "Katamtaman", "Malubha", "Proliferative"],
+    findings_none: "Walang abnormalidad", findings_mild: "May nakitang microaneurysms",
+    findings_moderate: "Microaneurysms, hard exudates, retinal hemorrhages",
+    findings_severe: "Malawak na hemorrhages, venous beading, IRMA",
+    findings_prolif: "Neovascularization, vitreous hemorrhage",
+    rec_none: "Inirerekomenda ang routine eye exam", rec_mild: "Follow-up sa 12 buwan.",
+    rec_moderate: "Follow-up sa 6 na buwan.", rec_severe: "Urgent referral sa loob ng 1 buwan.",
+    rec_prolif: "Agaran na referral para sa treatment.",
+    saved_alert: "Na-save ang resulta!", th_image: "Larawan", th_date: "Petsa", th_case: "Case ID",
+    th_severity: "Kalubhaan", th_confidence: "Confidence", th_action: "Aksyon", btn_view: "Tingnan"
+  },
+  my: {
+    nav_home: "Utama", nav_screening: "Saringan", nav_history: "Sejarah", nav_clinic: "Klinik",
+    hero_subtitle: "Saringan Retinopati Diabetik berkuasa AI. Analisis retina lanjutan untuk pengesanan awal.",
+    feat_ai: "AI Lanjutan", feat_ai_desc: "Klasifikasi deep learning untuk pengesanan DR yang tepat",
+    feat_fast: "Analisis Pantas", feat_fast_desc: "Prapemprosesan masa nyata dan keputusan segera",
+    feat_clinic: "Gred Klinikal", feat_clinic_desc: "Cari pusat oftalmologi berdekatan",
+    btn_start: "Mula Saringan",
+    disclaimer_title: "Penafian Perubatan", disclaimer_text: "Alat ini untuk saringan awal sahaja. Sentiasa rujuk pakar mata.",
+    screening_title: "Saringan Retinopati Diabetik", screening_subtitle: "Muat naik imej fundus untuk analisis AI",
+    upload_text: "Seret & lepas imej di sini atau klik untuk muat naik", upload_sub: "Format: JPG, PNG (maks 5MB)",
+    original_image: "Imej Asal", preprocessed_image: "Imej Diproses",
+    no_image: "Tiada imej dipilih", waiting_analysis: "Menunggu analisis",
+    btn_analyze: "Analisis Imej", screening_result: "Keputusan Saringan",
+    confidence: "Skor Keyakinan", class_prob: "Kebarangkalian Klasifikasi",
+    findings: "Penemuan", recommendation: "Cadangan",
+    btn_save: "Simpan Keputusan", btn_find_clinic: "Cari Klinik",
+    history_title: "Sejarah Saringan", history_subtitle: "Semak rekod saringan anda",
+    all_sev: "Semua Tahap", newest: "Terbaru", oldest: "Terlama",
+    no_history: "Tiada sejarah saringan", btn_first_screening: "Mulakan Saringan Pertama",
+    clinic_title: "Klinik Mata Berdekatan", clinic_subtitle: "Cari klinik mata dan hospital berdekatan",
+    all_types: "Semua Jenis", eye_clinic: "Klinik Mata", hospital: "Hospital", med_center: "Pusat Perubatan",
+    btn_search_clinics: "Cari Klinik", map_text: "Peta akan muncul di sini",
+    analyzing: "Menganalisis imej...", analyzing_steps: "Prapemprosesan → Analisis → Klasifikasi",
+    record_details: "Butiran Rekod", footer: "Untuk saringan awal sahaja. Rujuk pakar mata.",
+    lang_label: "Bahasa Melayu",
+    sev_names: ["Tiada DR", "Ringan", "Sederhana", "Teruk", "Proliferatif"],
+    findings_none: "Tiada keabnormalan", findings_mild: "Mikroaneurisma dikesan",
+    findings_moderate: "Mikroaneurisma, eksudat keras, pendarahan retina",
+    findings_severe: "Pendarahan meluas, venous beading, IRMA",
+    findings_prolif: "Neovaskularisasi, pendarahan vitreus",
+    rec_none: "Pemeriksaan mata rutin dicadangkan", rec_mild: "Susulan dalam 12 bulan.",
+    rec_moderate: "Susulan dalam 6 bulan.", rec_severe: "Rujukan segera dalam 1 bulan.",
+    rec_prolif: "Rujukan segera untuk rawatan.",
+    saved_alert: "Keputusan disimpan!", th_image: "Imej", th_date: "Tarikh", th_case: "ID Kes",
+    th_severity: "Tahap", th_confidence: "Keyakinan", th_action: "Tindakan", btn_view: "Lihat"
+  }
+};
+
+let currentLang = 'en';
+let screeningHistory = JSON.parse(localStorage.getItem('drHistory') || '[]');
+let currentResult = null;
+let uploadedImageData = null;
+
+// ===== Language System =====
+function setLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  if (!t) return;
+
+  // Update all elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+
+  // Update lang button
+  const flags = { th:'🇹🇭', en:'🇬🇧', id:'🇮🇩', vi:'🇻🇳', ph:'🇵🇭', my:'🇲🇾' };
+  document.getElementById('langToggle').textContent = `${flags[lang] || '🌐'} ${t.lang_label} ▾`;
+
+  // Update active lang in menu
+  document.querySelectorAll('.lang-menu button').forEach(btn => {
+    btn.classList.toggle('active-lang', btn.getAttribute('data-lang') === lang);
+  });
+
+  // Close menu
+  document.getElementById('langMenu').classList.remove('show');
+
+  // Re-render dynamic content if needed
+  if (currentResult) updateResultDisplay(currentResult);
+  renderHistory();
 }
 
-        .animated-dot {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: rgba(200, 100, 255, 0.6);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
+// Language dropdown toggle
+document.getElementById('langToggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('langMenu').classList.toggle('show');
+});
+document.addEventListener('click', () => {
+  document.getElementById('langMenu').classList.remove('show');
+});
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); opacity: 0.3; }
-            50% { transform: translate(10px, -10px); opacity: 0.8; }
-        }
+// ===== Navigation =====
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-section') === name);
+  });
+  if (name === 'history') renderHistory();
+}
+document.querySelectorAll('.nav-links button').forEach(btn => {
+  btn.addEventListener('click', () => showSection(btn.getAttribute('data-section')));
+});
 
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
+// ===== File Upload =====
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
 
-        /* Glassmorphism effect */
-        .glass {
-            background: rgba(20, 10, 35, 0.8);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
+uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) handleFile(e.target.files);
+});
 
-        .glass-light {
-            background: rgba(30, 15, 50, 0.6);
-            border: 1px solid rgba(200, 100, 255, 0.15);
-            backdrop-filter: blur(8px);
-        }
+function handleFile(file) {
+  if (!file.type.match(/image\/(jpeg|png)/)) {
+    alert('Please upload a JPG or PNG image.');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size exceeds 5MB limit.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    uploadedImageData = e.target.result;
+    const origImg = document.getElementById('origImg');
+    origImg.src = uploadedImageData;
+    origImg.style.display = 'block';
+    document.getElementById('origPlaceholder').style.display = 'none';
+    document.getElementById('analyzeBtn').disabled = false;
+    // Reset results
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('prepCanvas').style.display = 'none';
+    document.getElementById('prepPlaceholder').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
 
-        /* Severity badges */
-        .badge-no-dr {
-            background: rgba(100, 200, 100, 0.2);
-            border: 1px solid rgba(150, 255, 150, 0.4);
-            color: #90ff90;
-        }
+// ===== Image Preprocessing (CLAHE-like enhancement) =====
+function preprocessImage(imgSrc) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.getElementById('prepCanvas');
+      const ctx = canvas.getContext('2d');
 
-        .badge-mild {
-            background: rgba(255, 200, 80, 0.2);
-            border: 1px solid rgba(255, 220, 100, 0.4);
-            color: #ffd080;
-        }
+      // Set canvas size
+      const size = 300;
+      canvas.width = size;
+      canvas.height = size;
 
-        .badge-moderate {
-            background: rgba(255, 150, 80, 0.2);
-            border: 1px solid rgba(255, 170, 100, 0.4);
-            color: #ff9650;
-        }
+      // Draw image centered & cropped
+      const scale = Math.max(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
 
-        .badge-severe {
-            background: rgba(255, 80, 80, 0.2);
-            border: 1px solid rgba(255, 120, 120, 0.4);
-            color: #ff6b6b;
-        }
+      // Get image data
+      const imageData = ctx.getImageData(0, 0, size, size);
+      const data = imageData.data;
 
-        .badge-proliferative {
-            background: rgba(200, 50, 50, 0.2);
-            border: 1px solid rgba(255, 80, 80, 0.4);
-            color: #ff5050;
-        }
+      // Green channel enhancement (simulating CLAHE on green channel)
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i + 1], b = data[i + 2];
 
-        /* Progress bars */
-        .progress-bar {
-            height: 6px;
-            background: rgba(100, 50, 150, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-        }
+        // Enhance green channel (most informative for DR)
+        const enhanced_g = Math.min(255, g * 1.5);
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #c864ff, #8b4dff);
-            transition: width 0.6s ease;
-        }
+        // Apply CLAHE-like contrast enhancement
+        const gray = 0.299 * r + 0.587 * enhanced_g + 0.114 * b;
+        const contrast = 1.4;
+        const adjusted = ((gray / 255 - 0.5) * contrast + 0.5) * 255;
+        const final_val = Math.max(0, Math.min(255, adjusted));
 
-        /* Cards */
-        .card {
-            background: rgba(20, 10, 35, 0.9);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            border-radius: 12px;
-            padding: 24px;
-            backdrop-filter: blur(10px);
-        }
+        // Colorize with green tint (common in DR preprocessing)
+        data[i] = Math.min(255, final_val * 0.3);      // R
+        data[i + 1] = Math.min(255, final_val * 1.0);   // G
+        data[i + 2] = Math.min(255, final_val * 0.3);   // B
+      }
 
-        .card-hover {
-            transition: all 0.3s ease;
-        }
+      ctx.putImageData(imageData, 0, 0);
 
-        .card-hover:hover {
-            border-color: rgba(200, 100, 255, 0.4);
-            background: rgba(30, 15, 50, 0.95);
-        }
+      canvas.style.display = 'block';
+      document.getElementById('prepPlaceholder').style.display = 'none';
 
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #c864ff, #8b4dff);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+      resolve(canvas.toDataURL());
+    };
+    img.src = imgSrc;
+  });
+}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(200, 100, 255, 0.3);
-        }
+// ===== AI Analysis (Simulated) =====
+async function analyzeImage() {
+  if (!uploadedImageData) return;
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
 
-        .btn-secondary {
-            background: rgba(100, 50, 150, 0.2);
-            color: #c864ff;
-            border: 1px solid rgba(200, 100, 255, 0.3);
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+  // Step 1: Preprocess
+  await preprocessImage(uploadedImageData);
 
-        .btn-secondary:hover {
-            background: rgba(100, 50, 150, 0.3);
-            border-color: rgba(200, 100, 255, 0.5);
-        }
+  // Step 2: Simulate AI inference (2-3 seconds)
+  await new Promise(r => setTimeout(r, 2000));
 
-        .btn-ghost {
-            background: transparent;
-            color: #c864ff;
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+  // Step 3: Generate simulated results
+  // In a real app, this would call a TensorFlow.js model or API
+  const result = simulateAIResult();
+  currentResult = result;
 
-        .btn-ghost:hover {
-            background: rgba(200, 100, 255, 0.1);
-            border-color: rgba(200, 100, 255, 0.4);
-        }
+  overlay.classList.remove('show');
 
-        /* Input styling */
-        input[type="text"],
-        input[type="email"],
-        input[type="search"],
-        select,
-        textarea {
-            background: rgba(100, 50, 150, 0.1);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            color: #f5f5f5;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
+  // Display results
+  updateResultDisplay(result);
+  document.getElementById('resultCard').classList.add('show');
+  document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+}
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="search"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: rgba(200, 100, 255, 0.5);
-            background: rgba(100, 50, 150, 0.15);
-            box-shadow: 0 0 12px rgba(200, 100, 255, 0.2);
-        }
+function simulateAIResult() {
+  // Generate realistic-looking random probabilities
+  // Weighted toward No DR for most images
+  let probs = [0, 0, 0, 0, 0];
+  const mainClass = Math.random();
+  let severity;
 
-        /* Loading spinner */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(200, 100, 255, 0.2);
-            border-top-color: #c864ff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+  if (mainClass < 0.4) severity = 0;
+  else if (mainClass < 0.6) severity = 1;
+  else if (mainClass < 0.75) severity = 2;
+  else if (mainClass < 0.9) severity = 3;
+  else severity = 4;
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+  // Generate probabilities centered around the main class
+  for (let i = 0; i < 5; i++) {
+    probs[i] = Math.random() * 0.1;
+  }
+  probs[severity] = 0.5 + Math.random() * 0.4; // 50-90% for main class
 
-        /* Fade animations */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
+  // Normalize
+  const sum = probs.reduce((a, b) => a + b, 0);
+  probs = probs.map(p => p / sum);
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+  return {
+    severity: severity,
+    confidence: probs[severity],
+    probabilities: probs,
+    timestamp: new Date().toISOString(),
+    caseId: 'DR-' + Date.now().toString(36).toUpperCase()
+  };
+}
 
-        .slide-up {
-            animation: slideUp 0.5s ease forwards;
-        }
+function updateResultDisplay(result) {
+  const t = translations[currentLang];
+  const sevNames = t.sev_names;
+  const colors = ['#16a34a', '#eab308', '#f97316', '#dc2626', '#991b1b'];
+  const barColors = ['#22c55e', '#eab308', '#f97316', '#ef4444', '#dc2626'];
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  // Severity badge
+  const badge = document.getElementById('severityBadge');
+  badge.textContent = sevNames[result.severity];
+  badge.className = 'severity-badge severity-' + result.severity;
 
-        /* Navbar styling */
-        .navbar {
-            background: rgba(20, 10, 35, 0.95);
-            border-bottom: 1px solid rgba(200, 100, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 16px 32px;
-        }
+  // Confidence
+  const confPct = (result.confidence * 100).toFixed(1) + '%';
+  document.getElementById('confPercent').textContent = confPct;
+  const confBar = document.getElementById('confBar');
+  confBar.style.width = (result.confidence * 100) + '%';
+  confBar.style.background = colors[result.severity];
 
-        .navbar-brand {
-            font-size: 22px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #c864ff, #8b4dff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  // Probability bars
+  const probContainer = document.getElementById('probBars');
+  probContainer.innerHTML = '';
+  const engNames = ["No DR", "Mild", "Moderate", "Severe", "Proliferative"];
+  for (let i = 0; i < 5; i++) {
+    const pct = (result.probabilities[i] * 100).toFixed(1);
+    probContainer.innerHTML += `
+      <div class="prob-item">
+        <div class="label-row"><span>${sevNames[i]}</span><span>${pct}%</span></div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="width:${pct}%;background:${barColors[i]};"></div></div>
+      </div>`;
+  }
 
-        .nav-item {
-            color: rgba(245, 245, 245, 0.6);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+  // Findings
+  const findingsKeys = ['findings_none', 'findings_mild', 'findings_moderate', 'findings_severe', 'findings_prolif'];
+  document.getElementById('findingsText').textContent = t[findingsKeys[result.severity]];
 
-        .nav-item:hover,
-        .nav-item.active {
-            color: #c864ff;
-            background: rgba(200, 100, 255, 0.1);
-        }
+  // Recommendation
+  const recKeys = ['rec_none', 'rec_mild', 'rec_moderate', 'rec_severe', 'rec_prolif'];
+  document.getElementById('recommendText').textContent = t[recKeys[result.severity]];
+}
 
-        /* Language selector */
-        .lang-selector {
-            position: relative;
-            display: inline-block;
-        }
+// ===== Save Result =====
+function saveResult() {
+  if (!currentResult) return;
+  const record = {
+    ...currentResult,
+    imageData: uploadedImageData
+  };
+  screeningHistory.unshift(record);
+  // Save to localStorage (limit to 20 records to avoid storage issues)
+  if (screeningHistory.length > 20) screeningHistory = screeningHistory.slice(0, 20);
+  try {
+    localStorage.setItem('drHistory', JSON.stringify(screeningHistory));
+  } catch (e) {
+    // If localStorage is full, just keep in memory
+    console.warn('localStorage full, keeping in memory only');
+  }
+  alert(translations[currentLang].saved_alert);
+}
 
-        .lang-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(20, 10, 35, 0.95);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            border-radius: 8px;
-            min-width: 180px;
-            z-index: 1000;
-            margin-top: 8px;
-        }
+// ===== History =====
+function renderHistory() {
+  const t = translations[currentLang];
+  const container = document.getElementById('historyContent');
+  const filterSev = document.getElementById('filterSeverity').value;
+  const filterSort = document.getElementById('filterSort').value;
 
-        .lang-dropdown.open {
-            display: block;
-        }
+  let records = [...screeningHistory];
 
-        .lang-option {
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 13px;
-        }
+  // Filter
+  if (filterSev !== 'all') {
+    const engNames = ["No DR", "Mild", "Moderate", "Severe", "Proliferative"];
+    records = records.filter(r => engNames[r.severity] === filterSev);
+  }
 
-        .lang-option:hover {
-            background: rgba(200, 100, 255, 0.15);
-            color: #c864ff;
-        }
+  // Sort
+  if (filterSort === 'oldest') records.reverse();
 
-        /* Drag & drop area */
-        .drop-zone {
-            border: 2px dashed rgba(200, 100, 255, 0.3);
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(100, 50, 150, 0.05);
-        }
+  if (records.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="big-icon">📋</span>
+        <p>${t.no_history}</p>
+        <button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">${t.btn_first_screening}</button>
+      </div>`;
+    return;
+  }
 
-        .drop-zone.dragover {
-            border-color: rgba(200, 100, 255, 0.6);
-            background: rgba(200, 100, 255, 0.1);
-        }
+  const sevNames = t.sev_names;
+  let html = `<table class="history-table">
+    <thead><tr>
+      <th>${t.th_image}</th><th>${t.th_date}</th><th>${t.th_case}</th>
+      <th>${t.th_severity}</th><th>${t.th_confidence}</th><th>${t.th_action}</th>
+    </tr></thead><tbody>`;
 
-        /* Image preview */
-        .image-preview {
-            width: 100%;
-            max-height: 400px;
-            border-radius: 12px;
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            object-fit: cover;
-            background: rgba(100, 50, 150, 0.1);
-        }
+  records.forEach((r, i) => {
+    const date = new Date(r.timestamp).toLocaleString();
+    const conf = (r.confidence * 100).toFixed(1) + '%';
+    html += `<tr>
+      <td><img class="history-thumb" src="${r.imageData}" alt="Fundus"></td>
+      <td>${date}</td>
+      <td>${r.caseId}</td>
+      <td><span class="severity-badge severity-${r.severity}" style="font-size:0.8rem;padding:0.2rem 0.8rem;">${sevNames[r.severity]}</span></td>
+      <td>${conf}</td>
+      <td><button class="btn-secondary" onclick="viewRecord(${i})">${t.btn_view}</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
 
-        /* Step indicators */
-        .step-indicator {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
+document.getElementById('filterSeverity').addEventListener('change', renderHistory);
+document.getElementById('filterSort').addEventListener('change', renderHistory);
 
-        .step {
-            flex: 1;
-            height: 4px;
-            background: rgba(100, 50, 150, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
-        }
+function viewRecord(index) {
+  const t = translations[currentLang];
+  const records = [...screeningHistory];
+  const r = records[index];
+  if (!r) return;
 
-        .step.active {
-            background: rgba(200, 100, 255, 0.4);
-        }
+  const sevNames = t.sev_names;
+  const findingsKeys = ['findings_none', 'findings_mild', 'findings_moderate', 'findings_severe', 'findings_prolif'];
+  const recKeys = ['rec_none', 'rec_mild', 'rec_moderate', 'rec_severe', 'rec_prolif'];
 
-        .step.completed {
-            background: linear-gradient(90deg, #c864ff, #8b4dff);
-        }
-
-        /* Table styling */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 14px;
-            text-align: left;
-            border-bottom: 1px solid rgba(200, 100, 255, 0.1);
-            font-size: 13px;
-        }
-
-        th {
-            font-weight: 600;
-            color: #c864ff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        tr:hover {
-            background: rgba(200, 100, 255, 0.05);
-        }
-
-        /* Map placeholder */
-        .map-placeholder {
-            width: 100%;
-            height: 300px;
-            background: rgba(100, 50, 150, 0.1);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(245, 245, 245, 0.5);
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 24px;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* Clinic card */
-        .clinic-card {
-            background: rgba(20, 10, 35, 0.8);
-            border: 1px solid rgba(200, 100, 255, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .clinic-card:hover {
-            border-color: rgba(200, 100, 255, 0.4);
-            background: rgba(30, 15, 50, 0.9);
-            transform: translateY(-2px);
-        }
-
-        /* Floating action */
-        .fab {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #c864ff, #8b4dff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(200, 100, 255, 0.3);
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 32px rgba(200, 100, 255, 0.4);
-        }
-    </style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body>
-  <div class="retina-bg" id="retina-bg"></div>
-  <div id="app-wrapper"><!-- Navigation Bar -->
-   <nav class="navbar">
-    <div class="flex items-center justify-between max-w-7xl mx-auto w-full">
-     <div class="flex items-center gap-8">
-      <div class="navbar-brand">
-       🔍 InsightRetina
-      </div>
-      <div class="hidden md:flex gap-2">
-       <div class="nav-item active" onclick="navigateTo('home')">
-        Home
-       </div>
-       <div class="nav-item" onclick="navigateTo('screening')">
-        Screening
-       </div>
-       <div class="nav-item" onclick="navigateTo('history')">
-        History
-       </div>
-       <div class="nav-item" onclick="navigateTo('clinic')">
-        Clinic
-       </div>
-      </div>
-     </div>
-     <div class="lang-selector"><button class="btn-ghost flex items-center gap-2" onclick="toggleLangDropdown()"> <span>🌐</span> <span id="current-lang">English</span> </button>
-      <div class="lang-dropdown" id="lang-dropdown">
-       <div class="lang-option" onclick="changeLanguage('th')">
-        🇹🇭 ไทย
-       </div>
-       <div class="lang-option" onclick="changeLanguage('en')">
-        🇬🇧 English
-       </div>
-       <div class="lang-option" onclick="changeLanguage('id')">
-        🇮🇩 Bahasa Indonesia
-       </div>
-       <div class="lang-option" onclick="changeLanguage('vi')">
-        🇻🇳 Tiếng Việt
-       </div>
-       <div class="lang-option" onclick="changeLanguage('ph')">
-        🇵🇭 Filipino
-       </div>
-       <div class="lang-option" onclick="changeLanguage('ms')">
-        🇲🇾 Bahasa Melayu
-       </div>
-      </div>
-     </div>
+  document.getElementById('modalBody').innerHTML = `
+    <div style="text-align:center;margin:1rem 0;">
+      <img src="${r.imageData}" style="max-width:300px;border-radius:8px;margin-bottom:1rem;" alt="Fundus">
     </div>
-   </nav><!-- Main Content -->
-   <div class="content-wrapper"><!-- HOME PAGE -->
-    <div id="page-home" class="page-section">
-     <div class="min-h-screen flex items-center justify-center px-6 py-12">
-      <div class="max-w-2xl w-full"><!-- Hero Section -->
-       <div class="text-center mb-12 fade-in">
-<div class="text-6xl font-bold mb-4 pb-2 leading-tight bg-gradient-to-b from-purple-500 via-purple-100 to-white bg-clip-text text-transparent">
-        InsightRetina
-        </div>
-        <div class="text-2xl text-purple-300 mb-6" id="hero-subtitle">
-         AI-Powered Diabetic Retinopathy Screening
-        </div>
-        <p class="text-gray-400 text-lg mb-8" id="hero-desc">Advanced retinal analysis for early detection of diabetic retinopathy. Upload a fundus image for instant AI screening.</p>
-       </div><!-- Feature Cards -->
-       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="card slide-up" style="animation-delay: 0.1s">
-         <div class="text-4xl mb-3">
-          🔬
-         </div>
-         <h3 class="font-semibold mb-2" id="feat1-title">Advanced AI</h3>
-         <p class="text-sm text-gray-400" id="feat1-desc">Deep learning classification for accurate DR detection</p>
-        </div>
-        <div class="card slide-up" style="animation-delay: 0.2s">
-         <div class="text-4xl mb-3">
-          ⚡
-         </div>
-         <h3 class="font-semibold mb-2" id="feat2-title">Fast Analysis</h3>
-         <p class="text-sm text-gray-400" id="feat2-desc">Real-time preprocessing and instant results</p>
-        </div>
-        <div class="card slide-up" style="animation-delay: 0.3s">
-         <div class="text-4xl mb-3">
-          🏥
-         </div>
-         <h3 class="font-semibold mb-2" id="feat3-title">Clinical Grade</h3>
-         <p class="text-sm text-gray-400" id="feat3-desc">Find nearby ophthalmology centers instantly</p>
-        </div>
-       </div><!-- CTA Button -->
-       <div class="text-center mb-12"><button class="btn-primary text-lg px-8 py-4" onclick="navigateTo('screening')" id="cta-button"> Start Screening </button>
-       </div><!-- Medical Disclaimer -->
-       <div class="glass rounded-lg p-6 border-l-4 border-purple-500">
-        <div class="flex gap-4">
-         <div class="text-2xl">
-          ⚠️
-         </div>
-         <div>
-          <h4 class="font-semibold mb-2" id="disclaimer-title">Medical Disclaimer</h4>
-          <p class="text-sm text-gray-400" id="disclaimer-text">This tool is for preliminary screening only and not a medical diagnosis. Always consult with a qualified ophthalmologist for clinical decisions.</p>
-         </div>
-        </div>
-       </div>
+    <p><strong>${t.th_severity}:</strong> <span class="severity-badge severity-${r.severity}" style="font-size:0.9rem;">${sevNames[r.severity]}</span></p>
+    <p style="margin-top:0.5rem;"><strong>${t.th_confidence}:</strong> ${(r.confidence * 100).toFixed(1)}%</p>
+    <p style="margin-top:0.5rem;"><strong>${t.th_date}:</strong> ${new Date(r.timestamp).toLocaleString()}</p>
+    <p style="margin-top:0.5rem;"><strong>${t.th_case}:</strong> ${r.caseId}</p>
+    <div class="findings-box"><h4>${t.findings}</h4><p>${t[findingsKeys[r.severity]]}</p></div>
+    <div class="recommendation-box"><h4>${t.recommendation}</h4><p>${t[recKeys[r.severity]]}</p></div>
+  `;
+  document.getElementById('detailModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('show');
+}
+document.getElementById('detailModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ===== Clinic Search (Mock Data) =====
+function searchClinics() {
+  const t = translations[currentLang];
+  const type = document.getElementById('clinicType').value;
+
+  const clinics = [
+    { name: "Bangkok Eye Hospital", type: "hospital", address: "Soi Sukhumvit 3, Bangkok", phone: "02-686-1111", distance: "2.3 km" },
+    { name: "Rutnin Eye Hospital", type: "hospital", address: "80/1 Sukhumvit 21, Bangkok", phone: "02-639-3399", distance: "3.1 km" },
+    { name: "Dr. Vision Eye Clinic", type: "eye_clinic", address: "123 Silom Road, Bangkok", phone: "02-234-5678", distance: "1.8 km" },
+    { name: "Eye Care Medical Center", type: "medical_center", address: "456 Phahon Yothin Rd", phone: "02-789-0123", distance: "4.5 km" },
+    { name: "Bright Eyes Clinic", type: "eye_clinic", address: "789 Ratchada Rd", phone: "02-345-6789", distance: "5.2 km" },
+    { name: "Chulalongkorn Eye Center", type: "hospital", address: "1873 Rama IV Rd", phone: "02-256-4142", distance: "3.8 km" },
+  ];
+
+  const filtered = type === 'all' ? clinics : clinics.filter(c => c.type === type);
+  const list = document.getElementById('clinicList');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">No clinics found for this filter.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(c => `
+    <div class="clinic-item">
+      <div>
+        <h4>🏥 ${c.name}</h4>
+        <p>📍 ${c.address}</p>
+        <p>📞 ${c.phone} · ${c.distance}</p>
       </div>
-     </div>
-    </div><!-- SCREENING PAGE -->
-    <div id="page-screening" class="page-section hidden">
-     <div class="max-w-7xl mx-auto px-6 py-8"><!-- Header -->
-      <div class="mb-12">
-       <h1 class="text-4xl font-bold mb-2" id="screen-title">Diabetic Retinopathy Screening</h1>
-       <p class="text-gray-400" id="screen-subtitle">Upload a fundus image for AI analysis</p>
-      </div><!-- Step Indicator -->
-      <div class="step-indicator mb-8">
-       <div class="step completed"></div>
-       <div class="step active" id="step-upload"></div>
-       <div class="step" id="step-preprocess"></div>
-       <div class="step" id="step-analysis"></div>
-       <div class="step" id="step-result"></div>
-      </div><!-- Main Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"><!-- LEFT PANEL: Upload -->
-       <div class="card">
-        <h2 class="text-xl font-semibold mb-6" id="upload-title">Upload Fundus Image</h2>
-        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-         <div class="text-5xl mb-4">
-          📸
-         </div>
-         <p class="text-gray-400 mb-2" id="drop-text">Drag &amp; drop your image here or click to browse</p>
-         <p class="text-sm text-gray-500" id="format-text">Supported formats: JPG, PNG (max 5MB)</p>
-        </div><input type="file" id="file-input" accept="image/jpeg,image/png" onchange="handleFileSelect(event)" style="display: none;">
-        <div id="file-info" style="display: none;" class="mt-6 p-4 glass rounded-lg">
-         <p class="text-sm text-gray-400"><span id="file-name"></span> (<span id="file-size"></span>)</p>
-        </div><button class="btn-primary w-full mt-6" id="analyze-btn" onclick="analyzeImage()" disabled> <span id="analyze-text">Analyze Image</span> </button>
-       </div><!-- RIGHT PANEL: Image Preview -->
-       <div>
-        <div class="card">
-         <h2 class="text-xl font-semibold mb-4" id="preview-title">Original Image</h2>
-         <div id="preview-container" class="bg-black rounded-lg overflow-hidden" style="min-height: 300px;">
-          <div class="flex items-center justify-center h-64 text-gray-500" id="no-preview">
-           <div class="text-center">
-            <div class="text-4xl mb-2">
-             👁️
-            </div>
-            <p id="no-preview-text">No image selected</p>
-           </div>
-          </div><img id="preview-image" class="image-preview hidden w-full" alt="Preview">
-         </div>
-        </div>
-        <div class="card mt-6">
-         <h2 class="text-xl font-semibold mb-4" id="preprocess-title">Preprocessed Image</h2>
-         <div id="preprocess-container" class="bg-black rounded-lg overflow-hidden" style="min-height: 300px;">
-          <div class="flex items-center justify-center h-64 text-gray-500" id="no-preprocess">
-           <div class="text-center">
-            <div class="text-4xl mb-2">
-             🔄
-            </div>
-            <p id="no-preprocess-text">Waiting for analysis</p>
-           </div>
-          </div><img id="preprocess-image" class="image-preview hidden w-full" alt="Preprocessed">
-         </div>
-        </div>
-       </div>
-      </div><!-- RESULT CARD -->
-      <div id="result-container" style="display: none;" class="slide-up">
-       <div class="card">
-        <div class="flex items-start justify-between mb-8">
-         <div>
-          <h2 class="text-2xl font-bold mb-2" id="result-title">Screening Result</h2>
-          <p class="text-gray-400" id="result-time"></p>
-         </div>
-         <div id="severity-badge" class="badge-no-dr px-4 py-2 rounded-lg font-semibold">
-          No DR
-         </div>
-        </div><!-- Confidence Score -->
-        <div class="mb-8">
-         <div class="flex items-center justify-between mb-3"><span class="font-semibold" id="confidence-label">Confidence Score</span> <span id="confidence-value" class="text-purple-300 font-bold">0%</span>
-         </div>
-         <div class="progress-bar">
-          <div class="progress-fill" id="confidence-bar" style="width: 0%;"></div>
-         </div>
-        </div><!-- Class Probabilities -->
-        <div class="mb-8">
-         <h3 class="font-semibold mb-4" id="probabilities-title">Classification Probabilities</h3>
-         <div class="space-y-3">
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm" id="prob-0">No DR</span> <span class="text-sm text-purple-300" id="prob-0-val">0%</span>
-           </div>
-           <div class="progress-bar">
-            <div class="progress-fill" id="prob-0-bar" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm" id="prob-1">Mild</span> <span class="text-sm text-purple-300" id="prob-1-val">0%</span>
-           </div>
-           <div class="progress-bar">
-            <div class="progress-fill" id="prob-1-bar" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm" id="prob-2">Moderate</span> <span class="text-sm text-purple-300" id="prob-2-val">0%</span>
-           </div>
-           <div class="progress-bar">
-            <div class="progress-fill" id="prob-2-bar" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm" id="prob-3">Severe</span> <span class="text-sm text-purple-300" id="prob-3-val">0%</span>
-           </div>
-           <div class="progress-bar">
-            <div class="progress-fill" id="prob-3-bar" style="width: 0%;"></div>
-           </div>
-          </div>
-          <div>
-           <div class="flex justify-between mb-2"><span class="text-sm" id="prob-4">Proliferative</span> <span class="text-sm text-purple-300" id="prob-4-val">0%</span>
-           </div>
-           <div class="progress-bar">
-            <div class="progress-fill" id="prob-4-bar" style="width: 0%;"></div>
-           </div>
-          </div>
-         </div>
-        </div><!-- Findings -->
-        <div class="mb-8">
-         <h3 class="font-semibold mb-4" id="findings-title">Detected Findings</h3>
-         <div id="findings-list" class="space-y-2">
-          <p class="text-sm text-gray-500" id="no-findings">No abnormalities detected</p>
-         </div>
-        </div><!-- Recommendation -->
-        <div class="glass-light rounded-lg p-4 border-l-4 border-purple-500">
-         <h3 class="font-semibold mb-2" id="rec-title">Recommendation</h3>
-         <p class="text-sm text-gray-300" id="recommendation-text">Routine eye examination recommended</p>
-        </div><!-- Action Buttons -->
-        <div class="flex gap-4 mt-8"><button class="btn-secondary flex-1" id="save-btn" onclick="saveResult()"> <span id="save-text">Save Result</span> </button> <button class="btn-secondary flex-1" id="clinic-btn" onclick="navigateTo('clinic')"> <span id="clinic-find-text">Find Clinic</span> </button>
-        </div>
-       </div>
-      </div><!-- Loading State -->
-      <div id="loading-container" style="display: none;" class="card text-center py-12">
-       <div class="spinner mx-auto mb-4"></div>
-       <p class="text-gray-400" id="loading-text">Analyzing image...</p>
-       <p class="text-xs text-gray-500 mt-2" id="loading-steps">Preprocessing → Analysis → Classification</p>
-      </div>
-     </div>
-    </div><!-- HISTORY PAGE -->
-    <div id="page-history" class="page-section hidden">
-     <div class="max-w-7xl mx-auto px-6 py-8"><!-- Header -->
-      <div class="mb-8">
-       <h1 class="text-4xl font-bold mb-2" id="history-title">Screening History</h1>
-       <p class="text-gray-400" id="history-subtitle">Review your diabetic retinopathy screening records</p>
-      </div><!-- Filter Section -->
-      <div class="card mb-8">
-       <div class="grid grid-cols-1 md:grid-cols-4 gap-4"><input type="search" id="search-input" placeholder="Search by Case ID..." onkeyup="filterHistory()" style="grid-column: 1 / -1;"> <select id="severity-filter" onchange="filterHistory()"> <option value="">All Severities</option> <option value="No DR">No DR</option> <option value="Mild">Mild</option> <option value="Moderate">Moderate</option> <option value="Severe">Severe</option> <option value="Proliferative">Proliferative</option> </select> <input type="date" id="date-filter" onchange="filterHistory()"> <select id="sort-filter" onchange="filterHistory()"> <option value="newest">Newest First</option> <option value="oldest">Oldest First</option> </select>
-       </div>
-      </div><!-- History Table -->
-      <div class="card" id="history-card">
-       <div class="table-container">
-        <table>
-         <thead>
-          <tr>
-           <th id="th-thumbnail">Image</th>
-           <th id="th-date">Date &amp; Time</th>
-           <th id="th-caseid">Case ID</th>
-           <th id="th-severity">Severity</th>
-           <th id="th-confidence">Confidence</th>
-           <th id="th-action">Action</th>
-          </tr>
-         </thead>
-         <tbody id="history-table-body">
-          <tr>
-           <td colspan="6" class="text-center py-12">
-            <div class="empty-state">
-             <div class="empty-state-icon">
-              📋
-             </div>
-             <h3 class="font-semibold mb-2" id="no-history-title">No screening history yet</h3>
-             <p class="text-gray-400 mb-4" id="no-history-text">Start your first screening to begin building your history</p><button class="btn-primary" onclick="navigateTo('screening')" id="first-screen-btn"> Start First Screening </button>
-            </div></td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div><!-- Detail Preview Panel -->
-      <div id="detail-panel" style="display: none;" class="mt-8">
-       <div class="card">
-        <div class="flex items-center justify-between mb-6">
-         <h2 class="text-2xl font-bold" id="detail-title">Record Details</h2><button class="btn-ghost" onclick="closeDetailPanel()">×</button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-         <div>
-          <h3 class="font-semibold mb-3" id="detail-orig-title">Original Image</h3><img id="detail-orig-img" class="image-preview w-full" alt="Original">
-         </div>
-         <div>
-          <h3 class="font-semibold mb-3" id="detail-prep-title">Preprocessed Image</h3><img id="detail-prep-img" class="image-preview w-full" alt="Preprocessed">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-         <div class="glass-light rounded-lg p-4">
-          <p class="text-xs text-gray-400 mb-2" id="detail-sev-label">Severity</p>
-          <div id="detail-severity-badge" class="badge-no-dr px-3 py-1 rounded inline-block font-semibold">
-           No DR
-          </div>
-         </div>
-         <div class="glass-light rounded-lg p-4">
-          <p class="text-xs text-gray-400 mb-2" id="detail-conf-label">Confidence</p>
-          <p class="text-2xl font-bold text-purple-300" id="detail-confidence">0%</p>
-         </div>
-         <div class="glass-light rounded-lg p-4">
-          <p class="text-xs text-gray-400 mb-2" id="detail-date-label">Date</p>
-          <p class="text-sm font-semibold" id="detail-date">N/A</p>
-         </div>
-        </div>
-        <div class="mb-8">
-         <h3 class="font-semibold mb-4" id="detail-findings-title">Detected Findings</h3>
-         <div id="detail-findings" class="space-y-2">
-          <p class="text-sm text-gray-500" id="detail-no-findings">No abnormalities detected</p>
-         </div>
-        </div>
-        <div class="glass-light rounded-lg p-4 border-l-4 border-purple-500">
-         <h3 class="font-semibold mb-2" id="detail-rec-label">Recommendation</h3>
-         <p class="text-sm text-gray-300" id="detail-recommendation">Routine eye examination recommended</p>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div><!-- CLINIC PAGE -->
-    <div id="page-clinic" class="page-section hidden">
-     <div class="max-w-7xl mx-auto px-6 py-8"><!-- Header -->
-      <div class="mb-8">
-       <h1 class="text-4xl font-bold mb-2" id="clinic-title">Nearby Eye Clinics</h1>
-       <p class="text-gray-400" id="clinic-subtitle">Find ophthalmology clinics and eye hospitals near your location</p>
-      </div><!-- Recommendation Alert -->
-      <div class="glass-light rounded-lg p-4 border-l-4 border-purple-500 mb-8">
-       <p class="text-sm" id="clinic-rec">Based on the screening result, follow-up with an ophthalmologist is recommended.</p>
-      </div><!-- Search Section -->
-      <div class="card mb-8">
-       <h2 class="text-lg font-semibold mb-4" id="search-clinic-title">Search Clinics</h2>
-       <div class="grid grid-cols-1 md:grid-cols-3 gap-4"><input type="text" id="location-input" placeholder="City or District..." onkeyup="searchClinics()"> <select id="clinic-type-filter" onchange="searchClinics()"> <option value="">All Types</option> <option value="clinic">Eye Clinic</option> <option value="hospital">Hospital</option> <option value="center">Medical Center</option> </select> <button class="btn-primary" id="search-btn" onclick="searchClinics()"> <span id="search-btn-text">Search Clinics</span> </button>
-       </div>
-      </div><!-- Results Grid -->
-      <div id="clinics-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Clinics will be loaded here -->
-      </div><!-- Map Section -->
-      <div class="card mt-8">
-       <h2 class="text-lg font-semibold mb-4" id="map-title">Map View</h2>
-       <div class="map-placeholder">
-        <div class="text-center">
-         <div class="text-4xl mb-2">
-          🗺️
-         </div>
-         <p id="map-placeholder-text">Map view will appear here</p>
-        </div>
-       </div>
-      </div>
-     </div>
+      <button class="btn-secondary" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(c.name)}','_blank')">
+        🗺️ ${t.map_text ? 'Map' : 'Map'}
+      </button>
     </div>
-   </div><!-- Footer -->
-   <footer class="border-t border-purple-900/20 py-6 px-6 text-center text-sm text-gray-500">
-    <p id="footer-text">© 2024 InsightRetina. For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.</p>
-   </footer>
-  </div>
-  <script>
-        // Global State
-        let currentLanguage = 'en';
-        let currentPage = 'home';
-        let selectedFile = null;
-        let historyData = [];
-        let allHistoryData = [];
-
-        // Translations
-        const translations = {
-            th: {
-                'hero-subtitle': 'การตรวจคัดกรองเบาหวานด้วยปัญญาประดิษฐ์',
-                'hero-desc': 'วิเคราะห์จอประสาทตาขั้นสูงเพื่อตรวจหาโรคเบาหวานในตอนเริ่มแรก อัพโหลดภาพจอประสาทตา สำหรับการตรวจคัดกรอง AI ทันที',
-                'feat1-title': 'ปัญญาประดิษฐ์ขั้นสูง',
-                'feat1-desc': 'การจำแนกประเภทการเรียนรู้เชิงลึกเพื่อการตรวจหาเบาหวานที่แม่นยำ',
-                'feat2-title': 'การวิเคราะห์ที่เร็ว',
-                'feat2-desc': 'การประมวลผลล่วงหน้าแบบเรียลไทม์และผลลัพธ์ทันที',
-                'feat3-title': 'ระดับคลินิก',
-                'feat3-desc': 'ค้นหาศูนย์ดูแลตาใกล้เคียงทันที',
-                'cta-button': 'เริ่มการตรวจคัดกรอง',
-                'disclaimer-title': 'คำเตือนทางการแพทย์',
-                'disclaimer-text': 'เครื่องมือนี้สำหรับการตรวจคัดกรองเบื้องต้นเท่านั้น และไม่ใช่การวินิจฉัยทางการแพทย์ โปรดปรึกษาศัลยแพทย์ตาผู้มีคุณวุฒิเสมอสำหรับการตัดสินใจทางคลินิก',
-                'screen-title': 'การตรวจคัดกรองการเบาหวานในเรตินา',
-                'screen-subtitle': 'อัพโหลดภาพจอประสาทตาเพื่อวิเคราะห์ AI',
-                'upload-title': 'อัพโหลดภาพจอประสาทตา',
-                'drop-text': 'ลากและวางรูปภาพของคุณที่นี่หรือคลิกเพื่อเรียกดู',
-                'format-text': 'รูปแบบที่รองรับ: JPG, PNG (สูงสุด 5MB)',
-                'analyze-text': 'วิเคราะห์ภาพ',
-                'preview-title': 'ภาพต้นฉบับ',
-                'preprocess-title': 'ภาพที่ประมวลผลแล้ว',
-                'no-preview-text': 'ไม่ได้เลือกภาพ',
-                'no-preprocess-text': 'รอการวิเคราะห์',
-                'result-title': 'ผลการตรวจคัดกรอง',
-                'confidence-label': 'คะแนนความเชื่อมั่น',
-                'probabilities-title': 'ความน่าจะเป็นในการจำแนกประเภท',
-                'findings-title': 'การค้นพบที่ตรวจสอบ',
-                'no-findings': 'ไม่พบความผิดปกติ',
-                'rec-title': 'คำแนะนำ',
-                'save-text': 'บันทึกผลลัพธ์',
-                'clinic-find-text': 'ค้นหาคลินิก',
-                'loading-text': 'กำลังวิเคราะห์ภาพ...',
-                'history-title': 'ประวัติการตรวจคัดกรอง',
-                'history-subtitle': 'ตรวจสอบบันทึกการตรวจคัดกรองเบาหวานในเรตินาของคุณ',
-                'no-history-title': 'ยังไม่มีประวัติการตรวจคัดกรอง',
-                'no-history-text': 'เริ่มการตรวจคัดกรองครั้งแรกของคุณเพื่อเริ่มสร้างประวัติของคุณ',
-                'first-screen-btn': 'เริ่มการตรวจคัดกรองครั้งแรก',
-                'clinic-title': 'คลินิกตาใกล้เคียง',
-                'clinic-subtitle': 'ค้นหาคลินิกตาและโรงพยาบาลตาใกล้เคียง',
-                'clinic-rec': 'จากผลการตรวจคัดกรอง ขอแนะนำให้ติดตามการตรวจกับศัลยแพทย์ตา',
-                'search-clinic-title': 'ค้นหาคลินิก',
-                'search-btn-text': 'ค้นหาคลินิก',
-                'map-title': 'มุมมองแผนที่',
-                'map-placeholder-text': 'มุมมองแผนที่จะปรากฏที่นี่',
-                'footer-text': '© 2024 InsightRetina สำหรับการตรวจคัดกรองเบื้องต้นเท่านั้น โปรดปรึกษาศัลยแพทย์ตาผู้มีคุณวุฒิสำหรับการวินิจฉัย'
-            },
-            en: {
-                'hero-subtitle': 'AI-Powered Diabetic Retinopathy Screening',
-                'hero-desc': 'Advanced retinal analysis for early detection of diabetic retinopathy. Upload a fundus image for instant AI screening.',
-                'feat1-title': 'Advanced AI',
-                'feat1-desc': 'Deep learning classification for accurate DR detection',
-                'feat2-title': 'Fast Analysis',
-                'feat2-desc': 'Real-time preprocessing and instant results',
-                'feat3-title': 'Clinical Grade',
-                'feat3-desc': 'Find nearby ophthalmology centers instantly',
-                'cta-button': 'Start Screening',
-                'disclaimer-title': 'Medical Disclaimer',
-                'disclaimer-text': 'This tool is for preliminary screening only and not a medical diagnosis.',
-                'screen-title': 'Diabetic Retinopathy Screening',
-                'screen-subtitle': 'Upload a fundus image for AI analysis',
-                'upload-title': 'Upload Fundus Image',
-                'drop-text': 'Drag & drop your image here or click to browse',
-                'format-text': 'Supported formats: JPG, PNG (max 5MB)',
-                'analyze-text': 'Analyze Image',
-                'save-text': 'Save Result',
-                'clinic-find-text': 'Find Clinic',
-                'loading-text': 'Analyzing image...',
-                'history-title': 'Screening History',
-                'clinic-title': 'Nearby Eye Clinics'
-            },
-            id: {
-                'hero-subtitle': 'Pemeriksaan Retinopati Diabetik Bertenaga AI',
-                'hero-desc': 'Analisis retina canggih untuk deteksi dini retinopati diabetik. Unggah gambar fundus untuk pemeriksaan AI instan.',
-                'feat1-title': 'AI Lanjutan',
-                'feat1-desc': 'Klasifikasi pembelajaran mendalam untuk deteksi DR yang akurat',
-                'feat2-title': 'Analisis Cepat',
-                'feat2-desc': 'Preprocessing waktu nyata dan hasil instan',
-                'feat3-title': 'Tingkat Klinis',
-                'feat3-desc': 'Temukan pusat oftalmologi terdekat secara instan',
-                'cta-button': 'Mulai Pemeriksaan',
-                'disclaimer-title': 'Penafian Medis',
-                'disclaimer-text': 'Alat ini hanya untuk pemeriksaan awal dan bukan diagnosis medis. Selalu konsultasikan dengan oftalmolog yang berkualitas untuk keputusan klinis.',
-                'screen-title': 'Pemeriksaan Retinopati Diabetik',
-                'screen-subtitle': 'Unggah gambar fundus untuk analisis AI',
-                'upload-title': 'Unggah Gambar Fundus',
-                'drop-text': 'Seret & lepas gambar Anda di sini atau klik untuk menelusuri',
-                'format-text': 'Format yang didukung: JPG, PNG (maks 5MB)',
-                'analyze-text': 'Analisis Gambar',
-                'preview-title': 'Gambar Asli',
-                'preprocess-title': 'Gambar Diproses',
-                'no-preview-text': 'Tidak ada gambar yang dipilih',
-                'no-preprocess-text': 'Menunggu analisis',
-                'result-title': 'Hasil Pemeriksaan',
-                'confidence-label': 'Skor Kepercayaan',
-                'probabilities-title': 'Probabilitas Klasifikasi',
-                'findings-title': 'Temuan yang Terdeteksi',
-                'no-findings': 'Tidak ada kelainan yang terdeteksi',
-                'rec-title': 'Rekomendasi',
-                'save-text': 'Simpan Hasil',
-                'clinic-find-text': 'Temukan Klinik',
-                'loading-text': 'Menganalisis gambar...',
-                'history-title': 'Riwayat Pemeriksaan',
-                'history-subtitle': 'Tinjau catatan pemeriksaan retinopati diabetik Anda',
-                'no-history-title': 'Belum ada riwayat pemeriksaan',
-                'no-history-text': 'Mulai pemeriksaan pertama Anda untuk memulai membangun riwayat Anda',
-                'first-screen-btn': 'Mulai Pemeriksaan Pertama',
-                'clinic-title': 'Klinik Mata Terdekat',
-                'clinic-subtitle': 'Temukan klinik mata dan rumah sakit mata terdekat',
-                'clinic-rec': 'Berdasarkan hasil pemeriksaan, tindak lanjut dengan oftalmolog direkomendasikan.',
-                'search-clinic-title': 'Cari Klinik',
-                'search-btn-text': 'Cari Klinik',
-                'map-title': 'Tampilan Peta',
-                'map-placeholder-text': 'Tampilan peta akan muncul di sini',
-                'footer-text': '© 2024 InsightRetina. Hanya untuk pemeriksaan awal. Konsultasikan dengan oftalmolog yang berkualitas untuk diagnosis.'
-            },
-            vi: {
-                'hero-subtitle': 'Sàng lọc Bệnh võng mạc tiểu đường do AI',
-                'hero-desc': 'Phân tích võng mạc nâng cao để phát hiện sớm bệnh võng mạc tiểu đường. Tải ảnh quỹ đáy để sàng lọc AI ngay lập tức.',
-                'feat1-title': 'AI Nâng cao',
-                'feat1-desc': 'Phân loại học sâu để phát hiện DR chính xác',
-                'feat2-title': 'Phân tích Nhanh',
-                'feat2-desc': 'Xử lý trước thời gian thực và kết quả tức thời',
-                'feat3-title': 'Cấp lâm sàng',
-                'feat3-desc': 'Tìm các trung tâm nhãn khoa gần đó ngay lập tức',
-                'cta-button': 'Bắt đầu Sàng lọc',
-                'disclaimer-title': 'Tuyên bố từ chối',
-                'disclaimer-text': 'Công cụ này chỉ dành cho sàng lọc sơ bộ và không phải là chẩn đoán y tế. Luôn tham khảo với bác sĩ nhãn khoa có trình độ để đưa ra quyết định lâm sàng.',
-                'screen-title': 'Sàng lọc Bệnh võng mạc tiểu đường',
-                'screen-subtitle': 'Tải ảnh quỹ đáy để phân tích AI',
-                'upload-title': 'Tải ảnh Quỹ đáy lên',
-                'drop-text': 'Kéo và thả hình ảnh của bạn ở đây hoặc nhấp để duyệt',
-                'format-text': 'Định dạng được hỗ trợ: JPG, PNG (tối đa 5MB)',
-                'analyze-text': 'Phân tích hình ảnh',
-                'preview-title': 'Hình ảnh Gốc',
-                'preprocess-title': 'Hình ảnh được Xử lý',
-                'no-preview-text': 'Chưa chọn hình ảnh',
-                'no-preprocess-text': 'Chờ phân tích',
-                'result-title': 'Kết quả Sàng lọc',
-                'confidence-label': 'Điểm Tự tin',
-                'probabilities-title': 'Xác suất Phân loại',
-                'findings-title': 'Phát hiện được Phát hiện',
-                'no-findings': 'Không phát hiện bất thường',
-                'rec-title': 'Khuyến nghị',
-                'save-text': 'Lưu Kết quả',
-                'clinic-find-text': 'Tìm Phòng khám',
-                'loading-text': 'Đang phân tích hình ảnh...',
-                'history-title': 'Lịch sử Sàng lọc',
-                'history-subtitle': 'Xem lại các bản ghi sàng lọc bệnh võng mạc tiểu đường của bạn',
-                'no-history-title': 'Chưa có lịch sử sàng lọc',
-                'no-history-text': 'Bắt đầu sàng lọc lần đầu của bạn để bắt đầu xây dựng lịch sử của bạn',
-                'first-screen-btn': 'Sàng lọc Lần đầu',
-                'clinic-title': 'Phòng khám Mắt Gần đó',
-                'clinic-subtitle': 'Tìm các phòng khám mắt và bệnh viện mắt gần đó',
-                'clinic-rec': 'Dựa trên kết quả sàng lọc, tái khám với bác sĩ nhãn khoa được khuyến nghị.',
-                'search-clinic-title': 'Tìm kiếm Phòng khám',
-                'search-btn-text': 'Tìm kiếm Phòng khám',
-                'map-title': 'Chế độ xem Bản đồ',
-                'map-placeholder-text': 'Chế độ xem bản đồ sẽ xuất hiện ở đây',
-                'footer-text': '© 2024 InsightRetina. Chỉ dành cho sàng lọc sơ bộ. Tham khảo với bác sĩ nhãn khoa có trình độ để chẩn đoán.'
-            },
-            ph: {
-                'hero-subtitle': 'AI-Powered Diabetic Retinopathy Screening',
-                'hero-desc': 'Advanced retinal analysis para sa early detection ng diabetic retinopathy. Upload ng fundus image para sa instant AI screening.',
-                'feat1-title': 'Advanced AI',
-                'feat1-desc': 'Deep learning classification para sa accurate DR detection',
-                'feat2-title': 'Fast Analysis',
-                'feat2-desc': 'Real-time preprocessing at instant results',
-                'feat3-title': 'Clinical Grade',
-                'feat3-desc': 'Hanapin ang malapit na ophthalmology centers instantly',
-                'cta-button': 'Magsimula ng Screening',
-                'disclaimer-title': 'Medical Disclaimer',
-                'disclaimer-text': 'Ang tool na ito ay para sa preliminary screening lamang at hindi medical diagnosis. Palaging kumunsulta sa qualified ophthalmologist para sa clinical decisions.',
-                'screen-title': 'Diabetic Retinopathy Screening',
-                'screen-subtitle': 'Upload ng fundus image para sa AI analysis',
-                'upload-title': 'Upload Fundus Image',
-                'drop-text': 'I-drag & drop ang iyong image dito o i-click para mag-browse',
-                'format-text': 'Supported formats: JPG, PNG (max 5MB)',
-                'analyze-text': 'Analyze Image',
-                'preview-title': 'Original Image',
-                'preprocess-title': 'Preprocessed Image',
-                'no-preview-text': 'Walang napiling image',
-                'no-preprocess-text': 'Naghihintay ng analysis',
-                'result-title': 'Screening Result',
-                'confidence-label': 'Confidence Score',
-                'probabilities-title': 'Classification Probabilities',
-                'findings-title': 'Detected Findings',
-                'no-findings': 'Walang abnormalities na nadetect',
-                'rec-title': 'Recommendation',
-                'save-text': 'Save Result',
-                'clinic-find-text': 'Find Clinic',
-                'loading-text': 'Analyzing image...',
-                'history-title': 'Screening History',
-                'history-subtitle': 'Review your diabetic retinopathy screening records',
-                'no-history-title': 'Walang screening history pa',
-                'no-history-text': 'Magsimula ng iyong first screening para magsimulang bumuo ng history',
-                'first-screen-btn': 'Magsimula ng First Screening',
-                'clinic-title': 'Nearby Eye Clinics',
-                'clinic-subtitle': 'Maghanap ng ophthalmology clinics at eye hospitals malapit',
-                'clinic-rec': 'Based sa screening result, recommended ang follow-up sa ophthalmologist.',
-                'search-clinic-title': 'Search Clinics',
-                'search-btn-text': 'Search Clinics',
-                'map-title': 'Map View',
-                'map-placeholder-text': 'Map view ay makikita dito',
-                'footer-text': '© 2024 InsightRetina. Para sa preliminary screening lamang. Kumunsulta sa qualified ophthalmologist para sa diagnosis.'
-            },
-            ms: {
-                'hero-subtitle': 'Pemeriksaan Retinopati Diabetik Bertenaga AI',
-                'hero-desc': 'Analisis retina canggih untuk pengesanan awal retinopati diabetik. Muat gambar fundus untuk pemeriksaan AI serta-merta.',
-                'feat1-title': 'AI Canggih',
-                'feat1-desc': 'Klasifikasi pembelajaran mendalam untuk pengesanan DR yang tepat',
-                'feat2-title': 'Analisis Pantas',
-                'feat2-desc': 'Pemprosesan awal masa nyata dan hasil serta-merta',
-                'feat3-title': 'Gred Klinikal',
-                'feat3-desc': 'Cari pusat oftalmologi berdekatan dengan serta-merta',
-                'cta-button': 'Mulakan Pemeriksaan',
-                'disclaimer-title': 'Penafian Perubatan',
-                'disclaimer-text': 'Alat ini hanya untuk pemeriksaan awal dan bukan diagnosis perubatan. Sentiasa berunding dengan oftalmolog berkelayakan untuk keputusan klinikal.',
-                'screen-title': 'Pemeriksaan Retinopati Diabetik',
-                'screen-subtitle': 'Muat gambar fundus untuk analisis AI',
-                'upload-title': 'Muat Naik Gambar Fundus',
-                'drop-text': 'Seret & lepas gambar anda di sini atau klik untuk melayar',
-                'format-text': 'Format yang disokong: JPG, PNG (maksimum 5MB)',
-                'analyze-text': 'Analisis Gambar',
-                'preview-title': 'Gambar Asal',
-                'preprocess-title': 'Gambar Diproses',
-                'no-preview-text': 'Tiada gambar dipilih',
-                'no-preprocess-text': 'Menunggu analisis',
-                'result-title': 'Hasil Pemeriksaan',
-                'confidence-label': 'Skor Keyakinan',
-                'probabilities-title': 'Kebarangkalian Klasifikasi',
-                'findings-title': 'Penemuan yang Dikesan',
-                'no-findings': 'Tiada ketidaknormalan dikesan',
-                'rec-title': 'Pengesyoran',
-                'save-text': 'Simpan Hasil',
-                'clinic-find-text': 'Cari Klinik',
-                'loading-text': 'Menganalisis gambar...',
-                'history-title': 'Sejarah Pemeriksaan',
-                'history-subtitle': 'Tinjau rekod pemeriksaan retinopati diabetik anda',
-                'no-history-title': 'Belum ada sejarah pemeriksaan',
-                'no-history-text': 'Mulakan pemeriksaan pertama anda untuk mula membina sejarah anda',
-                'first-screen-btn': 'Mulakan Pemeriksaan Pertama',
-                'clinic-title': 'Klinik Mata Berdekatan',
-                'clinic-subtitle': 'Cari klinik mata dan hospital mata berdekatan',
-                'clinic-rec': 'Berdasarkan hasil pemeriksaan, susulan dengan oftalmolog disyorkan.',
-                'search-clinic-title': 'Cari Klinik',
-                'search-btn-text': 'Cari Klinik',
-                'map-title': 'Paparan Peta',
-                'map-placeholder-text': 'Paparan peta akan muncul di sini',
-                'footer-text': '© 2024 InsightRetina. Hanya untuk pemeriksaan awal. Berunding dengan oftalmolog berkelayakan untuk diagnosis.'
-            }
-        };
-
-        // Initialize SDK
-        let appConfig = {
-            app_title: 'InsightRetina',
-            app_subtitle: 'AI-Powered Diabetic Retinopathy Screening',
-            disclaimer_text: 'This tool is for preliminary screening only and not a medical diagnosis.',
-            clinic_message: 'Follow-up with an ophthalmologist is recommended.'
-        };
-
-        const elementHandler = {
-            onConfigChange: async (config) => {
-                appConfig = config;
-                updateUIText();
-            },
-            mapToCapabilities: (config) => ({
-                recolorables: [],
-                borderables: [],
-                fontEditable: undefined,
-                fontSizeable: undefined
-            }),
-            mapToEditPanelValues: (config) => new Map([
-                ['app_title', config.app_title || 'InsightRetina'],
-                ['app_subtitle', config.app_subtitle || 'AI-Powered Diabetic Retinopathy Screening'],
-                ['disclaimer_text', config.disclaimer_text || 'This tool is for preliminary screening only'],
-                ['clinic_message', config.clinic_message || 'Follow-up with an ophthalmologist is recommended.']
-            ])
-        };
-
-        window.elementSdk.init(elementHandler);
-
-        // Initialize Data SDK
-        let screeningRecords = [];
-
-        const dataHandler = {
-            onDataChanged: async (data) => {
-                screeningRecords = data;
-                allHistoryData = data;
-                historyData = data;
-                updateHistoryDisplay();
-            }
-        };
-
-        (async () => {
-            await window.dataSdk.init(dataHandler);
-        })();
-
-        // Translation function
-        function t(key) {
-            if (translations[currentLanguage] && translations[currentLanguage][key]) {
-                return translations[currentLanguage][key];
-            }
-            return key;
-        }
-
-        // Update UI text based on language
-      function updateUIText() {
-            const langData = translations[currentLanguage];
-            if (!langData) return;
-
-            Object.keys(langData).forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.placeholder = langData[id];
-                    } else {
-                        el.innerText = langData[id];
-                    }
-                }
-            });
-
-            const langNames = { th: 'ไทย', en: 'English', id: 'Bahasa Indonesia', vi: 'Tiếng Việt', ph: 'Filipino', ms: 'Bahasa Melayu' };
-            const display = document.getElementById('current-lang');
-            if (display) display.textContent = langNames[currentLanguage];
-        }
-
-        function toggleLangDropdown() {
-            document.getElementById('lang-dropdown').classList.toggle('open');
-        }
-
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            updateUIText();
-            document.getElementById('lang-dropdown').classList.remove('open');
-        }
-         const currentLangDisplay = document.getElementById('current-lang');
-         if (currentLangDisplay) {
-             currentLangDisplay.textContent = langNames[currentLanguage];
-         }
-     }
-
-            // เปลี่ยนชื่อภาษาบนปุ่ม Globe ใน Navbar
-            const currentLangDisplay = document.getElementById('current-lang');
-            if (currentLangDisplay) {
-                currentLangDisplay.textContent = langData['current-lang-name'];
-            }
-        }
-
-        // Language switching
-        function toggleLangDropdown() {
-            const dropdown = document.getElementById('lang-dropdown');
-            dropdown.classList.toggle('open');
-        }
-
-        function changeLanguage(lang) {
-            currentLanguage = lang; 
-            updateUIText(); // อัปเดตคำแปล
-            document.getElementById('lang-dropdown').classList.remove('open'); // ปิดเมนู
-        }
-
-        // Navigation
-        function navigateTo(page) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
-            const target = document.getElementById('page-' + page);
-            if (target) target.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('onclick')?.includes(`'${page}'`)) {
-                    item.classList.add('active');
-                }
-            });
-            currentPage = page;
-            document.querySelector('.content-wrapper').scrollTop = 0;
-        }
-
-        // File handling
-        function handleFileSelect(event) {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            selectedFile = file;
-            document.getElementById('file-name').textContent = file.name;
-            document.getElementById('file-info').style.display = 'block';
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const preview = document.getElementById('preview-image');
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                document.getElementById('no-preview').style.display = 'none';
-                document.getElementById('analyze-btn').disabled = false;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function analyzeImage() {
-            if (!selectedFile) return;
-            document.getElementById('loading-container').style.display = 'block';
-            document.getElementById('result-container').style.display = 'none';
-            
-            await new Promise(r => setTimeout(r, 2000)); // Simulate AI
-
-            document.getElementById('loading-container').style.display = 'none';
-            document.getElementById('result-container').style.display = 'block';
-            document.getElementById('result-time').innerText = new Date().toLocaleString();
-            document.getElementById('severity-badge').innerText = "No DR";
-            document.getElementById('confidence-value').innerText = "98%";
-            document.getElementById('confidence-bar').style.width = "98%";
-        }
-
-        // Initialize
-        window.onload = () => {
-            updateUIText();
-            // Background Animation
-            const bg = document.getElementById('retina-bg');
-            for (let i = 0; i < 20; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'animated-dot';
-                dot.style.left = Math.random() * 100 + '%';
-                dot.style.top = Math.random() * 100 + '%';
-                dot.style.animationDelay = Math.random() * 5 + 's';
-                bg.appendChild(dot);
-            }
-        };
-
-        // Drag & drop
-        const dropZone = document.getElementById('drop-zone');
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('file-input').files = files;
-                handleFileSelect({ target: { files } });
-            }
-        });
-
-        // Image preprocessing simulation
-        function preprocessImage(imageSrc) {
-            return new Promise((resolve) => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-
-                img.onload = () => {
-                    canvas.width = 512;
-                    canvas.height = 512;
-
-                    // Circular crop
-                    ctx.beginPath();
-                    ctx.arc(256, 256, 240, 0, Math.PI * 2);
-                    ctx.fillStyle = '#000';
-                    ctx.fill();
-                    ctx.globalCompositeOperation = 'source-in';
-
-                    // Draw image
-                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                    const x = (canvas.width - img.width * scale) / 2;
-                    const y = (canvas.height - img.height * scale) / 2;
-                    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-
-                    // Enhance contrast
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const data = imageData.data;
-                    for (let i = 0; i < data.length; i += 4) {
-                        data[i] = Math.min(255, data[i] * 1.2);
-                        data[i + 1] = Math.min(255, data[i + 1] * 1.2);
-                        data[i + 2] = Math.min(255, data[i + 2] * 1.2);
-                    }
-                    ctx.putImageData(imageData, 0, 0);
-
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.src = imageSrc;
-            });
-        }
-
-        // AI Analysis simulation
-        async function analyzeImage() {
-            if (!selectedFile) return;
-
-            document.getElementById('loading-container').style.display = 'block';
-            document.getElementById('result-container').style.display = 'none';
-            document.getElementById('step-upload').classList.add('completed');
-            document.getElementById('step-preprocess').classList.add('active');
-
-            await new Promise(r => setTimeout(r, 800));
-
-            const originalSrc = document.getElementById('preview-image').src;
-            const preprocessedSrc = await preprocessImage(originalSrc);
-
-            document.getElementById('preprocess-image').src = preprocessedSrc;
-            document.getElementById('preprocess-image').classList.remove('hidden');
-            document.getElementById('no-preprocess').style.display = 'none';
-
-            document.getElementById('step-preprocess').classList.add('completed');
-            document.getElementById('step-analysis').classList.add('active');
-
-            await new Promise(r => setTimeout(r, 1000));
-
-            // Simulate AI results
-            const severities = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative'];
-            const randomSeverity = severities[Math.floor(Math.random() * severities.length)];
-            
-            const probs = [
-                Math.random() * 0.5,
-                Math.random() * 0.3,
-                Math.random() * 0.15,
-                Math.random() * 0.05,
-                Math.random() * 0.05
-            ];
-            const sum = probs.reduce((a, b) => a + b, 0);
-            const normalizedProbs = probs.map(p => Math.round((p / sum) * 100));
-
-            const findings = [];
-            if (Math.random() > 0.6) findings.push('Microaneurysms');
-            if (Math.random() > 0.7) findings.push('Hemorrhages');
-            if (Math.random() > 0.75) findings.push('Hard exudates');
-
-            displayResults(randomSeverity, normalizedProbs, findings, originalSrc, preprocessedSrc);
-
-            document.getElementById('step-analysis').classList.add('completed');
-            document.getElementById('step-result').classList.add('active');
-        }
-
-        // Display results
-        function displayResults(severity, probs, findings, origSrc, preprocSrc) {
-            document.getElementById('loading-container').style.display = 'none';
-            document.getElementById('result-container').style.display = 'block';
-
-            // Update severity badge
-            const badge = document.getElementById('severity-badge');
-            badge.className = 'px-4 py-2 rounded-lg font-semibold';
-            badge.textContent = severity;
-            badge.classList.add('badge-' + severity.toLowerCase().replace(' ', '-'));
-
-            // Update confidence
-            const maxProb = Math.max(...probs);
-            document.getElementById('confidence-value').textContent = maxProb + '%';
-            document.getElementById('confidence-bar').style.width = maxProb + '%';
-
-            // Update probabilities
-            const labels = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative'];
-            labels.forEach((label, i) => {
-                document.getElementById(`prob-${i}-val`).textContent = probs[i] + '%';
-                document.getElementById(`prob-${i}-bar`).style.width = probs[i] + '%';
-            });
-
-            // Update findings
-            const findingsList = document.getElementById('findings-list');
-            if (findings.length > 0) {
-                findingsList.innerHTML = findings.map(f => 
-                    `<div class="flex items-center gap-2"><span class="w-2 h-2 bg-purple-400 rounded-full"></span><span class="text-sm">${f}</span></div>`
-                ).join('');
-            } else {
-                findingsList.innerHTML = '<p class="text-sm text-gray-500">' + t('no-findings') + '</p>';
-            }
-
-            // Update recommendation
-            const recommendations = {
-                'No DR': 'Routine eye examination recommended',
-                'Mild': 'Follow-up within 12 months recommended',
-                'Moderate': 'Urgent ophthalmology consultation recommended',
-                'Severe': 'Immediate specialist referral required',
-                'Proliferative': 'Emergency ophthalmology intervention required'
-            };
-            document.getElementById('recommendation-text').textContent = recommendations[severity] || 'Consult your ophthalmologist';
-
-            // Update time
-            document.getElementById('result-time').textContent = new Date().toLocaleString();
-        }
-
-        // Save result to data SDK
-        async function saveResult() {
-            const severity = document.getElementById('severity-badge').textContent;
-            const confidence = parseInt(document.getElementById('confidence-value').textContent);
-            const caseId = 'CASE-' + Date.now();
-
-            const probs = [];
-            for (let i = 0; i < 5; i++) {
-                probs.push(parseInt(document.getElementById(`prob-${i}-val`).textContent));
-            }
-
-            const findings = [];
-            document.getElementById('findings-list').querySelectorAll('span').forEach(el => {
-                if (el.textContent && !el.textContent.match('%')) findings.push(el.textContent);
-            });
-
-            const record = {
-                id: caseId,
-                timestamp: new Date().toISOString(),
-                case_id: caseId,
-                image_base64: document.getElementById('preview-image').src,
-                preprocessed_base64: document.getElementById('preprocess-image').src,
-                severity: severity,
-                confidence: confidence,
-                probabilities: JSON.stringify(probs),
-                findings: JSON.stringify(findings),
-                recommendation: document.getElementById('recommendation-text').textContent
-            };
-
-            if (screeningRecords.length >= 999) {
-                alert('Maximum screening limit reached');
-                return;
-            }
-
-            document.getElementById('save-btn').disabled = true;
-            document.getElementById('save-btn').textContent = 'Saving...';
-
-            const result = await window.dataSdk.create(record);
-            
-            document.getElementById('save-btn').disabled = false;
-            document.getElementById('save-btn').textContent = 'Saved!';
-            
-            setTimeout(() => {
-                document.getElementById('save-btn').textContent = 'Save Result';
-            }, 2000);
-        }
-
-        // History functions
-        function filterHistory() {
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const severity = document.getElementById('severity-filter').value;
-            const sortOrder = document.getElementById('sort-filter').value;
-
-            let filtered = allHistoryData.filter(record => {
-                const matchSearch = record.case_id.toLowerCase().includes(search);
-                const matchSeverity = !severity || record.severity === severity;
-                return matchSearch && matchSeverity;
-            });
-
-            if (sortOrder === 'oldest') {
-                filtered.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            } else {
-                filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            }
-
-            historyData = filtered;
-            updateHistoryDisplay();
-        }
-
-        function updateHistoryDisplay() {
-            const tbody = document.getElementById('history-table-body');
-            
-            if (historyData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-12">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">📋</div>
-                                <h3 class="font-semibold mb-2">${t('no-history-title')}</h3>
-                                <p class="text-gray-400 mb-4">${t('no-history-text')}</p>
-                                <button class="btn-primary" onclick="navigateTo('screening')">
-                                    ${t('first-screen-btn')}
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = historyData.map(record => `
-                <tr>
-                    <td><img src="${record.image_base64}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;" alt="Thumbnail"></td>
-                    <td>${new Date(record.timestamp).toLocaleString()}</td>
-                    <td>${record.case_id}</td>
-                    <td>
-                        <span class="badge-${record.severity.toLowerCase().replace(' ', '-')} px-2 py-1 rounded text-xs font-semibold">
-                            ${record.severity}
-                        </span>
-                    </td>
-                    <td>${record.confidence}%</td>
-                    <td>
-                        <button class="btn-ghost text-xs" onclick="showRecordDetail('${record.id}')">View</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function showRecordDetail(recordId) {
-            const record = screeningRecords.find(r => r.id === recordId);
-            if (!record) return;
-
-            document.getElementById('detail-orig-img').src = record.image_base64;
-            document.getElementById('detail-prep-img').src = record.preprocessed_base64;
-            
-            const badge = document.getElementById('detail-severity-badge');
-            badge.className = 'badge-' + record.severity.toLowerCase().replace(' ', '-') + ' px-3 py-1 rounded inline-block font-semibold';
-            badge.textContent = record.severity;
-
-            document.getElementById('detail-confidence').textContent = record.confidence + '%';
-            document.getElementById('detail-date').textContent = new Date(record.timestamp).toLocaleString();
-
-            const findings = JSON.parse(record.findings);
-            const findingsList = document.getElementById('detail-findings');
-            if (findings.length > 0) {
-                findingsList.innerHTML = findings.map(f => 
-                    `<span class="inline-block bg-purple-900/30 text-purple-300 px-3 py-1 rounded text-xs">${f}</span>`
-                ).join(' ');
-            } else {
-                findingsList.innerHTML = '<p class="text-sm text-gray-500">' + t('no-findings') + '</p>';
-            }
-
-            document.getElementById('detail-recommendation').textContent = record.recommendation;
-            document.getElementById('detail-panel').style.display = 'block';
-        }
-
-        function closeDetailPanel() {
-            document.getElementById('detail-panel').style.display = 'none';
-        }
-
-        // Clinic search
-        const mockClinics = [
-            {
-                name: 'Vision Care Center',
-                distance: 2.1,
-                rating: 4.8,
-                address: '123 Medical Plaza, Downtown',
-                hours: '9:00 AM - 6:00 PM',
-                type: 'clinic'
-            },
-            {
-                name: 'Eye Hospital Excellence',
-                distance: 3.5,
-                rating: 4.9,
-                address: '456 Health Complex, Midtown',
-                hours: '8:00 AM - 8:00 PM',
-                type: 'hospital'
-            },
-            {
-                name: 'Retina Specialist Center',
-                distance: 5.2,
-                rating: 4.7,
-                address: '789 Medical Tower, Uptown',
-                hours: '10:00 AM - 5:00 PM',
-                type: 'center'
-            },
-            {
-                name: 'Ophthalmology Plus',
-                distance: 1.8,
-                rating: 4.6,
-                address: '321 Clinic Street, Near Park',
-                hours: '9:00 AM - 7:00 PM',
-                type: 'clinic'
-            },
-            {
-                name: 'Advanced Eye Care',
-                distance: 4.3,
-                rating: 4.8,
-                address: '654 Health Avenue, Suburbs',
-                hours: '9:30 AM - 6:30 PM',
-                type: 'center'
-            }
-        ];
-
-        function searchClinics() {
-            const location = document.getElementById('location-input').value.toLowerCase();
-            const clinicType = document.getElementById('clinic-type-filter').value;
-
-            let filtered = mockClinics.filter(clinic => {
-                const matchLocation = location === '' || clinic.address.toLowerCase().includes(location) || clinic.name.toLowerCase().includes(location);
-                const matchType = clinicType === '' || clinic.type === clinicType;
-                return matchLocation && matchType;
-            });
-
-            displayClinicResults(filtered);
-        }
-
-        function displayClinicResults(clinics) {
-            const container = document.getElementById('clinics-container');
-            
-            if (clinics.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🔍</div>
-                            <h3 class="font-semibold mb-2">No clinics found</h3>
-                            <p class="text-gray-400">Try adjusting your search filters</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = clinics.map(clinic => `
-                <div class="clinic-card">
-                    <div class="flex items-start justify-between mb-3">
-                        <h3 class="font-semibold text-lg">${clinic.name}</h3>
-                        <div class="text-yellow-400 text-sm">⭐ ${clinic.rating}</div>
-                    </div>
-                    <p class="text-sm text-gray-400 mb-3">📍 ${clinic.distance} km away</p>
-                    <p class="text-sm text-gray-400 mb-2">${clinic.address}</p>
-                    <p class="text-sm text-gray-400 mb-4">🕐 ${clinic.hours}</p>
-                    <div class="flex gap-2">
-                        <button class="btn-secondary flex-1 text-xs">Map</button>
-                        <button class="btn-primary flex-1 text-xs">Select</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Animate dots on background
-        function createAnimatedDots() {
-            const container = document.getElementById('retina-bg');
-            for (let i = 0; i < 15; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'animated-dot';
-                dot.style.left = Math.random() * 100 + '%';
-                dot.style.top = Math.random() * 100 + '%';
-                dot.style.animationDelay = Math.random() * 3 + 's';
-                dot.style.animationDuration = (3 + Math.random() * 3) + 's';
-                container.appendChild(dot);
-            }
-        }
-
-        createAnimatedDots();
-        updateUIText();
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e0ca0ebb0a7c5bc',t:'MTc3NDI2MDQ0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
-   updateUIText();
-  </script></body>
+  `).join('');
+
+  // Update map placeholder
+  document.getElementById('mapArea').innerHTML = `
+    <div style="text-align:center;padding:2rem;">
+      <p style="font-size:1.2rem;">🗺️</p>
+      <p>Found <strong>${filtered.length}</strong> clinics nearby</p>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;">Click "Map" on any clinic to open in Google Maps</p>
+    </div>
+  `;
+}
+
+// ===== Initialize =====
+document.addEventListener('DOMContentLoaded', () => {
+  setLanguage('en');
+});
+</script>
+</body>
 </html>
-
