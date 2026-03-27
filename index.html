@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InsightRetina - DR Screening</title>
 <style>
-  /* ===== CSS Reset & Variables (Purple-White Theme) ===== */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --primary: #7c3aed;
@@ -29,80 +28,57 @@
     --shadow-lg: 0 10px 25px -5px rgba(124,58,237,0.15), 0 8px 10px -6px rgba(124,58,237,0.1);
     --shadow-glow: 0 0 30px rgba(124,58,237,0.15);
   }
-
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg-gradient);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
+    color: var(--text); line-height: 1.6;
+    min-height: 100vh; overflow-x: hidden;
   }
 
-  /* ===== Animated Background Particles ===== */
+  /* ===== Background Particles ===== */
   .bg-particles {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
   }
   .particle {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.15;
-    animation: floatParticle linear infinite;
+    position: absolute; border-radius: 50%; opacity: 0.12;
+    animation: floatP linear infinite;
   }
-  .particle:nth-child(1)  { width:20px; height:20px; background:#7c3aed; left:10%; animation-duration:18s; animation-delay:0s; }
-  .particle:nth-child(2)  { width:14px; height:14px; background:#a78bfa; left:20%; animation-duration:22s; animation-delay:2s; }
-  .particle:nth-child(3)  { width:28px; height:28px; background:#c4b5fd; left:35%; animation-duration:16s; animation-delay:4s; }
-  .particle:nth-child(4)  { width:10px; height:10px; background:#8b5cf6; left:50%; animation-duration:24s; animation-delay:1s; }
-  .particle:nth-child(5)  { width:22px; height:22px; background:#ddd6fe; left:65%; animation-duration:20s; animation-delay:3s; }
-  .particle:nth-child(6)  { width:16px; height:16px; background:#7c3aed; left:78%; animation-duration:19s; animation-delay:5s; }
-  .particle:nth-child(7)  { width:24px; height:24px; background:#a78bfa; left:88%; animation-duration:21s; animation-delay:2s; }
-  .particle:nth-child(8)  { width:12px; height:12px; background:#c4b5fd; left:5%;  animation-duration:17s; animation-delay:6s; }
-  .particle:nth-child(9)  { width:18px; height:18px; background:#8b5cf6; left:45%; animation-duration:23s; animation-delay:0s; }
-  .particle:nth-child(10) { width:26px; height:26px; background:#ddd6fe; left:92%; animation-duration:15s; animation-delay:4s; }
-
-  @keyframes floatParticle {
-    0%   { transform: translateY(110vh) rotate(0deg); opacity:0; }
-    10%  { opacity:0.15; }
-    90%  { opacity:0.15; }
-    100% { transform: translateY(-10vh) rotate(720deg); opacity:0; }
+  .particle:nth-child(1){width:20px;height:20px;background:#7c3aed;left:10%;animation-duration:18s;animation-delay:0s}
+  .particle:nth-child(2){width:14px;height:14px;background:#a78bfa;left:20%;animation-duration:22s;animation-delay:2s}
+  .particle:nth-child(3){width:28px;height:28px;background:#c4b5fd;left:35%;animation-duration:16s;animation-delay:4s}
+  .particle:nth-child(4){width:10px;height:10px;background:#8b5cf6;left:50%;animation-duration:24s;animation-delay:1s}
+  .particle:nth-child(5){width:22px;height:22px;background:#ddd6fe;left:65%;animation-duration:20s;animation-delay:3s}
+  .particle:nth-child(6){width:16px;height:16px;background:#7c3aed;left:78%;animation-duration:19s;animation-delay:5s}
+  .particle:nth-child(7){width:24px;height:24px;background:#a78bfa;left:88%;animation-duration:21s;animation-delay:2s}
+  .particle:nth-child(8){width:12px;height:12px;background:#c4b5fd;left:5%;animation-duration:17s;animation-delay:6s}
+  @keyframes floatP {
+    0%{transform:translateY(110vh) rotate(0deg);opacity:0}
+    10%{opacity:0.12} 90%{opacity:0.12}
+    100%{transform:translateY(-10vh) rotate(720deg);opacity:0}
   }
 
   /* ===== Navbar ===== */
   .navbar {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 68px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    padding: 0 2rem; display: flex; align-items: center;
+    justify-content: space-between; height: 68px;
+    position: sticky; top: 0; z-index: 100;
     box-shadow: 0 1px 20px rgba(124,58,237,0.08);
   }
   .navbar .logo {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1.5rem; font-weight: 800;
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    cursor: pointer;
-    letter-spacing: -0.5px;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; cursor: pointer;
   }
   .nav-links { display: flex; gap: 0.3rem; }
   .nav-links button {
-    background: none; border: none;
-    padding: 0.55rem 1.1rem; border-radius: 10px;
-    cursor: pointer; font-size: 0.95rem;
+    background: none; border: none; padding: 0.55rem 1.1rem;
+    border-radius: 10px; cursor: pointer; font-size: 0.95rem;
     color: var(--text-secondary); transition: all 0.25s; font-weight: 500;
   }
   .nav-links button:hover { background: #f3e8ff; color: var(--primary); }
@@ -111,28 +87,24 @@
     color: var(--primary); font-weight: 700;
   }
 
-  /* ===== Language Dropdown ===== */
+  /* ===== Language ===== */
   .lang-dropdown { position: relative; }
   .lang-btn {
     background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 1px solid var(--border);
-    padding: 0.5rem 1.1rem; border-radius: 10px;
-    cursor: pointer; font-size: 0.9rem;
+    border: 1px solid var(--border); padding: 0.5rem 1.1rem;
+    border-radius: 10px; cursor: pointer; font-size: 0.9rem;
     display: flex; align-items: center; gap: 0.4rem;
     transition: all 0.25s; font-weight: 500;
   }
-  .lang-btn:hover { background: linear-gradient(135deg, #ede9fe, #ddd6fe); border-color: var(--primary-light); }
+  .lang-btn:hover { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
   .lang-menu {
     display: none; position: absolute; top: 115%; right: 0;
     background: white; border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-lg);
     min-width: 210px; overflow: hidden; z-index: 200;
   }
-  .lang-menu.show { display: block; animation: fadeInDown 0.2s ease; }
-  @keyframes fadeInDown {
-    from { opacity:0; transform:translateY(-8px); }
-    to { opacity:1; transform:translateY(0); }
-  }
+  .lang-menu.show { display: block; animation: fadeDown 0.2s ease; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
   .lang-menu button {
     display: block; width: 100%; text-align: left;
     padding: 0.75rem 1.2rem; border: none; background: none;
@@ -143,251 +115,158 @@
 
   /* ===== Sections ===== */
   .section {
-    display: none; padding: 2rem;
-    max-width: 1100px; margin: 0 auto;
-    position: relative; z-index: 1;
+    display: none; padding: 2rem; max-width: 1100px;
+    margin: 0 auto; position: relative; z-index: 1;
   }
   .section.active { display: block; animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-  /* ===== HERO (HOME PAGE) ===== */
+  /* ===== Hero ===== */
   .hero {
-    text-align: center;
-    padding: 2rem 1rem 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    text-align: center; padding: 2rem 1rem 3rem;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
   }
-
-  /* ---- Animated Retina/Eye SVG ---- */
   .eye-animation-container {
     width: 220px; height: 220px;
-    margin: 0 auto 1.5rem;
-    position: relative;
+    margin: 0 auto 1.5rem; position: relative;
   }
   .eye-svg { width: 100%; height: 100%; }
-
-  /* Outer ring rotation */
-  .eye-ring-outer {
-    animation: rotateRing 12s linear infinite;
-    transform-origin: 110px 110px;
-  }
-  @keyframes rotateRing { to { transform: rotate(360deg); } }
-
-  /* Inner ring counter-rotation */
-  .eye-ring-inner {
-    animation: rotateRingReverse 8s linear infinite;
-    transform-origin: 110px 110px;
-  }
-  @keyframes rotateRingReverse { to { transform: rotate(-360deg); } }
-
-  /* Scan line */
-  .scan-line {
-    animation: scanPulse 3s ease-in-out infinite;
-    transform-origin: 110px 110px;
-  }
-  @keyframes scanPulse {
-    0%, 100% { opacity: 0.3; transform: rotate(0deg); }
-    50% { opacity: 1; transform: rotate(180deg); }
-  }
-
-  /* Pupil pulse */
-  .eye-pupil-pulse {
-    animation: pupilPulse 2.5s ease-in-out infinite;
-    transform-origin: 110px 110px;
-  }
-  @keyframes pupilPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-  }
-
-  /* Glow effect */
-  .eye-glow {
-    animation: glowPulse 3s ease-in-out infinite;
-  }
-  @keyframes glowPulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.7; }
-  }
-
-  /* Data points blinking */
-  .data-dot {
-    animation: dataBlink 2s ease-in-out infinite;
-  }
-  .data-dot:nth-child(1) { animation-delay: 0s; }
-  .data-dot:nth-child(2) { animation-delay: 0.3s; }
-  .data-dot:nth-child(3) { animation-delay: 0.6s; }
-  .data-dot:nth-child(4) { animation-delay: 0.9s; }
-  .data-dot:nth-child(5) { animation-delay: 1.2s; }
-  .data-dot:nth-child(6) { animation-delay: 1.5s; }
-  @keyframes dataBlink {
-    0%, 100% { opacity: 0.2; r: 2; }
-    50% { opacity: 1; r: 3.5; }
-  }
-
-  /* Floating label */
+  .eye-ring-outer { animation: rotRing 12s linear infinite; transform-origin: 110px 110px; }
+  @keyframes rotRing { to { transform: rotate(360deg); } }
+  .eye-ring-inner { animation: rotRingR 8s linear infinite; transform-origin: 110px 110px; }
+  @keyframes rotRingR { to { transform: rotate(-360deg); } }
+  .scan-line { animation: scanP 3s ease-in-out infinite; transform-origin: 110px 110px; }
+  @keyframes scanP { 0%,100%{opacity:0.3;transform:rotate(0)} 50%{opacity:1;transform:rotate(180deg)} }
+  .eye-pupil-pulse { animation: ppulse 2.5s ease-in-out infinite; transform-origin: 110px 110px; }
+  @keyframes ppulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .eye-glow { animation: glowP 3s ease-in-out infinite; }
+  @keyframes glowP { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+  .data-dot { animation: dBlink 2s ease-in-out infinite; }
+  .data-dot:nth-child(1){animation-delay:0s}.data-dot:nth-child(2){animation-delay:.3s}
+  .data-dot:nth-child(3){animation-delay:.6s}.data-dot:nth-child(4){animation-delay:.9s}
+  .data-dot:nth-child(5){animation-delay:1.2s}.data-dot:nth-child(6){animation-delay:1.5s}
+  @keyframes dBlink { 0%,100%{opacity:0.2;r:2} 50%{opacity:1;r:3.5} }
   .floating-label {
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    padding: 0.3rem 1rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    animation: labelFloat 3s ease-in-out infinite;
-    white-space: nowrap;
+    color: white; padding: 0.3rem 1rem; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
+    animation: lFloat 3s ease-in-out infinite; white-space: nowrap;
   }
-  @keyframes labelFloat {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-4px); }
-  }
-
+  @keyframes lFloat { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-4px)} }
   .hero h1 {
     font-size: 2.8rem; font-weight: 900;
     background: linear-gradient(135deg, var(--primary-dark), var(--accent), var(--primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.5rem;
-    letter-spacing: -1px;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 0.5rem;
   }
   .hero .subtitle {
     font-size: 1.15rem; color: var(--text-secondary);
-    max-width: 600px; margin: 0 auto 2rem;
-    line-height: 1.7;
+    max-width: 600px; margin: 0 auto 2rem; line-height: 1.7;
   }
-
-  /* Feature cards */
   .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem; margin: 2rem 0; width: 100%; max-width: 900px;
   }
   .feature-card {
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 2rem 1.5rem;
-    text-align: center; box-shadow: var(--shadow);
+    background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 2rem 1.5rem; text-align: center; box-shadow: var(--shadow);
     transition: all 0.3s; position: relative; overflow: hidden;
   }
   .feature-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px;
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
     background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-light));
   }
-  .feature-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
-    border-color: var(--primary-light);
-  }
-  .feature-icon {
-    font-size: 2.5rem; margin-bottom: 0.8rem;
-    display: inline-block;
-    animation: iconBounce 3s ease-in-out infinite;
-  }
-  .feature-card:nth-child(1) .feature-icon { animation-delay: 0s; }
-  .feature-card:nth-child(2) .feature-icon { animation-delay: 0.5s; }
-  .feature-card:nth-child(3) .feature-icon { animation-delay: 1s; }
-  @keyframes iconBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  .feature-card h3 { margin-bottom: 0.4rem; color: var(--primary-dark); font-size: 1.1rem; }
+  .feature-card:hover { transform:translateY(-6px); box-shadow: var(--shadow-lg), var(--shadow-glow); }
+  .feature-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: inline-block; }
+  .feature-card h3 { margin-bottom: 0.4rem; color: var(--primary-dark); }
   .feature-card p { font-size: 0.9rem; color: var(--text-secondary); }
 
-  /* Buttons */
+  /* ===== Buttons ===== */
   .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white; border: none;
-    padding: 0.85rem 2.5rem; border-radius: 12px;
-    font-size: 1.1rem; font-weight: 700;
+    color: white; border: none; padding: 0.85rem 2.5rem;
+    border-radius: 12px; font-size: 1.05rem; font-weight: 700;
     cursor: pointer; transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(124,58,237,0.3);
     position: relative; overflow: hidden;
   }
   .btn-primary::after {
-    content: '';
-    position: absolute; top: 0; left: -100%;
-    width: 100%; height: 100%;
+    content:''; position:absolute; top:0; left:-100%;
+    width:100%; height:100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
     transition: left 0.5s;
   }
   .btn-primary:hover::after { left: 100%; }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(124,58,237,0.4);
-  }
-  .btn-primary:disabled {
-    opacity: 0.5; cursor: not-allowed; transform: none;
-    box-shadow: none;
-  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 25px rgba(124,58,237,0.4); }
+  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
   .btn-secondary {
-    background: rgba(255,255,255,0.8);
-    color: var(--primary); border: 1px solid var(--border);
-    padding: 0.65rem 1.5rem; border-radius: 10px;
-    font-size: 0.95rem; cursor: pointer; transition: all 0.25s; font-weight: 600;
+    background: rgba(255,255,255,0.8); color: var(--primary);
+    border: 1px solid var(--border); padding: 0.65rem 1.5rem;
+    border-radius: 10px; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.25s; font-weight: 600;
   }
   .btn-secondary:hover { background: #f5f3ff; border-color: var(--primary-light); }
+  .btn-success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white; border: none; padding: 0.65rem 1.5rem;
+    border-radius: 10px; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.25s; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+  }
+  .btn-success:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(16,185,129,0.4); }
 
-  /* ===== Disclaimer - CENTERED ===== */
+  /* ===== Disclaimer ===== */
   .disclaimer {
     background: linear-gradient(135deg, #fef3c7, #fffbeb);
-    border: 1px solid #fbbf24;
-    border-radius: var(--radius);
-    padding: 1.2rem 1.8rem;
-    margin-top: 2.5rem;
-    display: flex; gap: 0.8rem;
-    align-items: flex-start;
-    max-width: 650px;
-    text-align: left;
-    /* centered */
-    margin-left: auto;
-    margin-right: auto;
+    border: 1px solid #fbbf24; border-radius: var(--radius);
+    padding: 1.2rem 1.8rem; margin-top: 2.5rem;
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    max-width: 650px; text-align: left;
+    margin-left: auto; margin-right: auto;
   }
   .disclaimer-icon { font-size: 1.5rem; flex-shrink: 0; }
   .disclaimer strong { color: #92400e; display: block; margin-bottom: 0.2rem; }
-  .disclaimer p { font-size: 0.9rem; color: #78350f; line-height: 1.5; }
+  .disclaimer p { font-size: 0.9rem; color: #78350f; }
 
-  /* ===== Cards ===== */
+  /* ===== Card ===== */
   .card {
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.8rem;
-    box-shadow: var(--shadow); margin-bottom: 1.5rem;
-    transition: box-shadow 0.3s;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.8rem; box-shadow: var(--shadow); margin-bottom: 1.5rem;
   }
-  .card:hover { box-shadow: var(--shadow-lg); }
-  .card h2 {
-    margin-bottom: 1rem; font-size: 1.3rem;
-    color: var(--primary-dark);
-  }
+  .card h2 { margin-bottom: 1rem; color: var(--primary-dark); }
 
   /* ===== Upload Area ===== */
   .upload-area {
     border: 2px dashed var(--primary-lighter);
     border-radius: var(--radius); padding: 3rem;
-    text-align: center; cursor: pointer;
-    transition: all 0.3s; position: relative;
+    text-align: center; cursor: pointer; transition: all 0.3s;
     background: linear-gradient(135deg, #faf5ff, #f5f3ff);
+    position: relative;
   }
   .upload-area:hover, .upload-area.dragover {
     border-color: var(--primary);
     background: linear-gradient(135deg, #f3e8ff, #ede9fe);
     box-shadow: 0 0 20px rgba(124,58,237,0.1);
   }
+  .upload-area.has-file { border-color: var(--success); border-style: solid; }
   .upload-area .icon { font-size: 3rem; margin-bottom: 0.5rem; }
-  .upload-area input { display: none; }
+  .upload-area input[type="file"] {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; z-index: 10;
+  }
   .upload-area .sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
+  .file-name {
+    display: none; margin-top: 0.5rem; padding: 0.4rem 1rem;
+    background: #dcfce7; color: #166534; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 600;
+  }
+  .file-name.show { display: inline-block; }
 
-  /* Image Preview Grid */
+  /* ===== Image Grid ===== */
   .image-grid {
     display: grid; grid-template-columns: 1fr 1fr;
     gap: 1rem; margin: 1rem 0;
@@ -401,172 +280,196 @@
     padding: 0.6rem; font-weight: 700; font-size: 0.9rem;
     border-bottom: 1px solid var(--border); color: var(--primary-dark);
   }
+  .image-box .img-container {
+    position: relative; min-height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    background: #1e1b4b;
+  }
   .image-box .placeholder {
-    padding: 3rem 1rem; color: var(--text-secondary);
+    padding: 3rem 1rem; color: var(--text-secondary); background: #faf5ff;
   }
   .image-box .placeholder .big-icon { font-size: 2rem; display: block; margin-bottom: 0.3rem; }
   .image-box img {
-    width: 100%; display: block; max-height: 300px;
-    object-fit: contain; background: #1e1b4b;
+    width: 100%; display: block; max-height: 350px; object-fit: contain;
+  }
+  .image-box canvas {
+    width: 100%; display: block; max-height: 350px; object-fit: contain;
   }
 
-  /* Results */
+  /* ===== Download Button on Preprocessed Image ===== */
+  .download-overlay {
+    position: absolute; bottom: 10px; right: 10px;
+    z-index: 5; display: none;
+  }
+  .download-overlay.show { display: block; }
+  .download-overlay button {
+    background: rgba(124,58,237,0.9); color: white;
+    border: none; padding: 0.5rem 1rem; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; backdrop-filter: blur(4px);
+  }
+  .download-overlay button:hover { background: rgba(124,58,237,1); transform: scale(1.05); }
+
+  /* ===== Progress Steps ===== */
+  .progress-steps {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin: 1.5rem 0;
+  }
+  .step {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.8rem; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--text-secondary); transition: all 0.3s;
+  }
+  .step.active { color: var(--primary); background: #ede9fe; }
+  .step.done { color: var(--success); }
+  .step-arrow { color: var(--border); margin: 0 0.2rem; font-size: 1.1rem; }
+
+  /* ===== Results ===== */
   .result-section { display: none; }
   .result-section.show { display: block; animation: fadeIn 0.5s ease; }
-
   .severity-badge {
     display: inline-block; padding: 0.5rem 1.5rem;
-    border-radius: 25px; font-weight: 800; font-size: 1.1rem; margin: 0.5rem 0;
+    border-radius: 25px; font-weight: 800; font-size: 1.1rem;
   }
-  .severity-0 { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
-  .severity-1 { background: linear-gradient(135deg, #fef9c3, #fef08a); color: #854d0e; }
-  .severity-2 { background: linear-gradient(135deg, #fed7aa, #fdba74); color: #9a3412; }
-  .severity-3 { background: linear-gradient(135deg, #fecaca, #fca5a5); color: #991b1b; }
-  .severity-4 { background: linear-gradient(135deg, #fca5a5, #f87171); color: #7f1d1d; }
+  .severity-0{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#166534}
+  .severity-1{background:linear-gradient(135deg,#fef9c3,#fef08a);color:#854d0e}
+  .severity-2{background:linear-gradient(135deg,#fed7aa,#fdba74);color:#9a3412}
+  .severity-3{background:linear-gradient(135deg,#fecaca,#fca5a5);color:#991b1b}
+  .severity-4{background:linear-gradient(135deg,#fca5a5,#f87171);color:#7f1d1d}
 
   .confidence-bar-container { margin: 1.2rem 0; }
   .confidence-bar-container .label-row {
     display: flex; justify-content: space-between;
     margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600;
   }
-  .bar-bg {
-    background: #ede9fe; border-radius: 10px;
-    height: 28px; overflow: hidden;
-  }
+  .bar-bg { background: #ede9fe; border-radius: 10px; height: 28px; overflow: hidden; }
   .bar-fill {
     height: 100%; border-radius: 10px; transition: width 1s ease;
     display: flex; align-items: center; justify-content: flex-end;
     padding-right: 8px; font-size: 0.75rem; color: white; font-weight: 700;
   }
   .prob-item { margin-bottom: 0.7rem; }
-  .prob-item .label-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
-  .prob-bar-bg { background: #ede9fe; border-radius: 8px; height: 16px; overflow: hidden; }
-  .prob-bar-fill { height: 100%; border-radius: 8px; transition: width 1s ease; }
-
-  .findings-box, .recommendation-box {
+  .prob-item .label-row { display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px; font-weight:500; }
+  .prob-bar-bg { background:#ede9fe; border-radius:8px; height:16px; overflow:hidden; }
+  .prob-bar-fill { height:100%; border-radius:8px; transition:width 1s ease; }
+  .findings-box,.recommendation-box {
     background: linear-gradient(135deg, #faf5ff, #f5f3ff);
     border: 1px solid var(--border); border-radius: 12px;
     padding: 1.2rem; margin-top: 1rem;
   }
-  .findings-box h4, .recommendation-box h4 { margin-bottom: 0.5rem; color: var(--primary-dark); }
+  .findings-box h4,.recommendation-box h4 { margin-bottom:0.5rem; color:var(--primary-dark); }
+  .action-btns { display:flex; gap:0.8rem; margin-top:1.2rem; flex-wrap:wrap; }
 
-  .action-btns { display: flex; gap: 0.8rem; margin-top: 1.2rem; flex-wrap: wrap; }
-
-  /* ===== Loading Overlay ===== */
+  /* ===== Loading ===== */
   .loading-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(30,27,75,0.6);
-    backdrop-filter: blur(8px);
-    z-index: 500; justify-content: center; align-items: center;
+    display:none; position:fixed; inset:0;
+    background:rgba(30,27,75,0.6); backdrop-filter:blur(8px);
+    z-index:500; justify-content:center; align-items:center;
   }
-  .loading-overlay.show { display: flex; }
+  .loading-overlay.show { display:flex; }
   .loading-box {
-    background: white; border-radius: var(--radius);
-    padding: 2.5rem 3.5rem; text-align: center;
-    box-shadow: var(--shadow-lg);
+    background:white; border-radius:var(--radius);
+    padding:2.5rem 3.5rem; text-align:center; box-shadow:var(--shadow-lg);
   }
   .spinner {
-    width: 52px; height: 52px;
-    border: 4px solid #ede9fe;
-    border-top: 4px solid var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 1rem;
+    width:52px; height:52px;
+    border:4px solid #ede9fe; border-top:4px solid var(--primary);
+    border-radius:50%; animation:spin 0.8s linear infinite;
+    margin:0 auto 1rem;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-steps { margin-top: 0.8rem; }
+  .loading-step {
+    font-size: 0.85rem; padding: 0.2rem 0;
+    color: var(--text-secondary); transition: all 0.3s;
+  }
+  .loading-step.active { color: var(--primary); font-weight: 700; }
+  .loading-step.done { color: var(--success); }
 
   /* ===== History ===== */
-  .filter-bar {
-    display: flex; gap: 0.5rem; flex-wrap: wrap;
-    margin-bottom: 1rem; align-items: center;
-  }
+  .filter-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
   .filter-bar select {
-    padding: 0.55rem 1rem; border-radius: 10px;
-    border: 1px solid var(--border); background: white;
-    font-size: 0.9rem; cursor: pointer; color: var(--text);
+    padding:0.55rem 1rem; border-radius:10px;
+    border:1px solid var(--border); background:white; font-size:0.9rem; cursor:pointer;
   }
-  .filter-bar select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
-
-  .history-table { width: 100%; border-collapse: collapse; }
+  .history-table { width:100%; border-collapse:collapse; }
   .history-table th {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    text-align: left; padding: 0.8rem 1rem;
-    font-size: 0.85rem; border-bottom: 2px solid var(--border);
-    color: var(--primary-dark);
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+    text-align:left; padding:0.8rem 1rem; font-size:0.85rem;
+    border-bottom:2px solid var(--border); color:var(--primary-dark);
   }
   .history-table td {
-    padding: 0.8rem 1rem; border-bottom: 1px solid var(--border-light);
-    font-size: 0.9rem; vertical-align: middle;
+    padding:0.8rem 1rem; border-bottom:1px solid var(--border-light);
+    font-size:0.9rem; vertical-align:middle;
   }
-  .history-table tr:hover { background: #faf5ff; }
-  .history-thumb { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 2px solid var(--border); }
-
-  .empty-state { text-align: center; padding: 3rem; color: var(--text-secondary); }
-  .empty-state .big-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+  .history-table tr:hover { background:#faf5ff; }
+  .history-thumb { width:50px; height:50px; border-radius:8px; object-fit:cover; border:2px solid var(--border); }
+  .empty-state { text-align:center; padding:3rem; color:var(--text-secondary); }
+  .empty-state .big-icon { font-size:3rem; display:block; margin-bottom:0.5rem; }
 
   /* ===== Clinic ===== */
-  .clinic-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-  .clinic-controls select {
-    padding: 0.55rem 1rem; border-radius: 10px;
-    border: 1px solid var(--border); font-size: 0.9rem;
-  }
+  .clinic-controls { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+  .clinic-controls select { padding:0.55rem 1rem; border-radius:10px; border:1px solid var(--border); font-size:0.9rem; }
   .map-placeholder {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    height: 350px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    color: var(--text-secondary); font-size: 1.1rem;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+    border:1px solid var(--border); border-radius:var(--radius);
+    height:350px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; color:var(--text-secondary);
   }
-  .clinic-list { margin-top: 1rem; }
+  .clinic-list { margin-top:1rem; }
   .clinic-item {
-    background: rgba(255,255,255,0.9); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.2rem; margin-bottom: 0.8rem;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: var(--shadow); transition: all 0.25s;
+    background:rgba(255,255,255,0.9); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.2rem; margin-bottom:0.8rem;
+    display:flex; justify-content:space-between; align-items:center;
+    box-shadow:var(--shadow); transition:all 0.25s;
   }
-  .clinic-item:hover { transform: translateX(4px); border-color: var(--primary-light); }
-  .clinic-item h4 { margin-bottom: 0.2rem; color: var(--primary-dark); }
-  .clinic-item p { font-size: 0.85rem; color: var(--text-secondary); }
+  .clinic-item:hover { transform:translateX(4px); border-color:var(--primary-light); }
+  .clinic-item h4 { color:var(--primary-dark); }
+  .clinic-item p { font-size:0.85rem; color:var(--text-secondary); }
 
   /* ===== Modal ===== */
   .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(30,27,75,0.6);
-    backdrop-filter: blur(8px);
-    z-index: 300; justify-content: center; align-items: center;
+    display:none; position:fixed; inset:0;
+    background:rgba(30,27,75,0.6); backdrop-filter:blur(8px);
+    z-index:300; justify-content:center; align-items:center;
   }
-  .modal-overlay.show { display: flex; }
+  .modal-overlay.show { display:flex; }
   .modal-content {
-    background: white; border-radius: var(--radius);
-    max-width: 700px; width: 90%; max-height: 80vh;
-    overflow-y: auto; padding: 2rem; position: relative;
-    box-shadow: var(--shadow-lg);
-    animation: fadeIn 0.3s ease;
+    background:white; border-radius:var(--radius);
+    max-width:700px; width:90%; max-height:85vh;
+    overflow-y:auto; padding:2rem; position:relative;
+    box-shadow:var(--shadow-lg); animation:fadeIn 0.3s ease;
   }
   .modal-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: #f5f3ff; border: none; font-size: 1.3rem;
-    cursor: pointer; color: var(--text-secondary);
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
+    position:absolute; top:1rem; right:1rem;
+    background:#f5f3ff; border:none; font-size:1.3rem;
+    cursor:pointer; color:var(--text-secondary);
+    width:36px; height:36px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
   }
-  .modal-close:hover { background: #ede9fe; color: var(--primary); }
+  .modal-close:hover { background:#ede9fe; color:var(--primary); }
 
-  /* ===== Footer ===== */
+  /* ===== Toast ===== */
+  .toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px);
+    background:var(--primary-dark); color:white; padding:0.8rem 2rem;
+    border-radius:12px; font-weight:600; font-size:0.95rem; z-index:600;
+    box-shadow:var(--shadow-lg); transition:transform 0.4s ease; opacity:0;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
   footer {
-    text-align: center; padding: 2rem;
-    color: var(--text-secondary); font-size: 0.85rem;
-    border-top: 1px solid var(--border); margin-top: 2rem;
-    position: relative; z-index: 1;
-    background: rgba(255,255,255,0.5);
+    text-align:center; padding:2rem; color:var(--text-secondary);
+    font-size:0.85rem; border-top:1px solid var(--border);
+    margin-top:2rem; position:relative; z-index:1;
+    background:rgba(255,255,255,0.5);
   }
 
-  /* ===== Responsive ===== */
   @media (max-width: 768px) {
     .image-grid { grid-template-columns: 1fr; }
-    .navbar { padding: 0 1rem; }
-    .nav-links button { padding: 0.4rem 0.6rem; font-size: 0.82rem; }
+    .navbar { padding: 0 0.8rem; }
+    .nav-links button { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
     .hero h1 { font-size: 1.8rem; }
     .section { padding: 1rem; }
     .eye-animation-container { width: 160px; height: 160px; }
@@ -576,16 +479,13 @@
 </head>
 <body>
 
-<!-- ===== ANIMATED BACKGROUND PARTICLES ===== -->
 <div class="bg-particles">
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
   <div class="particle"></div><div class="particle"></div>
 </div>
 
-<!-- ===== NAVBAR ===== -->
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo" onclick="showSection('home')">🔍 InsightRetina</div>
   <div class="nav-links">
@@ -607,94 +507,49 @@
   </div>
 </nav>
 
-<!-- ===== HOME ===== -->
+<!-- HOME -->
 <div id="section-home" class="section active">
   <div class="hero">
-
-    <!-- ★★★ ANIMATED EYE/RETINA SVG ★★★ -->
     <div class="eye-animation-container">
       <svg class="eye-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-        <!-- Glow -->
         <defs>
           <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.4"/>
             <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
           </radialGradient>
           <radialGradient id="pupilGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#1e1b4b"/>
-            <stop offset="70%" stop-color="#312e81"/>
+            <stop offset="0%" stop-color="#1e1b4b"/><stop offset="70%" stop-color="#312e81"/>
             <stop offset="100%" stop-color="#4c1d95"/>
           </radialGradient>
           <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#8b5cf6"/>
-            <stop offset="50%" stop-color="#7c3aed"/>
+            <stop offset="0%" stop-color="#8b5cf6"/><stop offset="50%" stop-color="#7c3aed"/>
             <stop offset="100%" stop-color="#6d28d9"/>
           </radialGradient>
         </defs>
-
-        <!-- Background glow -->
         <circle class="eye-glow" cx="110" cy="110" r="105" fill="url(#eyeGlow)"/>
-
-        <!-- Outer scanning ring -->
         <g class="eye-ring-outer">
           <circle cx="110" cy="110" r="100" fill="none" stroke="#c4b5fd" stroke-width="1" stroke-dasharray="8 12" opacity="0.5"/>
-          <circle cx="110" cy="110" r="95" fill="none" stroke="#a78bfa" stroke-width="0.5" stroke-dasharray="4 16" opacity="0.3"/>
         </g>
-
-        <!-- Inner scanning ring -->
         <g class="eye-ring-inner">
           <circle cx="110" cy="110" r="80" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.4"/>
-          <circle cx="110" cy="110" r="75" fill="none" stroke="#a78bfa" stroke-width="0.5" stroke-dasharray="3 12" opacity="0.3"/>
         </g>
-
-        <!-- Retina / Iris -->
         <g class="eye-pupil-pulse">
-          <!-- Outer iris -->
           <circle cx="110" cy="110" r="60" fill="url(#irisGrad)" opacity="0.3"/>
           <circle cx="110" cy="110" r="60" fill="none" stroke="#7c3aed" stroke-width="2" opacity="0.6"/>
-
-          <!-- Blood vessels (retinal pattern) -->
           <g opacity="0.4" stroke="#c4b5fd" stroke-width="1.2" fill="none">
-            <path d="M110 110 Q125 85 145 75" stroke-linecap="round"/>
-            <path d="M110 110 Q135 100 155 95" stroke-linecap="round"/>
-            <path d="M110 110 Q130 120 150 130" stroke-linecap="round"/>
-            <path d="M110 110 Q120 135 130 155" stroke-linecap="round"/>
-            <path d="M110 110 Q95 135 85 150" stroke-linecap="round"/>
-            <path d="M110 110 Q85 120 65 125" stroke-linecap="round"/>
-            <path d="M110 110 Q80 100 60 95" stroke-linecap="round"/>
-            <path d="M110 110 Q90 85 75 70" stroke-linecap="round"/>
+            <path d="M110 110 Q125 85 145 75"/><path d="M110 110 Q135 100 155 95"/>
+            <path d="M110 110 Q130 120 150 130"/><path d="M110 110 Q120 135 130 155"/>
+            <path d="M110 110 Q95 135 85 150"/><path d="M110 110 Q85 120 65 125"/>
+            <path d="M110 110 Q80 100 60 95"/><path d="M110 110 Q90 85 75 70"/>
           </g>
-          <!-- Finer branches -->
-          <g opacity="0.25" stroke="#ddd6fe" stroke-width="0.8" fill="none">
-            <path d="M145 75 Q155 65 160 55" stroke-linecap="round"/>
-            <path d="M155 95 Q165 90 172 82" stroke-linecap="round"/>
-            <path d="M150 130 Q158 140 162 152" stroke-linecap="round"/>
-            <path d="M130 155 Q135 165 132 175" stroke-linecap="round"/>
-            <path d="M85 150 Q78 160 70 165" stroke-linecap="round"/>
-            <path d="M65 125 Q55 130 48 138" stroke-linecap="round"/>
-            <path d="M60 95 Q50 88 42 82" stroke-linecap="round"/>
-            <path d="M75 70 Q68 58 62 50" stroke-linecap="round"/>
-          </g>
-
-          <!-- Inner iris ring -->
-          <circle cx="110" cy="110" r="40" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.5"/>
-
-          <!-- Pupil -->
           <circle cx="110" cy="110" r="22" fill="url(#pupilGrad)"/>
           <circle cx="110" cy="110" r="22" fill="none" stroke="#4c1d95" stroke-width="1.5"/>
-
-          <!-- Light reflection -->
           <ellipse cx="100" cy="102" rx="5" ry="3" fill="white" opacity="0.6"/>
-          <circle cx="118" cy="100" r="2" fill="white" opacity="0.4"/>
         </g>
-
-        <!-- Scan line -->
         <g class="scan-line">
           <line x1="110" y1="110" x2="110" y2="15" stroke="#7c3aed" stroke-width="1.5" opacity="0.6"/>
           <circle cx="110" cy="15" r="3" fill="#7c3aed" opacity="0.8"/>
         </g>
-
-        <!-- AI Data Points (blinking) -->
         <g>
           <circle class="data-dot" cx="140" cy="60" r="2" fill="#a78bfa"/>
           <circle class="data-dot" cx="165" cy="110" r="2" fill="#8b5cf6"/>
@@ -703,30 +558,16 @@
           <circle class="data-dot" cx="55" cy="110" r="2" fill="#a78bfa"/>
           <circle class="data-dot" cx="80" cy="60" r="2" fill="#8b5cf6"/>
         </g>
-
-        <!-- Cross-hair markers -->
-        <g opacity="0.3" stroke="#7c3aed" stroke-width="0.8">
-          <line x1="105" y1="10" x2="115" y2="10"/>
-          <line x1="110" y1="5" x2="110" y2="15"/>
-          <line x1="205" y1="105" x2="205" y2="115"/>
-          <line x1="200" y1="110" x2="210" y2="110"/>
-          <line x1="105" y1="210" x2="115" y2="210"/>
-          <line x1="110" y1="205" x2="110" y2="215"/>
-          <line x1="15" y1="105" x2="15" y2="115"/>
-          <line x1="10" y1="110" x2="20" y2="110"/>
-        </g>
       </svg>
       <div class="floating-label">AI RETINA SCAN</div>
     </div>
-
     <h1>InsightRetina</h1>
-    <p class="subtitle" data-i18n="hero_subtitle">AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection of diabetic retinopathy.</p>
-
+    <p class="subtitle" data-i18n="hero_subtitle">AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.</p>
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon">🔬</div>
         <h3 data-i18n="feat_ai">Advanced AI</h3>
-        <p data-i18n="feat_ai_desc">Deep learning classification for accurate DR detection</p>
+        <p data-i18n="feat_ai_desc">Deep learning for accurate DR detection</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
@@ -736,52 +577,77 @@
       <div class="feature-card">
         <div class="feature-icon">🏥</div>
         <h3 data-i18n="feat_clinic">Clinical Grade</h3>
-        <p data-i18n="feat_clinic_desc">Find nearby ophthalmology centers instantly</p>
+        <p data-i18n="feat_clinic_desc">Find nearby ophthalmology centers</p>
       </div>
     </div>
-
     <button class="btn-primary" onclick="showSection('screening')" data-i18n="btn_start">🔬 Start Screening</button>
-
-    <!-- ★★★ DISCLAIMER CENTERED ★★★ -->
     <div class="disclaimer">
       <span class="disclaimer-icon">⚠️</span>
       <div>
         <strong data-i18n="disclaimer_title">Medical Disclaimer</strong>
-        <p data-i18n="disclaimer_text">This tool is for preliminary screening only and not a medical diagnosis. Always consult with a qualified ophthalmologist for clinical decisions.</p>
+        <p data-i18n="disclaimer_text">This tool is for preliminary screening only. Always consult with a qualified ophthalmologist.</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREENING ===== -->
+<!-- SCREENING -->
 <div id="section-screening" class="section">
   <div class="card">
     <h2 data-i18n="screening_title">🔬 Diabetic Retinopathy Screening</h2>
     <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="screening_subtitle">Upload a fundus image for AI analysis</p>
+
+    <!-- ★★★ FIXED UPLOAD AREA ★★★ -->
     <div class="upload-area" id="uploadArea">
       <div class="icon">📸</div>
-      <p data-i18n="upload_text">Drag & drop your image here or click to browse</p>
+      <p class="upload-main-text" data-i18n="upload_text">Drag & drop your image here or click to browse</p>
       <p class="sub" data-i18n="upload_sub">Supported formats: JPG, PNG (max 5MB)</p>
-      <input type="file" id="fileInput" accept="image/jpeg,image/png">
+      <!-- ★ input อยู่ทับเต็มพื้นที่ด้วย absolute + opacity:0 -->
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,.jpg,.jpeg,.png">
+      <div class="file-name" id="fileName"></div>
     </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps" id="progressSteps" style="display:none;">
+      <div class="step" id="step1">📥 Upload</div>
+      <span class="step-arrow">→</span>
+      <div class="step" id="step2">🔄 Preprocess</div>
+      <span class="step-arrow">→</span>
+      <div class="step" id="step3">🤖 AI Analysis</div>
+      <span class="step-arrow">→</span>
+      <div class="step" id="step4">📊 Result</div>
+    </div>
+
+    <!-- Image Previews -->
     <div class="image-grid" style="margin-top:1rem;">
       <div class="image-box">
         <div class="label" data-i18n="original_image">👁️ Original Image</div>
-        <div class="placeholder" id="origPlaceholder">
-          <span class="big-icon">👁️</span>
-          <span data-i18n="no_image">No image selected</span>
+        <div class="img-container">
+          <div class="placeholder" id="origPlaceholder">
+            <span class="big-icon">👁️</span>
+            <span data-i18n="no_image">No image selected</span>
+          </div>
+          <img id="origImg" style="display:none;" alt="Original">
         </div>
-        <img id="origImg" style="display:none;" alt="Original">
       </div>
       <div class="image-box">
         <div class="label" data-i18n="preprocessed_image">🔄 Preprocessed Image</div>
-        <div class="placeholder" id="prepPlaceholder">
-          <span class="big-icon">🔄</span>
-          <span data-i18n="waiting_analysis">Waiting for analysis</span>
+        <div class="img-container" style="position:relative;">
+          <div class="placeholder" id="prepPlaceholder">
+            <span class="big-icon">🔄</span>
+            <span data-i18n="waiting_analysis">Waiting for analysis</span>
+          </div>
+          <canvas id="prepCanvas" style="display:none;"></canvas>
+          <!-- ★★★ DOWNLOAD BUTTON FOR PREPROCESSED IMAGE ★★★ -->
+          <div class="download-overlay" id="downloadOverlay">
+            <button onclick="downloadPreprocessed()" title="Download preprocessed image">
+              💾 Save Processed Image
+            </button>
+          </div>
         </div>
-        <canvas id="prepCanvas" style="display:none; width:100%; background:#1e1b4b;"></canvas>
       </div>
     </div>
+
     <div style="margin-top:1.2rem;text-align:center;">
       <button class="btn-primary" id="analyzeBtn" disabled onclick="analyzeImage()" data-i18n="btn_analyze">🔬 Analyze Image</button>
     </div>
@@ -798,7 +664,7 @@
         <span data-i18n="confidence">Confidence Score</span>
         <span id="confPercent">0%</span>
       </div>
-      <div class="bar-bg"><div class="bar-fill" id="confBar" style="width:0%;background:var(--primary);"></div></div>
+      <div class="bar-bg"><div class="bar-fill" id="confBar" style="width:0%;"></div></div>
     </div>
     <h4 style="margin-top:1rem;color:var(--primary-dark);" data-i18n="class_prob">Classification Probabilities</h4>
     <div id="probBars"></div>
@@ -812,456 +678,556 @@
     </div>
     <div class="action-btns">
       <button class="btn-primary" onclick="saveResult()" data-i18n="btn_save">💾 Save Result</button>
+      <button class="btn-success" onclick="downloadPreprocessed()">📥 Download Processed Image</button>
       <button class="btn-secondary" onclick="showSection('clinic')" data-i18n="btn_find_clinic">🏥 Find Clinic</button>
     </div>
   </div>
 </div>
 
-<!-- ===== HISTORY ===== -->
+<!-- HISTORY -->
 <div id="section-history" class="section">
   <div class="card">
     <h2 data-i18n="history_title">📋 Screening History</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="history_subtitle">Review your diabetic retinopathy screening records</p>
+    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="history_subtitle">Review your screening records</p>
     <div class="filter-bar">
       <select id="filterSeverity">
-        <option value="all" data-i18n="all_sev">All Severities</option>
-        <option value="No DR">No DR</option>
-        <option value="Mild">Mild</option>
-        <option value="Moderate">Moderate</option>
-        <option value="Severe">Severe</option>
+        <option value="all">All Severities</option>
+        <option value="No DR">No DR</option><option value="Mild">Mild</option>
+        <option value="Moderate">Moderate</option><option value="Severe">Severe</option>
         <option value="Proliferative">Proliferative</option>
       </select>
       <select id="filterSort">
-        <option value="newest" data-i18n="newest">Newest First</option>
-        <option value="oldest" data-i18n="oldest">Oldest First</option>
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
       </select>
     </div>
     <div id="historyContent">
       <div class="empty-state">
         <span class="big-icon">📋</span>
         <p data-i18n="no_history">No screening history yet</p>
-        <button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')" data-i18n="btn_first_screening">Start First Screening</button>
+        <button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">Start First Screening</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== CLINIC ===== -->
+<!-- CLINIC -->
 <div id="section-clinic" class="section">
   <div class="card">
     <h2 data-i18n="clinic_title">🏥 Nearby Eye Clinics</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="clinic_subtitle">Find ophthalmology clinics and eye hospitals near your location</p>
+    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="clinic_subtitle">Find ophthalmology clinics near you</p>
     <div class="clinic-controls">
       <select id="clinicType">
-        <option value="all" data-i18n="all_types">All Types</option>
-        <option value="eye_clinic" data-i18n="eye_clinic">Eye Clinic</option>
-        <option value="hospital" data-i18n="hospital">Hospital</option>
-        <option value="medical_center" data-i18n="med_center">Medical Center</option>
+        <option value="all">All Types</option>
+        <option value="eye_clinic">Eye Clinic</option>
+        <option value="hospital">Hospital</option>
+        <option value="medical_center">Medical Center</option>
       </select>
-      <button class="btn-primary" onclick="searchClinics()" data-i18n="btn_search_clinics">🔍 Search Clinics</button>
+      <button class="btn-primary" onclick="searchClinics()">🔍 Search Clinics</button>
     </div>
     <div class="map-placeholder" id="mapArea">
-      <div>
-        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🗺️</div>
-        <span data-i18n="map_text">Map view will appear here</span>
-      </div>
+      <div><div style="font-size:2.5rem;margin-bottom:0.5rem;">🗺️</div><span data-i18n="map_text">Map view will appear here</span></div>
     </div>
     <div class="clinic-list" id="clinicList"></div>
   </div>
 </div>
 
-<!-- ===== LOADING OVERLAY ===== -->
+<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-box">
     <div class="spinner"></div>
     <p style="font-weight:700;color:var(--primary-dark);" data-i18n="analyzing">Analyzing image...</p>
-    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.3rem;" data-i18n="analyzing_steps">Preprocessing → Analysis → Classification</p>
+    <div class="loading-steps">
+      <div class="loading-step" id="ls1">📥 Loading image...</div>
+      <div class="loading-step" id="ls2">🔄 Preprocessing...</div>
+      <div class="loading-step" id="ls3">🤖 AI Classification...</div>
+      <div class="loading-step" id="ls4">📊 Generating results...</div>
+    </div>
   </div>
 </div>
 
-<!-- ===== DETAIL MODAL ===== -->
+<!-- MODAL -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <h2 data-i18n="record_details" style="color:var(--primary-dark);">Record Details</h2>
+    <h2 style="color:var(--primary-dark);">Record Details</h2>
     <div id="modalBody"></div>
   </div>
 </div>
 
-<!-- ===== FOOTER ===== -->
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <footer>
-  <p>© 2024 InsightRetina. <span data-i18n="footer">For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.</span></p>
+  <p>© 2024 InsightRetina. <span data-i18n="footer">For preliminary screening only.</span></p>
 </footer>
 
 <script>
 // ===================================================================
-// ===== INTERNATIONALIZATION (i18n) =====
+// STATE
 // ===================================================================
-const translations = {
+let currentLang = 'en';
+let screeningHistory = [];
+let currentResult = null;
+let uploadedImageData = null;   // base64 ของภาพต้นฉบับ
+let preprocessedImageData = null; // base64 ของภาพ processed
+
+// Load history from localStorage
+try { screeningHistory = JSON.parse(localStorage.getItem('drHistory') || '[]'); } catch(e) { screeningHistory = []; }
+
+// ===================================================================
+// TRANSLATIONS (ย่อ - ใส่แค่ en + th สำหรับตัวอย่าง, เพิ่มภาษาอื่นได้)
+// ===================================================================
+const T = {
   en: {
-    nav_home:"Home", nav_screening:"Screening", nav_history:"History", nav_clinic:"Clinic",
-    hero_subtitle:"AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection of diabetic retinopathy.",
-    feat_ai:"Advanced AI", feat_ai_desc:"Deep learning classification for accurate DR detection",
-    feat_fast:"Fast Analysis", feat_fast_desc:"Real-time preprocessing and instant results",
-    feat_clinic:"Clinical Grade", feat_clinic_desc:"Find nearby ophthalmology centers instantly",
+    nav_home:"Home",nav_screening:"Screening",nav_history:"History",nav_clinic:"Clinic",
+    hero_subtitle:"AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.",
+    feat_ai:"Advanced AI",feat_ai_desc:"Deep learning for accurate DR detection",
+    feat_fast:"Fast Analysis",feat_fast_desc:"Real-time preprocessing and instant results",
+    feat_clinic:"Clinical Grade",feat_clinic_desc:"Find nearby ophthalmology centers",
     btn_start:"🔬 Start Screening",
     disclaimer_title:"Medical Disclaimer",
-    disclaimer_text:"This tool is for preliminary screening only and not a medical diagnosis. Always consult with a qualified ophthalmologist for clinical decisions.",
+    disclaimer_text:"This tool is for preliminary screening only. Always consult with a qualified ophthalmologist.",
     screening_title:"🔬 Diabetic Retinopathy Screening",
     screening_subtitle:"Upload a fundus image for AI analysis",
     upload_text:"Drag & drop your image here or click to browse",
     upload_sub:"Supported formats: JPG, PNG (max 5MB)",
-    original_image:"👁️ Original Image", preprocessed_image:"🔄 Preprocessed Image",
-    no_image:"No image selected", waiting_analysis:"Waiting for analysis",
-    btn_analyze:"🔬 Analyze Image",
-    screening_result:"📊 Screening Result",
-    confidence:"Confidence Score", class_prob:"Classification Probabilities",
-    findings:"🔍 Detected Findings", recommendation:"💡 Recommendation",
-    btn_save:"💾 Save Result", btn_find_clinic:"🏥 Find Clinic",
-    history_title:"📋 Screening History", history_subtitle:"Review your diabetic retinopathy screening records",
-    all_sev:"All Severities", newest:"Newest First", oldest:"Oldest First",
-    no_history:"No screening history yet", btn_first_screening:"Start First Screening",
-    clinic_title:"🏥 Nearby Eye Clinics", clinic_subtitle:"Find ophthalmology clinics and eye hospitals near your location",
-    all_types:"All Types", eye_clinic:"Eye Clinic", hospital:"Hospital", med_center:"Medical Center",
-    btn_search_clinics:"🔍 Search Clinics", map_text:"Map view will appear here",
-    analyzing:"Analyzing image...", analyzing_steps:"Preprocessing → Analysis → Classification",
-    record_details:"Record Details",
-    footer:"For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.",
+    original_image:"👁️ Original Image",preprocessed_image:"🔄 Preprocessed Image",
+    no_image:"No image selected",waiting_analysis:"Waiting for analysis",
+    btn_analyze:"🔬 Analyze Image",screening_result:"📊 Screening Result",
+    confidence:"Confidence Score",class_prob:"Classification Probabilities",
+    findings:"🔍 Detected Findings",recommendation:"💡 Recommendation",
+    btn_save:"💾 Save Result",btn_find_clinic:"🏥 Find Clinic",
+    history_title:"📋 Screening History",history_subtitle:"Review your screening records",
+    no_history:"No screening history yet",
+    clinic_title:"🏥 Nearby Eye Clinics",clinic_subtitle:"Find ophthalmology clinics near you",
+    map_text:"Map view will appear here",analyzing:"Analyzing image...",
+    footer:"For preliminary screening only.",
     lang_label:"English",
-    sev_names:["No DR","Mild","Moderate","Severe","Proliferative"],
-    findings_none:"No abnormalities detected",
-    findings_mild:"Microaneurysms detected",
-    findings_moderate:"Microaneurysms, hard exudates, retinal hemorrhages",
-    findings_severe:"Extensive hemorrhages, venous beading, IRMA",
-    findings_prolif:"Neovascularization, vitreous hemorrhage, fibrous proliferation",
-    rec_none:"Routine eye examination recommended",
-    rec_mild:"Follow-up in 12 months. Monitor blood sugar levels.",
-    rec_moderate:"Follow-up in 6 months. Consult ophthalmologist.",
-    rec_severe:"Urgent referral to ophthalmologist within 1 month.",
-    rec_prolif:"Immediate referral for treatment. Laser/injection may be required.",
-    saved_alert:"Result saved to history!",
-    th_image:"Image", th_date:"Date & Time", th_case:"Case ID", th_severity:"Severity", th_confidence:"Confidence", th_action:"Action",
-    btn_view:"View"
+    sev:["No DR","Mild","Moderate","Severe","Proliferative"],
+    find:["No abnormalities detected","Microaneurysms detected","Microaneurysms, hard exudates, retinal hemorrhages","Extensive hemorrhages, venous beading, IRMA","Neovascularization, vitreous hemorrhage, fibrous proliferation"],
+    rec:["Routine eye examination recommended","Follow-up in 12 months. Monitor blood sugar.","Follow-up in 6 months. Consult ophthalmologist.","Urgent referral within 1 month.","Immediate referral for treatment."],
+    saved:"✅ Result saved to history!",
+    downloaded:"✅ Preprocessed image downloaded!",
+    th_img:"Image",th_date:"Date",th_case:"Case ID",th_sev:"Severity",th_conf:"Confidence",th_act:"Action",btn_view:"View"
   },
   th: {
-    nav_home:"หน้าหลัก", nav_screening:"ตรวจคัดกรอง", nav_history:"ประวัติ", nav_clinic:"คลินิก",
-    hero_subtitle:"ระบบคัดกรองเบาหวานขึ้นจอประสาทตาด้วย AI วิเคราะห์ภาพจอประสาทตาขั้นสูงเพื่อการตรวจพบแต่เนิ่นๆ",
-    feat_ai:"AI ขั้นสูง", feat_ai_desc:"การจำแนกด้วย Deep Learning สำหรับการตรวจจับ DR อย่างแม่นยำ",
-    feat_fast:"วิเคราะห์รวดเร็ว", feat_fast_desc:"ประมวลผลแบบเรียลไทม์และผลลัพธ์ทันที",
-    feat_clinic:"ระดับคลินิก", feat_clinic_desc:"ค้นหาศูนย์จักษุวิทยาใกล้คุณได้ทันที",
+    nav_home:"หน้าหลัก",nav_screening:"ตรวจคัดกรอง",nav_history:"ประวัติ",nav_clinic:"คลินิก",
+    hero_subtitle:"ระบบคัดกรองเบาหวานขึ้นจอประสาทตาด้วย AI วิเคราะห์ภาพจอประสาทตาขั้นสูง",
+    feat_ai:"AI ขั้นสูง",feat_ai_desc:"Deep Learning สำหรับตรวจจับ DR อย่างแม่นยำ",
+    feat_fast:"วิเคราะห์รวดเร็ว",feat_fast_desc:"ประมวลผลแบบเรียลไทม์",
+    feat_clinic:"ระดับคลินิก",feat_clinic_desc:"ค้นหาศูนย์จักษุวิทยาใกล้คุณ",
     btn_start:"🔬 เริ่มตรวจคัดกรอง",
     disclaimer_title:"คำเตือนทางการแพทย์",
-    disclaimer_text:"เครื่องมือนี้ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยทางการแพทย์ กรุณาปรึกษาจักษุแพทย์ที่มีคุณวุฒิเสมอ",
+    disclaimer_text:"เครื่องมือนี้ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์เสมอ",
     screening_title:"🔬 ตรวจคัดกรองเบาหวานขึ้นจอประสาทตา",
     screening_subtitle:"อัปโหลดภาพจอประสาทตาเพื่อวิเคราะห์ด้วย AI",
     upload_text:"ลากและวางภาพที่นี่ หรือคลิกเพื่อเลือกไฟล์",
     upload_sub:"รองรับ: JPG, PNG (สูงสุด 5MB)",
-    original_image:"👁️ ภาพต้นฉบับ", preprocessed_image:"🔄 ภาพหลังประมวลผล",
-    no_image:"ยังไม่ได้เลือกภาพ", waiting_analysis:"รอการวิเคราะห์",
-    btn_analyze:"🔬 วิเคราะห์ภาพ",
-    screening_result:"📊 ผลการคัดกรอง",
-    confidence:"คะแนนความเชื่อมั่น", class_prob:"ความน่าจะเป็นของแต่ละระดับ",
-    findings:"🔍 ผลที่ตรวจพบ", recommendation:"💡 คำแนะนำ",
-    btn_save:"💾 บันทึกผล", btn_find_clinic:"🏥 ค้นหาคลินิก",
-    history_title:"📋 ประวัติการตรวจคัดกรอง", history_subtitle:"ทบทวนบันทึกการตรวจคัดกรองของคุณ",
-    all_sev:"ทุกระดับความรุนแรง", newest:"ใหม่สุดก่อน", oldest:"เก่าสุดก่อน",
-    no_history:"ยังไม่มีประวัติการตรวจ", btn_first_screening:"เริ่มตรวจครั้งแรก",
-    clinic_title:"🏥 คลินิกตาใกล้เคียง", clinic_subtitle:"ค้นหาคลินิกจักษุและโรงพยาบาลตาใกล้คุณ",
-    all_types:"ทุกประเภท", eye_clinic:"คลินิกตา", hospital:"โรงพยาบาล", med_center:"ศูนย์การแพทย์",
-    btn_search_clinics:"🔍 ค้นหาคลินิก", map_text:"แผนที่จะแสดงที่นี่",
-    analyzing:"กำลังวิเคราะห์ภาพ...", analyzing_steps:"ประมวลผลภาพ → วิเคราะห์ → จำแนกระดับ",
-    record_details:"รายละเอียดผลตรวจ",
-    footer:"สำหรับการคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์เพื่อการวินิจฉัย",
+    original_image:"👁️ ภาพต้นฉบับ",preprocessed_image:"🔄 ภาพหลังประมวลผล",
+    no_image:"ยังไม่ได้เลือกภาพ",waiting_analysis:"รอการวิเคราะห์",
+    btn_analyze:"🔬 วิเคราะห์ภาพ",screening_result:"📊 ผลการคัดกรอง",
+    confidence:"คะแนนความเชื่อมั่น",class_prob:"ความน่าจะเป็นของแต่ละระดับ",
+    findings:"🔍 ผลที่ตรวจพบ",recommendation:"💡 คำแนะนำ",
+    btn_save:"💾 บันทึกผล",btn_find_clinic:"🏥 ค้นหาคลินิก",
+    history_title:"📋 ประวัติการตรวจคัดกรอง",history_subtitle:"ทบทวนบันทึกการตรวจ",
+    no_history:"ยังไม่มีประวัติการตรวจ",
+    clinic_title:"🏥 คลินิกตาใกล้เคียง",clinic_subtitle:"ค้นหาคลินิกจักษุใกล้คุณ",
+    map_text:"แผนที่จะแสดงที่นี่",analyzing:"กำลังวิเคราะห์ภาพ...",
+    footer:"สำหรับการคัดกรองเบื้องต้นเท่านั้น",
     lang_label:"ไทย",
-    sev_names:["ไม่มี DR","เล็กน้อย","ปานกลาง","รุนแรง","ระยะแพร่กระจาย"],
-    findings_none:"ไม่พบความผิดปกติ", findings_mild:"พบ Microaneurysms",
-    findings_moderate:"พบ Microaneurysms, hard exudates, เลือดออกในจอประสาทตา",
-    findings_severe:"พบเลือดออกอย่างมาก, venous beading, IRMA",
-    findings_prolif:"พบหลอดเลือดใหม่, เลือดออกในวุ้นตา, เนื้อเยื่อเส้นใย",
-    rec_none:"แนะนำตรวจตาตามปกติ", rec_mild:"ติดตามผลใน 12 เดือน ควบคุมระดับน้ำตาลในเลือด",
-    rec_moderate:"ติดตามผลใน 6 เดือน ปรึกษาจักษุแพทย์",
-    rec_severe:"ส่งต่อจักษุแพทย์ด่วนภายใน 1 เดือน",
-    rec_prolif:"ส่งต่อเพื่อรับการรักษาทันที อาจต้องใช้เลเซอร์/ฉีดยา",
-    saved_alert:"บันทึกผลลงในประวัติแล้ว!",
-    th_image:"ภาพ", th_date:"วันที่", th_case:"รหัสเคส", th_severity:"ความรุนแรง", th_confidence:"ความเชื่อมั่น", th_action:"การดำเนินการ",
-    btn_view:"ดู"
-  },
-  id: {
-    nav_home:"Beranda", nav_screening:"Skrining", nav_history:"Riwayat", nav_clinic:"Klinik",
-    hero_subtitle:"Skrining Retinopati Diabetik berbasis AI. Analisis retina canggih untuk deteksi dini.",
-    feat_ai:"AI Canggih", feat_ai_desc:"Klasifikasi deep learning untuk deteksi DR yang akurat",
-    feat_fast:"Analisis Cepat", feat_fast_desc:"Preprocessing real-time dan hasil instan",
-    feat_clinic:"Kelas Klinis", feat_clinic_desc:"Temukan pusat oftalmologi terdekat",
-    btn_start:"🔬 Mulai Skrining", disclaimer_title:"Peringatan Medis",
-    disclaimer_text:"Alat ini hanya untuk skrining awal. Selalu konsultasikan dengan dokter mata.",
-    screening_title:"🔬 Skrining Retinopati Diabetik", screening_subtitle:"Unggah gambar fundus untuk analisis AI",
-    upload_text:"Seret & lepas gambar di sini atau klik", upload_sub:"Format: JPG, PNG (maks 5MB)",
-    original_image:"👁️ Gambar Asli", preprocessed_image:"🔄 Gambar Terproses",
-    no_image:"Belum ada gambar", waiting_analysis:"Menunggu analisis",
-    btn_analyze:"🔬 Analisis Gambar", screening_result:"📊 Hasil Skrining",
-    confidence:"Skor Kepercayaan", class_prob:"Probabilitas Klasifikasi",
-    findings:"🔍 Temuan", recommendation:"💡 Rekomendasi",
-    btn_save:"💾 Simpan Hasil", btn_find_clinic:"🏥 Cari Klinik",
-    history_title:"📋 Riwayat Skrining", history_subtitle:"Tinjau catatan skrining Anda",
-    all_sev:"Semua Tingkat", newest:"Terbaru", oldest:"Terlama",
-    no_history:"Belum ada riwayat", btn_first_screening:"Mulai Skrining Pertama",
-    clinic_title:"🏥 Klinik Mata Terdekat", clinic_subtitle:"Temukan klinik mata di sekitar Anda",
-    all_types:"Semua Jenis", eye_clinic:"Klinik Mata", hospital:"Rumah Sakit", med_center:"Pusat Medis",
-    btn_search_clinics:"🔍 Cari Klinik", map_text:"Peta akan muncul di sini",
-    analyzing:"Menganalisis gambar...", analyzing_steps:"Preprocessing → Analisis → Klasifikasi",
-    record_details:"Detail Rekam",
-    footer:"Hanya untuk skrining awal. Konsultasikan dengan dokter mata.",
-    lang_label:"Bahasa Indonesia",
-    sev_names:["Tidak ada DR","Ringan","Sedang","Berat","Proliferatif"],
-    findings_none:"Tidak ditemukan kelainan", findings_mild:"Mikroaneurisma terdeteksi",
-    findings_moderate:"Mikroaneurisma, eksudat keras, perdarahan retina",
-    findings_severe:"Perdarahan luas, venous beading, IRMA",
-    findings_prolif:"Neovaskularisasi, perdarahan vitreus",
-    rec_none:"Pemeriksaan mata rutin direkomendasikan", rec_mild:"Tindak lanjut dalam 12 bulan.",
-    rec_moderate:"Tindak lanjut dalam 6 bulan.", rec_severe:"Rujukan mendesak dalam 1 bulan.",
-    rec_prolif:"Rujukan segera untuk perawatan.",
-    saved_alert:"Hasil disimpan!",
-    th_image:"Gambar", th_date:"Tanggal", th_case:"ID Kasus", th_severity:"Tingkat", th_confidence:"Kepercayaan", th_action:"Aksi", btn_view:"Lihat"
-  },
-  vi: {
-    nav_home:"Trang chủ", nav_screening:"Sàng lọc", nav_history:"Lịch sử", nav_clinic:"Phòng khám",
-    hero_subtitle:"Sàng lọc bệnh võng mạc tiểu đường bằng AI. Phân tích võng mạc tiên tiến.",
-    feat_ai:"AI Tiên tiến", feat_ai_desc:"Phân loại deep learning chính xác",
-    feat_fast:"Phân tích nhanh", feat_fast_desc:"Xử lý thời gian thực và kết quả tức thì",
-    feat_clinic:"Cấp lâm sàng", feat_clinic_desc:"Tìm trung tâm nhãn khoa gần bạn",
-    btn_start:"🔬 Bắt đầu sàng lọc", disclaimer_title:"Tuyên bố y tế",
-    disclaimer_text:"Công cụ này chỉ dùng để sàng lọc sơ bộ. Luôn tham khảo bác sĩ nhãn khoa.",
-    screening_title:"🔬 Sàng lọc bệnh võng mạc", screening_subtitle:"Tải lên hình ảnh đáy mắt để phân tích",
-    upload_text:"Kéo & thả hình ảnh hoặc nhấp để chọn", upload_sub:"Định dạng: JPG, PNG (tối đa 5MB)",
-    original_image:"👁️ Ảnh gốc", preprocessed_image:"🔄 Ảnh đã xử lý",
-    no_image:"Chưa chọn ảnh", waiting_analysis:"Đang chờ phân tích",
-    btn_analyze:"🔬 Phân tích ảnh", screening_result:"📊 Kết quả sàng lọc",
-    confidence:"Điểm tin cậy", class_prob:"Xác suất phân loại",
-    findings:"🔍 Phát hiện", recommendation:"💡 Khuyến nghị",
-    btn_save:"💾 Lưu kết quả", btn_find_clinic:"🏥 Tìm phòng khám",
-    history_title:"📋 Lịch sử sàng lọc", history_subtitle:"Xem lại hồ sơ sàng lọc",
-    all_sev:"Tất cả mức độ", newest:"Mới nhất", oldest:"Cũ nhất",
-    no_history:"Chưa có lịch sử", btn_first_screening:"Bắt đầu sàng lọc đầu tiên",
-    clinic_title:"🏥 Phòng khám mắt gần đây", clinic_subtitle:"Tìm phòng khám và bệnh viện mắt",
-    all_types:"Tất cả loại", eye_clinic:"Phòng khám mắt", hospital:"Bệnh viện", med_center:"Trung tâm y tế",
-    btn_search_clinics:"🔍 Tìm phòng khám", map_text:"Bản đồ sẽ hiển thị ở đây",
-    analyzing:"Đang phân tích...", analyzing_steps:"Tiền xử lý → Phân tích → Phân loại",
-    record_details:"Chi tiết hồ sơ",
-    footer:"Chỉ dùng để sàng lọc sơ bộ. Tham khảo bác sĩ nhãn khoa.",
-    lang_label:"Tiếng Việt",
-    sev_names:["Không DR","Nhẹ","Trung bình","Nặng","Tăng sinh"],
-    findings_none:"Không phát hiện bất thường", findings_mild:"Phát hiện vi phình mạch",
-    findings_moderate:"Vi phình mạch, xuất tiết cứng, xuất huyết võng mạc",
-    findings_severe:"Xuất huyết rộng, tĩnh mạch chuỗi, IRMA",
-    findings_prolif:"Tân mạch, xuất huyết dịch kính",
-    rec_none:"Khám mắt định kỳ", rec_mild:"Tái khám sau 12 tháng.",
-    rec_moderate:"Tái khám sau 6 tháng.", rec_severe:"Chuyển viện khẩn cấp trong 1 tháng.",
-    rec_prolif:"Chuyển viện ngay để điều trị.",
-    saved_alert:"Đã lưu kết quả!",
-    th_image:"Ảnh", th_date:"Ngày", th_case:"Mã ca", th_severity:"Mức độ", th_confidence:"Tin cậy", th_action:"Hành động", btn_view:"Xem"
-  },
-  ph: {
-    nav_home:"Home", nav_screening:"Screening", nav_history:"Kasaysayan", nav_clinic:"Klinika",
-    hero_subtitle:"AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis para sa maagang pagtuklas.",
-    feat_ai:"Advanced AI", feat_ai_desc:"Deep learning classification para sa tumpak na DR detection",
-    feat_fast:"Mabilis na Pagsusuri", feat_fast_desc:"Real-time preprocessing at instant na resulta",
-    feat_clinic:"Clinical Grade", feat_clinic_desc:"Maghanap ng malapit na ophthalmology center",
-    btn_start:"🔬 Magsimula ng Screening", disclaimer_title:"Babala sa Medikal",
-    disclaimer_text:"Ang tool na ito ay para sa preliminary screening lamang. Kumonsulta sa ophthalmologist.",
-    screening_title:"🔬 Diabetic Retinopathy Screening", screening_subtitle:"Mag-upload ng fundus image para sa AI analysis",
-    upload_text:"I-drag & drop ang image dito o i-click", upload_sub:"Mga format: JPG, PNG (max 5MB)",
-    original_image:"👁️ Orihinal na Larawan", preprocessed_image:"🔄 Na-process na Larawan",
-    no_image:"Walang napiling larawan", waiting_analysis:"Naghihintay ng pagsusuri",
-    btn_analyze:"🔬 Suriin ang Larawan", screening_result:"📊 Resulta ng Screening",
-    confidence:"Confidence Score", class_prob:"Mga Probabilidad",
-    findings:"🔍 Mga Natuklasan", recommendation:"💡 Rekomendasyon",
-    btn_save:"💾 I-save ang Resulta", btn_find_clinic:"🏥 Maghanap ng Klinika",
-    history_title:"📋 Kasaysayan ng Screening", history_subtitle:"Suriin ang iyong mga record",
-    all_sev:"Lahat ng Kalubhaan", newest:"Pinakabago", oldest:"Pinakaluma",
-    no_history:"Walang screening history pa", btn_first_screening:"Magsimula ng Unang Screening",
-    clinic_title:"🏥 Malapit na Eye Clinic", clinic_subtitle:"Maghanap ng ophthalmology clinic",
-    all_types:"Lahat ng Uri", eye_clinic:"Eye Clinic", hospital:"Ospital", med_center:"Medical Center",
-    btn_search_clinics:"🔍 Maghanap ng Klinika", map_text:"Lalabas dito ang mapa",
-    analyzing:"Sinusuri ang larawan...", analyzing_steps:"Preprocessing → Pagsusuri → Klasipikasyon",
-    record_details:"Mga Detalye ng Record",
-    footer:"Para sa preliminary screening lamang.",
-    lang_label:"Filipino",
-    sev_names:["Walang DR","Banayad","Katamtaman","Malubha","Proliferative"],
-    findings_none:"Walang abnormalidad", findings_mild:"May nakitang microaneurysms",
-    findings_moderate:"Microaneurysms, hard exudates, retinal hemorrhages",
-    findings_severe:"Malawak na hemorrhages, venous beading, IRMA",
-    findings_prolif:"Neovascularization, vitreous hemorrhage",
-    rec_none:"Inirerekomenda ang routine eye exam", rec_mild:"Follow-up sa 12 buwan.",
-    rec_moderate:"Follow-up sa 6 na buwan.", rec_severe:"Urgent referral sa loob ng 1 buwan.",
-    rec_prolif:"Agaran na referral para sa treatment.",
-    saved_alert:"Na-save ang resulta!",
-    th_image:"Larawan", th_date:"Petsa", th_case:"Case ID", th_severity:"Kalubhaan", th_confidence:"Confidence", th_action:"Aksyon", btn_view:"Tingnan"
-  },
-  my: {
-    nav_home:"Utama", nav_screening:"Saringan", nav_history:"Sejarah", nav_clinic:"Klinik",
-    hero_subtitle:"Saringan Retinopati Diabetik berkuasa AI. Analisis retina lanjutan untuk pengesanan awal.",
-    feat_ai:"AI Lanjutan", feat_ai_desc:"Klasifikasi deep learning untuk pengesanan DR yang tepat",
-    feat_fast:"Analisis Pantas", feat_fast_desc:"Prapemprosesan masa nyata dan keputusan segera",
-    feat_clinic:"Gred Klinikal", feat_clinic_desc:"Cari pusat oftalmologi berdekatan",
-    btn_start:"🔬 Mula Saringan", disclaimer_title:"Penafian Perubatan",
-    disclaimer_text:"Alat ini untuk saringan awal sahaja. Sentiasa rujuk pakar mata.",
-    screening_title:"🔬 Saringan Retinopati Diabetik", screening_subtitle:"Muat naik imej fundus untuk analisis AI",
-    upload_text:"Seret & lepas imej di sini atau klik", upload_sub:"Format: JPG, PNG (maks 5MB)",
-    original_image:"👁️ Imej Asal", preprocessed_image:"🔄 Imej Diproses",
-    no_image:"Tiada imej dipilih", waiting_analysis:"Menunggu analisis",
-    btn_analyze:"🔬 Analisis Imej", screening_result:"📊 Keputusan Saringan",
-    confidence:"Skor Keyakinan", class_prob:"Kebarangkalian Klasifikasi",
-    findings:"🔍 Penemuan", recommendation:"💡 Cadangan",
-    btn_save:"💾 Simpan Keputusan", btn_find_clinic:"🏥 Cari Klinik",
-    history_title:"📋 Sejarah Saringan", history_subtitle:"Semak rekod saringan anda",
-    all_sev:"Semua Tahap", newest:"Terbaru", oldest:"Terlama",
-    no_history:"Tiada sejarah saringan", btn_first_screening:"Mulakan Saringan Pertama",
-    clinic_title:"🏥 Klinik Mata Berdekatan", clinic_subtitle:"Cari klinik mata dan hospital berdekatan",
-    all_types:"Semua Jenis", eye_clinic:"Klinik Mata", hospital:"Hospital", med_center:"Pusat Perubatan",
-    btn_search_clinics:"🔍 Cari Klinik", map_text:"Peta akan muncul di sini",
-    analyzing:"Menganalisis imej...", analyzing_steps:"Prapemprosesan → Analisis → Klasifikasi",
-    record_details:"Butiran Rekod",
-    footer:"Untuk saringan awal sahaja. Rujuk pakar mata.",
-    lang_label:"Bahasa Melayu",
-    sev_names:["Tiada DR","Ringan","Sederhana","Teruk","Proliferatif"],
-    findings_none:"Tiada keabnormalan", findings_mild:"Mikroaneurisma dikesan",
-    findings_moderate:"Mikroaneurisma, eksudat keras, pendarahan retina",
-    findings_severe:"Pendarahan meluas, venous beading, IRMA",
-    findings_prolif:"Neovaskularisasi, pendarahan vitreus",
-    rec_none:"Pemeriksaan mata rutin dicadangkan", rec_mild:"Susulan dalam 12 bulan.",
-    rec_moderate:"Susulan dalam 6 bulan.", rec_severe:"Rujukan segera dalam 1 bulan.",
-    rec_prolif:"Rujukan segera untuk rawatan.",
-    saved_alert:"Keputusan disimpan!",
-    th_image:"Imej", th_date:"Tarikh", th_case:"ID Kes", th_severity:"Tahap", th_confidence:"Keyakinan", th_action:"Tindakan", btn_view:"Lihat"
+    sev:["ไม่มี DR","เล็กน้อย","ปานกลาง","รุนแรง","ระยะแพร่กระจาย"],
+    find:["ไม่พบความผิดปกติ","พบ Microaneurysms","พบ Microaneurysms, hard exudates, เลือดออก","พบเลือดออกมาก, venous beading, IRMA","พบหลอดเลือดใหม่, เลือดออกในวุ้นตา"],
+    rec:["แนะนำตรวจตาตามปกติ","ติดตามผลใน 12 เดือน","ติดตามผลใน 6 เดือน ปรึกษาจักษุแพทย์","ส่งต่อจักษุแพทย์ด่วนภายใน 1 เดือน","ส่งต่อรักษาทันที"],
+    saved:"✅ บันทึกผลแล้ว!",
+    downloaded:"✅ ดาวน์โหลดภาพแล้ว!",
+    th_img:"ภาพ",th_date:"วันที่",th_case:"รหัสเคส",th_sev:"ระดับ",th_conf:"ความเชื่อมั่น",th_act:"การดำเนินการ",btn_view:"ดู"
   }
 };
 
-let currentLang = 'en';
-let screeningHistory = JSON.parse(localStorage.getItem('drHistory') || '[]');
-let currentResult = null;
-let uploadedImageData = null;
+function t(key) { return (T[currentLang] && T[currentLang][key]) || (T.en[key]) || key; }
 
-// ===== Language =====
+// ===================================================================
+// LANGUAGE
+// ===================================================================
 function setLanguage(lang) {
   currentLang = lang;
-  const t = translations[lang]; if (!t) return;
+  const tr = T[lang] || T.en;
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key]) el.textContent = t[key];
+    const k = el.getAttribute('data-i18n');
+    if (tr[k]) el.textContent = tr[k];
   });
   const flags = {th:'🇹🇭',en:'🇬🇧',id:'🇮🇩',vi:'🇻🇳',ph:'🇵🇭',my:'🇲🇾'};
-  document.getElementById('langToggle').textContent = `${flags[lang]||'🌐'} ${t.lang_label} ▾`;
-  document.querySelectorAll('.lang-menu button').forEach(btn => {
-    btn.classList.toggle('active-lang', btn.getAttribute('data-lang') === lang);
-  });
+  document.getElementById('langToggle').textContent = `${flags[lang]||'🌐'} ${tr.lang_label||lang} ▾`;
+  document.querySelectorAll('.lang-menu button').forEach(btn =>
+    btn.classList.toggle('active-lang', btn.getAttribute('data-lang')===lang));
   document.getElementById('langMenu').classList.remove('show');
   if (currentResult) updateResultDisplay(currentResult);
   renderHistory();
 }
-
 document.getElementById('langToggle').addEventListener('click', e => {
-  e.stopPropagation();
-  document.getElementById('langMenu').classList.toggle('show');
+  e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show');
 });
 document.addEventListener('click', () => document.getElementById('langMenu').classList.remove('show'));
 
-// ===== Navigation =====
+// ===================================================================
+// NAVIGATION
+// ===================================================================
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('section-' + name).classList.add('active');
-  document.querySelectorAll('.nav-links button').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-section') === name);
-  });
-  if (name === 'history') renderHistory();
+  document.getElementById('section-'+name).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(btn =>
+    btn.classList.toggle('active', btn.getAttribute('data-section')===name));
+  if (name==='history') renderHistory();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-document.querySelectorAll('.nav-links button').forEach(btn => {
-  btn.addEventListener('click', () => showSection(btn.getAttribute('data-section')));
-});
+document.querySelectorAll('.nav-links button').forEach(btn =>
+  btn.addEventListener('click', () => showSection(btn.getAttribute('data-section'))));
 
-// ===== File Upload =====
+// ===================================================================
+// ★★★ FILE UPLOAD - FIXED ★★★
+// ===================================================================
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
-uploadArea.addEventListener('click', () => fileInput.click());
-uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-uploadArea.addEventListener('drop', e => {
-  e.preventDefault(); uploadArea.classList.remove('dragover');
-  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files);
+
+// ★ Key fix: ให้ input file คลุมทั้ง upload area แล้ว
+// ★ ไม่ต้อง click trigger จาก JS อีก (หมดปัญหา event conflict)
+
+// แต่ยัง support drag & drop
+uploadArea.addEventListener('dragover', e => {
+  e.preventDefault(); e.stopPropagation();
+  uploadArea.classList.add('dragover');
 });
-fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files); });
+uploadArea.addEventListener('dragleave', e => {
+  e.preventDefault(); e.stopPropagation();
+  uploadArea.classList.remove('dragover');
+});
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault(); e.stopPropagation();
+  uploadArea.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0) {
+    // ★ ใส่ไฟล์เข้า input เพื่อ trigger change event
+    const dt = new DataTransfer();
+    dt.items.add(files);
+    fileInput.files = dt.files;
+    handleFile(files);
+  }
+});
+
+// ★★★ THE MAIN FIX: listen to 'change' event on file input ★★★
+fileInput.addEventListener('change', function(e) {
+  console.log('📁 File input changed!', this.files);
+  if (this.files && this.files.length > 0) {
+    handleFile(this.files);
+  }
+});
 
 function handleFile(file) {
-  if (!file.type.match(/image\/(jpeg|png)/)) { alert('Please upload JPG or PNG.'); return; }
-  if (file.size > 5*1024*1024) { alert('File exceeds 5MB.'); return; }
+  console.log('📁 handleFile called:', file.name, file.type, file.size);
+
+  // Validate type
+  if (!file.type.match(/image\/(jpeg|png|jpg)/i) && !file.name.match(/\.(jpg|jpeg|png)$/i)) {
+    showToast('❌ Please upload a JPG or PNG image.');
+    return;
+  }
+  // Validate size
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('❌ File size exceeds 5MB limit.');
+    return;
+  }
+
+  // ★★★ Read file as Data URL ★★★
   const reader = new FileReader();
-  reader.onload = e => {
+
+  reader.onloadstart = () => {
+    console.log('📖 FileReader: start reading...');
+  };
+
+  reader.onprogress = (e) => {
+    if (e.lengthComputable) {
+      console.log(`📖 FileReader: ${Math.round(e.loaded/e.total*100)}%`);
+    }
+  };
+
+  reader.onload = function(e) {
+    console.log('✅ FileReader: load complete! Data length:', e.target.result.length);
+
     uploadedImageData = e.target.result;
+
+    // Show original image
     const origImg = document.getElementById('origImg');
-    origImg.src = uploadedImageData; origImg.style.display = 'block';
+    origImg.onload = function() {
+      console.log('✅ Image displayed! Size:', this.naturalWidth, 'x', this.naturalHeight);
+    };
+    origImg.onerror = function() {
+      console.error('❌ Image failed to display');
+    };
+    origImg.src = uploadedImageData;
+    origImg.style.display = 'block';
     document.getElementById('origPlaceholder').style.display = 'none';
+
+    // Show file name
+    const fnEl = document.getElementById('fileName');
+    fnEl.textContent = '✅ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+    fnEl.classList.add('show');
+
+    // Update upload area style
+    uploadArea.classList.add('has-file');
+
+    // Enable analyze button
     document.getElementById('analyzeBtn').disabled = false;
+
+    // Show progress steps
+    document.getElementById('progressSteps').style.display = 'flex';
+    setStep(1);
+
+    // Reset previous results
     document.getElementById('resultCard').classList.remove('show');
     document.getElementById('prepCanvas').style.display = 'none';
     document.getElementById('prepPlaceholder').style.display = 'block';
+    document.getElementById('downloadOverlay').classList.remove('show');
+    preprocessedImageData = null;
+
+    showToast('✅ Image loaded successfully!');
   };
+
+  reader.onerror = function(e) {
+    console.error('❌ FileReader error:', e);
+    showToast('❌ Error reading file. Please try again.');
+  };
+
   reader.readAsDataURL(file);
 }
 
-// ===== Preprocessing =====
-function preprocessImage(imgSrc) {
-  return new Promise(resolve => {
+// ===================================================================
+// PROGRESS STEPS
+// ===================================================================
+function setStep(n) {
+  for (let i=1; i<=4; i++) {
+    const el = document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  }
+}
+
+// ===================================================================
+// ★★★ PREPROCESSING - FIXED ★★★
+// ===================================================================
+function preprocessImage(base64src) {
+  return new Promise((resolve, reject) => {
+    console.log('🔄 Starting preprocessing...');
+
     const img = new Image();
-    img.onload = () => {
+    img.crossOrigin = 'anonymous'; // ★ ป้องกัน CORS issue
+
+    img.onload = function() {
+      console.log('🔄 Image loaded for preprocessing:', img.naturalWidth, 'x', img.naturalHeight);
+
       const canvas = document.getElementById('prepCanvas');
       const ctx = canvas.getContext('2d');
-      const size = 300; canvas.width = size; canvas.height = size;
-      const scale = Math.max(size/img.width, size/img.height);
-      const w = img.width*scale, h = img.height*scale;
-      ctx.drawImage(img, (size-w)/2, (size-h)/2, w, h);
-      const imageData = ctx.getImageData(0,0,size,size);
+
+      // ★ Set actual canvas pixel size (ไม่ใช่แค่ CSS size)
+      const targetSize = 512;
+      canvas.width = targetSize;
+      canvas.height = targetSize;
+
+      // Draw image - fit to square
+      const scale = Math.min(targetSize / img.naturalWidth, targetSize / img.naturalHeight);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      const x = (targetSize - w) / 2;
+      const y = (targetSize - h) / 2;
+
+      // Black background
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, targetSize, targetSize);
+
+      // Draw centered
+      ctx.drawImage(img, x, y, w, h);
+
+      // ★★★ Actual image processing (CLAHE-like + Green channel enhance) ★★★
+      const imageData = ctx.getImageData(0, 0, targetSize, targetSize);
       const data = imageData.data;
-      for (let i=0; i<data.length; i+=4) {
-        const r=data[i], g=data[i+1], b=data[i+2];
-        const eg = Math.min(255, g*1.5);
-        const gray = 0.299*r + 0.587*eg + 0.114*b;
-        const adj = ((gray/255-0.5)*1.4+0.5)*255;
-        const f = Math.max(0,Math.min(255,adj));
-        // Purple-tinted preprocessing (matching theme)
-        data[i]   = Math.min(255, f*0.5);
-        data[i+1] = Math.min(255, f*0.3);
-        data[i+2] = Math.min(255, f*0.8);
+
+      // Step 1: Calculate histogram for adaptive contrast
+      let histogram = new Array(256).fill(0);
+      let pixelCount = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] + data[i+1] + data[i+2] > 10) { // skip black bg
+          const gray = Math.round(0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2]);
+          histogram[gray]++;
+          pixelCount++;
+        }
       }
-      ctx.putImageData(imageData,0,0);
-      canvas.style.display='block';
-      document.getElementById('prepPlaceholder').style.display='none';
-      resolve(canvas.toDataURL());
+
+      // Step 2: Build cumulative distribution for CLAHE-like mapping
+      let cdf = new Array(256).fill(0);
+      cdf = histogram;
+      for (let i = 1; i < 256; i++) cdf[i] = cdf[i-1] + histogram[i];
+      const cdfMin = cdf.find(v => v > 0) || 0;
+      let lut = new Array(256).fill(0);
+      for (let i = 0; i < 256; i++) {
+        lut[i] = Math.round(((cdf[i] - cdfMin) / (pixelCount - cdfMin)) * 255);
+        lut[i] = Math.max(0, Math.min(255, lut[i]));
+      }
+
+      // Step 3: Apply enhancement
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2];
+
+        if (r + g + b < 10) continue; // skip black bg
+
+        // Green channel is most informative for DR
+        const greenEnhanced = Math.min(255, g * 1.3);
+
+        // Apply histogram equalization
+        const gray = Math.round(0.299*r + 0.587*greenEnhanced + 0.114*b);
+        const equalized = lut[gray];
+
+        // Blend: enhanced contrast with purple tint for theme
+        const contrast = 1.3;
+        const adjusted = ((equalized / 255 - 0.5) * contrast + 0.5) * 255;
+        const f = Math.max(0, Math.min(255, adjusted));
+
+        // Apply color mapping (purple-tinted medical view)
+        data[i]   = Math.min(255, Math.round(f * 0.45 + r * 0.1));  // R - slight warmth
+        data[i+1] = Math.min(255, Math.round(f * 0.85 + g * 0.05)); // G - preserved detail
+        data[i+2] = Math.min(255, Math.round(f * 0.65 + b * 0.1));  // B - purple tint
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      // Show canvas
+      canvas.style.display = 'block';
+      canvas.style.width = '100%';
+      document.getElementById('prepPlaceholder').style.display = 'none';
+
+      // ★★★ Store preprocessed image data for download ★★★
+      preprocessedImageData = canvas.toDataURL('image/png');
+      console.log('✅ Preprocessing complete! Data length:', preprocessedImageData.length);
+
+      // Show download button
+      document.getElementById('downloadOverlay').classList.add('show');
+
+      resolve(preprocessedImageData);
     };
-    img.src = imgSrc;
+
+    img.onerror = function(e) {
+      console.error('❌ Failed to load image for preprocessing:', e);
+      reject(new Error('Failed to load image'));
+    };
+
+    // ★ Key: set src AFTER attaching onload
+    img.src = base64src;
   });
 }
 
-// ===== Analysis =====
+// ===================================================================
+// ★★★ DOWNLOAD PREPROCESSED IMAGE ★★★
+// ===================================================================
+function downloadPreprocessed() {
+  if (!preprocessedImageData) {
+    showToast('❌ No processed image to download. Please analyze an image first.');
+    return;
+  }
+
+  console.log('📥 Downloading preprocessed image...');
+
+  // Create download link
+  const link = document.createElement('a');
+  link.download = 'InsightRetina_preprocessed_' + Date.now() + '.png';
+  link.href = preprocessedImageData;
+
+  // ★ Trigger download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  showToast(t('downloaded'));
+}
+
+// ===================================================================
+// ★★★ ANALYZE - FIXED WITH REAL PROGRESS ★★★
+// ===================================================================
 async function analyzeImage() {
-  if (!uploadedImageData) return;
+  if (!uploadedImageData) {
+    showToast('❌ Please upload an image first.');
+    return;
+  }
+
+  console.log('🤖 Starting analysis...');
+
   const overlay = document.getElementById('loadingOverlay');
   overlay.classList.add('show');
-  await preprocessImage(uploadedImageData);
-  await new Promise(r => setTimeout(r, 2200));
-  const result = simulateAIResult();
-  currentResult = result;
-  overlay.classList.remove('show');
-  updateResultDisplay(result);
-  document.getElementById('resultCard').classList.add('show');
-  document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
+
+  // Reset loading steps
+  ['ls1','ls2','ls3','ls4'].forEach(id => {
+    document.getElementById(id).className = 'loading-step';
+  });
+
+  try {
+    // Step 1: Loading
+    document.getElementById('ls1').classList.add('active');
+    setStep(1);
+    await sleep(500);
+    document.getElementById('ls1').classList.remove('active');
+    document.getElementById('ls1').classList.add('done');
+
+    // Step 2: Preprocessing
+    document.getElementById('ls2').classList.add('active');
+    setStep(2);
+    await preprocessImage(uploadedImageData);
+    await sleep(500);
+    document.getElementById('ls2').classList.remove('active');
+    document.getElementById('ls2').classList.add('done');
+
+    // Step 3: AI Classification
+    document.getElementById('ls3').classList.add('active');
+    setStep(3);
+    await sleep(1500); // Simulating AI inference time
+    const result = simulateAIResult();
+    currentResult = result;
+    document.getElementById('ls3').classList.remove('active');
+    document.getElementById('ls3').classList.add('done');
+
+    // Step 4: Generating results
+    document.getElementById('ls4').classList.add('active');
+    setStep(4);
+    await sleep(500);
+    document.getElementById('ls4').classList.remove('active');
+    document.getElementById('ls4').classList.add('done');
+
+    overlay.classList.remove('show');
+
+    // Display results
+    updateResultDisplay(result);
+    document.getElementById('resultCard').classList.add('show');
+
+    // Scroll to results
+    setTimeout(() => {
+      document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'start'});
+    }, 100);
+
+    showToast('✅ Analysis complete!');
+
+  } catch (error) {
+    console.error('❌ Analysis error:', error);
+    overlay.classList.remove('show');
+    showToast('❌ Error during analysis. Please try again.');
+  }
 }
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function simulateAIResult() {
   let probs = [0,0,0,0,0];
   const rnd = Math.random();
   let sev;
-  if (rnd<0.4) sev=0; else if(rnd<0.6) sev=1;
+  if(rnd<0.4) sev=0; else if(rnd<0.6) sev=1;
   else if(rnd<0.75) sev=2; else if(rnd<0.9) sev=3; else sev=4;
-  for (let i=0;i<5;i++) probs[i]=Math.random()*0.1;
+  for(let i=0;i<5;i++) probs[i]=Math.random()*0.1;
   probs[sev]=0.5+Math.random()*0.4;
   const sum=probs.reduce((a,b)=>a+b,0);
   probs=probs.map(p=>p/sum);
@@ -1273,99 +1239,158 @@ function simulateAIResult() {
 }
 
 function updateResultDisplay(result) {
-  const t = translations[currentLang];
-  const sevNames = t.sev_names;
-  const colors = ['#10b981','#eab308','#f97316','#ef4444','#991b1b'];
+  const sevNames = t('sev') ? (T[currentLang]||T.en).sev : T.en.sev;
+  const findTexts = (T[currentLang]||T.en).find;
+  const recTexts = (T[currentLang]||T.en).rec;
   const barColors = ['#22c55e','#eab308','#f97316','#ef4444','#dc2626'];
+
   const badge = document.getElementById('severityBadge');
   badge.textContent = sevNames[result.severity];
   badge.className = 'severity-badge severity-'+result.severity;
-  const confPct = (result.confidence*100).toFixed(1)+'%';
-  document.getElementById('confPercent').textContent = confPct;
-  const confBar = document.getElementById('confBar');
-  confBar.style.width = (result.confidence*100)+'%';
-  confBar.style.background = `linear-gradient(90deg, ${colors[result.severity]}, ${barColors[result.severity]})`;
-  const pc = document.getElementById('probBars'); pc.innerHTML='';
-  for (let i=0;i<5;i++){
-    const pct=(result.probabilities[i]*100).toFixed(1);
-    pc.innerHTML+=`<div class="prob-item"><div class="label-row"><span>${sevNames[i]}</span><span>${pct}%</span></div><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:${pct}%;background:${barColors[i]};"></div></div></div>`;
+
+  const pct = (result.confidence*100).toFixed(1)+'%';
+  document.getElementById('confPercent').textContent = pct;
+  const bar = document.getElementById('confBar');
+  // Use setTimeout to trigger CSS transition
+  setTimeout(() => {
+    bar.style.width = (result.confidence*100)+'%';
+    bar.style.background = `linear-gradient(90deg, ${barColors[result.severity]}, ${barColors[result.severity]}88)`;
+  }, 100);
+
+  const pc = document.getElementById('probBars');
+  pc.innerHTML = '';
+  for(let i=0;i<5;i++){
+    const p=(result.probabilities[i]*100).toFixed(1);
+    const div = document.createElement('div');
+    div.className = 'prob-item';
+    div.innerHTML = `<div class="label-row"><span>${sevNames[i]}</span><span>${p}%</span></div><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:0%;background:${barColors[i]};"></div></div>`;
+    pc.appendChild(div);
+    // Animate bars
+    setTimeout(() => {
+      div.querySelector('.prob-bar-fill').style.width = p+'%';
+    }, 200 + i*100);
   }
-  const fk=['findings_none','findings_mild','findings_moderate','findings_severe','findings_prolif'];
-  document.getElementById('findingsText').textContent=t[fk[result.severity]];
-  const rk=['rec_none','rec_mild','rec_moderate','rec_severe','rec_prolif'];
-  document.getElementById('recommendText').textContent=t[rk[result.severity]];
+
+  document.getElementById('findingsText').textContent = findTexts[result.severity];
+  document.getElementById('recommendText').textContent = recTexts[result.severity];
 }
 
-// ===== Save =====
+// ===================================================================
+// SAVE RESULT
+// ===================================================================
 function saveResult() {
-  if (!currentResult) return;
-  screeningHistory.unshift({...currentResult, imageData:uploadedImageData});
-  if (screeningHistory.length>20) screeningHistory=screeningHistory.slice(0,20);
-  try { localStorage.setItem('drHistory',JSON.stringify(screeningHistory)); } catch(e){}
-  alert(translations[currentLang].saved_alert);
+  if(!currentResult) { showToast('❌ No result to save.'); return; }
+  const record = {
+    ...currentResult,
+    imageData: uploadedImageData,
+    processedData: preprocessedImageData
+  };
+  screeningHistory.unshift(record);
+  if(screeningHistory.length>20) screeningHistory=screeningHistory.slice(0,20);
+
+  // ★ Save to localStorage (with size management)
+  try {
+    // Don't save image data to localStorage (too large), use session
+    const lightHistory = screeningHistory.map(r => ({
+      ...r,
+      imageData: r.imageData ? r.imageData.substring(0, 100) + '...' : null,
+      processedData: null // Don't store in localStorage
+    }));
+    localStorage.setItem('drHistoryMeta', JSON.stringify(lightHistory));
+  } catch(e) { console.warn('localStorage write failed'); }
+
+  showToast(t('saved'));
+  renderHistory();
 }
 
-// ===== History =====
+// ===================================================================
+// HISTORY
+// ===================================================================
 function renderHistory() {
-  const t=translations[currentLang], container=document.getElementById('historyContent');
-  const fs=document.getElementById('filterSeverity').value, fo=document.getElementById('filterSort').value;
-  let records=[...screeningHistory];
+  const container = document.getElementById('historyContent');
+  const fs = document.getElementById('filterSeverity').value;
+  const fo = document.getElementById('filterSort').value;
+  let records = [...screeningHistory];
   if(fs!=='all'){ const en=["No DR","Mild","Moderate","Severe","Proliferative"]; records=records.filter(r=>en[r.severity]===fs); }
   if(fo==='oldest') records.reverse();
+
+  const sevNames = (T[currentLang]||T.en).sev;
+
   if(!records.length){
-    container.innerHTML=`<div class="empty-state"><span class="big-icon">📋</span><p>${t.no_history}</p><button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">${t.btn_first_screening}</button></div>`;
+    container.innerHTML=`<div class="empty-state"><span class="big-icon">📋</span><p>${t('no_history')}</p><button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">Start Screening</button></div>`;
     return;
   }
-  const sn=t.sev_names;
-  let html=`<table class="history-table"><thead><tr><th>${t.th_image}</th><th>${t.th_date}</th><th>${t.th_case}</th><th>${t.th_severity}</th><th>${t.th_confidence}</th><th>${t.th_action}</th></tr></thead><tbody>`;
+  let html=`<table class="history-table"><thead><tr><th>${t('th_img')}</th><th>${t('th_date')}</th><th>${t('th_case')}</th><th>${t('th_sev')}</th><th>${t('th_conf')}</th><th>${t('th_act')}</th></tr></thead><tbody>`;
   records.forEach((r,i)=>{
-    html+=`<tr><td><img class="history-thumb" src="${r.imageData}" alt="Fundus"></td><td>${new Date(r.timestamp).toLocaleString()}</td><td>${r.caseId}</td><td><span class="severity-badge severity-${r.severity}" style="font-size:0.8rem;padding:0.2rem 0.8rem;">${sn[r.severity]}</span></td><td>${(r.confidence*100).toFixed(1)}%</td><td><button class="btn-secondary" onclick="viewRecord(${i})">${t.btn_view}</button></td></tr>`;
+    const imgSrc = r.imageData && r.imageData.length > 200 ? r.imageData : '';
+    const thumb = imgSrc ? `<img class="history-thumb" src="${imgSrc}" alt="Fundus">` : '🖼️';
+    html+=`<tr><td>${thumb}</td><td>${new Date(r.timestamp).toLocaleString()}</td><td>${r.caseId}</td><td><span class="severity-badge severity-${r.severity}" style="font-size:0.75rem;padding:0.15rem 0.6rem;">${sevNames[r.severity]}</span></td><td>${(r.confidence*100).toFixed(1)}%</td><td><button class="btn-secondary" onclick="viewRecord(${i})">${t('btn_view')}</button></td></tr>`;
   });
-  html+='</tbody></table>'; container.innerHTML=html;
+  html+='</tbody></table>';
+  container.innerHTML=html;
 }
 document.getElementById('filterSeverity').addEventListener('change', renderHistory);
 document.getElementById('filterSort').addEventListener('change', renderHistory);
 
 function viewRecord(index) {
-  const t=translations[currentLang], r=screeningHistory[index]; if(!r)return;
-  const sn=t.sev_names;
-  const fk=['findings_none','findings_mild','findings_moderate','findings_severe','findings_prolif'];
-  const rk=['rec_none','rec_mild','rec_moderate','rec_severe','rec_prolif'];
+  const r=screeningHistory[index]; if(!r)return;
+  const sevNames=(T[currentLang]||T.en).sev;
+  const findTexts=(T[currentLang]||T.en).find;
+  const recTexts=(T[currentLang]||T.en).rec;
+  const imgSrc = r.imageData && r.imageData.length > 200 ? r.imageData : '';
+  const procSrc = r.processedData && r.processedData.length > 200 ? r.processedData : '';
+
   document.getElementById('modalBody').innerHTML=`
-    <div style="text-align:center;margin:1rem 0;"><img src="${r.imageData}" style="max-width:300px;border-radius:12px;border:2px solid var(--border);" alt="Fundus"></div>
-    <p><strong>${t.th_severity}:</strong> <span class="severity-badge severity-${r.severity}" style="font-size:0.9rem;">${sn[r.severity]}</span></p>
-    <p style="margin-top:0.5rem;"><strong>${t.th_confidence}:</strong> ${(r.confidence*100).toFixed(1)}%</p>
-    <p style="margin-top:0.5rem;"><strong>${t.th_date}:</strong> ${new Date(r.timestamp).toLocaleString()}</p>
-    <p style="margin-top:0.5rem;"><strong>${t.th_case}:</strong> ${r.caseId}</p>
-    <div class="findings-box"><h4>${t.findings}</h4><p>${t[fk[r.severity]]}</p></div>
-    <div class="recommendation-box"><h4>${t.recommendation}</h4><p>${t[rk[r.severity]]}</p></div>`;
+    <div style="display:grid;grid-template-columns:1fr ${procSrc?'1fr':''};gap:1rem;margin:1rem 0;">
+      ${imgSrc?`<div style="text-align:center;"><p style="font-weight:700;margin-bottom:0.5rem;">Original</p><img src="${imgSrc}" style="max-width:100%;max-height:250px;border-radius:12px;border:2px solid var(--border);" alt="Original"></div>`:''}
+      ${procSrc?`<div style="text-align:center;"><p style="font-weight:700;margin-bottom:0.5rem;">Processed</p><img src="${procSrc}" style="max-width:100%;max-height:250px;border-radius:12px;border:2px solid var(--border);" alt="Processed"></div>`:''}
+    </div>
+    <p><strong>${t('th_sev')}:</strong> <span class="severity-badge severity-${r.severity}" style="font-size:0.9rem;">${sevNames[r.severity]}</span></p>
+    <p style="margin-top:0.5rem;"><strong>${t('th_conf')}:</strong> ${(r.confidence*100).toFixed(1)}%</p>
+    <p style="margin-top:0.5rem;"><strong>${t('th_date')}:</strong> ${new Date(r.timestamp).toLocaleString()}</p>
+    <p style="margin-top:0.5rem;"><strong>${t('th_case')}:</strong> ${r.caseId}</p>
+    <div class="findings-box"><h4>${t('findings')}</h4><p>${findTexts[r.severity]}</p></div>
+    <div class="recommendation-box"><h4>${t('recommendation')}</h4><p>${recTexts[r.severity]}</p></div>`;
   document.getElementById('detailModal').classList.add('show');
 }
 function closeModal(){ document.getElementById('detailModal').classList.remove('show'); }
-document.getElementById('detailModal').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('detailModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
-// ===== Clinics =====
+// ===================================================================
+// CLINICS
+// ===================================================================
 function searchClinics() {
   const type=document.getElementById('clinicType').value;
   const clinics=[
-    {name:"Bangkok Eye Hospital",type:"hospital",address:"Soi Sukhumvit 3, Bangkok",phone:"02-686-1111",distance:"2.3 km"},
-    {name:"Rutnin Eye Hospital",type:"hospital",address:"80/1 Sukhumvit 21, Bangkok",phone:"02-639-3399",distance:"3.1 km"},
-    {name:"Dr. Vision Eye Clinic",type:"eye_clinic",address:"123 Silom Road, Bangkok",phone:"02-234-5678",distance:"1.8 km"},
-    {name:"Eye Care Medical Center",type:"medical_center",address:"456 Phahon Yothin Rd",phone:"02-789-0123",distance:"4.5 km"},
-    {name:"Bright Eyes Clinic",type:"eye_clinic",address:"789 Ratchada Rd",phone:"02-345-6789",distance:"5.2 km"},
-    {name:"Chulalongkorn Eye Center",type:"hospital",address:"1873 Rama IV Rd",phone:"02-256-4142",distance:"3.8 km"}
+    {name:"Bangkok Eye Hospital",type:"hospital",address:"Soi Sukhumvit 3",phone:"02-686-1111",dist:"2.3 km"},
+    {name:"Rutnin Eye Hospital",type:"hospital",address:"80/1 Sukhumvit 21",phone:"02-639-3399",dist:"3.1 km"},
+    {name:"Dr. Vision Eye Clinic",type:"eye_clinic",address:"123 Silom Road",phone:"02-234-5678",dist:"1.8 km"},
+    {name:"Eye Care Medical Center",type:"medical_center",address:"456 Phahon Yothin",phone:"02-789-0123",dist:"4.5 km"},
+    {name:"Bright Eyes Clinic",type:"eye_clinic",address:"789 Ratchada Rd",phone:"02-345-6789",dist:"5.2 km"},
   ];
   const filtered=type==='all'?clinics:clinics.filter(c=>c.type===type);
   const list=document.getElementById('clinicList');
-  if(!filtered.length){ list.innerHTML='<p style="text-align:center;padding:2rem;color:var(--text-secondary);">No clinics found.</p>'; return; }
   list.innerHTML=filtered.map(c=>`
-    <div class="clinic-item"><div><h4>🏥 ${c.name}</h4><p>📍 ${c.address}</p><p>📞 ${c.phone} · 📏 ${c.distance}</p></div>
+    <div class="clinic-item"><div><h4>🏥 ${c.name}</h4><p>📍 ${c.address}</p><p>📞 ${c.phone} · 📏 ${c.dist}</p></div>
     <button class="btn-secondary" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(c.name)}','_blank')">🗺️ Map</button></div>`).join('');
-  document.getElementById('mapArea').innerHTML=`<div style="text-align:center;padding:2rem;"><div style="font-size:2rem;">🗺️</div><p>Found <strong>${filtered.length}</strong> clinics nearby</p><p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;">Click "Map" on any clinic to open Google Maps</p></div>`;
+  document.getElementById('mapArea').innerHTML=`<div style="text-align:center;"><div style="font-size:2rem;">🗺️</div><p>Found <strong>${filtered.length}</strong> clinics</p></div>`;
 }
 
-// ===== Init =====
+// ===================================================================
+// TOAST NOTIFICATION
+// ===================================================================
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ===================================================================
+// INIT
+// ===================================================================
 setLanguage('en');
+console.log('🚀 InsightRetina loaded! Ready for screening.');
 </script>
 </body>
 </html>
