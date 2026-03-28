@@ -490,7 +490,21 @@
             transition: opacity 0.3s ease, transform 0.3s ease; transform: translateY(20px);
         }
         #toastBox.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
-        .footer { text-align: center; padding: 20px; color: #555; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.04); margin-top: 40px; }
+        .footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px 40px; 
+            color: #555; 
+            font-size: 0.8rem; 
+            border-top: 1px solid rgba(255,255,255,0.04); 
+            margin-top: 40px; 
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        @media (max-width: 600px) {
+            .footer { flex-direction: column; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -504,6 +518,7 @@
         <li><a id="n-screening" onclick="goTab('screening')" data-lang="nav_screening">🔬 Screening</a></li>
         <li><a id="n-history" onclick="goTab('history')" data-lang="nav_history">📋 History</a></li>
         <li><a id="n-clinic" onclick="goTab('clinic')" data-lang="nav_clinic">🏥 Clinic</a></li>
+        <li><a id="n-about" onclick="goTab('about')" data-lang="nav_about">👥 About Us</a></li>
     </ul>
     <div class="nav-right">
         <div class="lang-dropdown" id="langDropdown">
@@ -688,10 +703,40 @@
     </div>
 </div>
 
+<div class="tab" id="t-about">
+    <div class="section-title">
+        <h1 data-lang="about_title">👥 About Us</h1>
+        <p data-lang="about_desc">Our Development Team</p>
+    </div>
+    <div class="card" style="max-width: 600px; margin: 0 auto; font-size: 1.05rem; line-height: 1.8;">
+        <ul style="list-style: none;">
+            <li style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                นางสาวณิชา ถาชื่น <span style="float: right; color: #42a5f5; font-weight: 600;">66109010157</span>
+            </li>
+            <li style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                นางสาวทิฆัมพร สวัสดิ์ <span style="float: right; color: #42a5f5; font-weight: 600;">66109010158</span>
+            </li>
+            <li style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                นางสาวพิชามญชุ์ อินทรา <span style="float: right; color: #42a5f5; font-weight: 600;">66109010167</span>
+            </li>
+            <li style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                นางสาวพจณิชา โตงาม <span style="float: right; color: #42a5f5; font-weight: 600;">66109010429</span>
+            </li>
+            <li style="padding: 12px 10px;">
+                นายวรภพ วรพสิษฐ์ <span style="float: right; color: #42a5f5; font-weight: 600;">66109010435</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div class="overlay" id="overlay"><div class="spin"></div><div class="overlay-text" id="overlayMsg">Analyzing...</div></div>
 <div class="modal-bg" id="modalBg"><div class="modal-content"><button class="modal-x" onclick="closeModal()">×</button><h2 id="mTitle">Record</h2><div id="mBody"></div></div></div>
 <div id="toastBox"></div>
-<div class="footer" data-lang="footer">© 2024 InsightRetina. For preliminary screening only.</div>
+
+<div class="footer">
+    <div style="text-align: left; color: #888;">อ้างอิง dataset ของ APTOS 2019 Blindness Detection</div>
+    <div data-lang="footer" style="text-align: right;">© 2024 InsightRetina. For preliminary screening only.</div>
+</div>
 
 <script>
 /* ================================================================
@@ -700,7 +745,7 @@
 var LANG = {
     en: {
         _name:'English',_flag:'🇬🇧',
-        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 History',nav_clinic:'🏥 Clinic',
+        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 History',nav_clinic:'🏥 Clinic', nav_about:'👥 About Us',
         hero_desc:'AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.',
         ai_status:'AI System Active — Ready for Analysis',
         stat_accuracy:'AI Accuracy',stat_speed:'Analysis Speed',stat_classes:'DR Classes',
@@ -724,6 +769,7 @@ var LANG = {
         clinic_title:'🏥 Nearby Eye Clinics',clinic_desc:'Find ophthalmology clinics near you',
         type_all:'All Types',type_eye:'Eye Clinic',type_hospital:'Hospital',type_med:'Medical Center',
         search_placeholder:'🔍 Search...',btn_search:'🔍 Search',map_hint:'🗺️ Click Search to find clinics',
+        about_title:'👥 About Us', about_desc:'Our Development Team',
         footer:'© 2024 InsightRetina. For preliminary screening only.',
         no_history:'No screening history',btn_start_first:'Start Screening',
         loading_preprocess:'🔄 Preprocessing image...',loading_ai:'🤖 Running AI classification...',loading_result:'📊 Generating results...',
@@ -733,7 +779,7 @@ var LANG = {
     },
     th: {
         _name:'ไทย',_flag:'🇹🇭',
-        nav_home:'🏠 หน้าแรก',nav_screening:'🔬 ตรวจคัดกรอง',nav_history:'📋 ประวัติ',nav_clinic:'🏥 คลินิก',
+        nav_home:'🏠 หน้าแรก',nav_screening:'🔬 ตรวจคัดกรอง',nav_history:'📋 ประวัติ',nav_clinic:'🏥 คลินิก', nav_about:'👥 ผู้จัดทำ',
         hero_desc:'ระบบคัดกรองเบาหวานขึ้นจอตาด้วย AI วิเคราะห์ภาพจอประสาทตาเพื่อตรวจจับตั้งแต่ระยะเริ่มต้น',
         ai_status:'ระบบ AI พร้อมทำงาน — พร้อมวิเคราะห์',
         stat_accuracy:'ความแม่นยำ AI',stat_speed:'ความเร็ววิเคราะห์',stat_classes:'ระดับ DR',
@@ -757,6 +803,7 @@ var LANG = {
         clinic_title:'🏥 คลินิกตาใกล้คุณ',clinic_desc:'ค้นหาคลินิกจักษุใกล้ที่ตั้งของคุณ',
         type_all:'ทุกประเภท',type_eye:'คลินิกตา',type_hospital:'โรงพยาบาล',type_med:'ศูนย์การแพทย์',
         search_placeholder:'🔍 ค้นหา...',btn_search:'🔍 ค้นหา',map_hint:'🗺️ กดค้นหาเพื่อแสดงคลินิก',
+        about_title:'👥 ผู้จัดทำ', about_desc:'ทีมงานผู้พัฒนา',
         footer:'© 2024 InsightRetina สำหรับคัดกรองเบื้องต้นเท่านั้น',
         no_history:'ยังไม่มีประวัติ',btn_start_first:'เริ่มตรวจ',
         loading_preprocess:'🔄 กำลังประมวลผลภาพ...',loading_ai:'🤖 กำลังวิเคราะห์ด้วย AI...',loading_result:'📊 กำลังสร้างผลลัพธ์...',
@@ -766,7 +813,7 @@ var LANG = {
     },
     id: {
         _name:'Bahasa Indonesia',_flag:'🇮🇩',
-        nav_home:'🏠 Beranda',nav_screening:'🔬 Skrining',nav_history:'📋 Riwayat',nav_clinic:'🏥 Klinik',
+        nav_home:'🏠 Beranda',nav_screening:'🔬 Skrining',nav_history:'📋 Riwayat',nav_clinic:'🏥 Klinik', nav_about:'👥 Tentang Kami',
         hero_desc:'Skrining Retinopati Diabetik Bertenaga AI. Analisis retina canggih untuk deteksi dini.',
         ai_status:'Sistem AI Aktif — Siap Analisis',
         stat_accuracy:'Akurasi AI',stat_speed:'Kecepatan',stat_classes:'Kelas DR',
@@ -784,6 +831,7 @@ var LANG = {
         hist_title:'📋 Riwayat',hist_desc:'Tinjau catatan skrining',filter_all:'Semua',sort_new:'Terbaru',sort_old:'Terlama',
         clinic_title:'🏥 Klinik Mata',clinic_desc:'Temukan klinik mata terdekat',type_all:'Semua',type_eye:'Klinik Mata',type_hospital:'Rumah Sakit',type_med:'Pusat Medis',
         search_placeholder:'🔍 Cari...',btn_search:'🔍 Cari',map_hint:'🗺️ Klik Cari',
+        about_title:'👥 Tentang Kami', about_desc:'Tim Pengembang',
         footer:'© 2024 InsightRetina. Skrining awal.',no_history:'Belum ada riwayat',btn_start_first:'Mulai',
         loading_preprocess:'🔄 Memproses...',loading_ai:'🤖 Klasifikasi AI...',loading_result:'📊 Membuat hasil...',
         toast_upload_ok:'✅ Berhasil!',toast_upload_type:'❌ JPG/PNG saja!',toast_upload_size:'❌ Maks 5MB!',toast_upload_invalid:'❌ Bukan gambar!',
@@ -792,7 +840,7 @@ var LANG = {
     },
     vi: {
         _name:'Tiếng Việt',_flag:'🇻🇳',
-        nav_home:'🏠 Trang chủ',nav_screening:'🔬 Sàng lọc',nav_history:'📋 Lịch sử',nav_clinic:'🏥 Phòng khám',
+        nav_home:'🏠 Trang chủ',nav_screening:'🔬 Sàng lọc',nav_history:'📋 Lịch sử',nav_clinic:'🏥 Phòng khám', nav_about:'👥 Về chúng tôi',
         hero_desc:'Sàng lọc bệnh võng mạc tiểu đường bằng AI. Phân tích võng mạc tiên tiến.',
         ai_status:'Hệ thống AI đang hoạt động — Sẵn sàng phân tích',
         stat_accuracy:'Độ chính xác',stat_speed:'Tốc độ',stat_classes:'Phân loại',
@@ -809,6 +857,7 @@ var LANG = {
         hist_title:'📋 Lịch sử',hist_desc:'Xem hồ sơ',filter_all:'Tất cả',sort_new:'Mới nhất',sort_old:'Cũ nhất',
         clinic_title:'🏥 Phòng khám mắt',clinic_desc:'Tìm gần bạn',type_all:'Tất cả',type_eye:'Phòng khám',type_hospital:'Bệnh viện',type_med:'Trung tâm y tế',
         search_placeholder:'🔍 Tìm...',btn_search:'🔍 Tìm',map_hint:'🗺️ Nhấn Tìm',
+        about_title:'👥 Về chúng tôi', about_desc:'Nhóm phát triển',
         footer:'© 2024 InsightRetina.',no_history:'Chưa có',btn_start_first:'Bắt đầu',
         loading_preprocess:'🔄 Xử lý ảnh...',loading_ai:'🤖 AI...',loading_result:'📊 Kết quả...',
         toast_upload_ok:'✅ Thành công!',toast_upload_type:'❌ JPG/PNG!',toast_upload_size:'❌ Tối đa 5MB!',toast_upload_invalid:'❌ Không hợp lệ!',
@@ -817,7 +866,7 @@ var LANG = {
     },
     fil: {
         _name:'Filipino',_flag:'🇵🇭',
-        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 Kasaysayan',nav_clinic:'🏥 Klinika',
+        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 Kasaysayan',nav_clinic:'🏥 Klinika', nav_about:'👥 Tungkol sa Amin',
         hero_desc:'AI-Powered Diabetic Retinopathy Screening para sa maagang pagtuklas.',
         ai_status:'AI System Aktibo — Handa na',
         stat_accuracy:'AI Accuracy',stat_speed:'Bilis',stat_classes:'DR Classes',
@@ -834,6 +883,7 @@ var LANG = {
         hist_title:'📋 Kasaysayan',hist_desc:'Mga record',filter_all:'Lahat',sort_new:'Pinakabago',sort_old:'Pinakaluma',
         clinic_title:'🏥 Klinika',clinic_desc:'Maghanap malapit',type_all:'Lahat',type_eye:'Klinika ng Mata',type_hospital:'Ospital',type_med:'Medical Center',
         search_placeholder:'🔍 Hanapin...',btn_search:'🔍 Hanapin',map_hint:'🗺️ I-click Hanapin',
+        about_title:'👥 Tungkol sa Amin', about_desc:'Pangkat ng Pag-unlad',
         footer:'© 2024 InsightRetina.',no_history:'Wala pa',btn_start_first:'Simulan',
         loading_preprocess:'🔄 Pinoproseso...',loading_ai:'🤖 AI...',loading_result:'📊 Resulta...',
         toast_upload_ok:'✅ Na-upload!',toast_upload_type:'❌ JPG/PNG lang!',toast_upload_size:'❌ Max 5MB!',toast_upload_invalid:'❌ Hindi valid!',
@@ -842,7 +892,7 @@ var LANG = {
     },
     ms: {
         _name:'Bahasa Melayu',_flag:'🇲🇾',
-        nav_home:'🏠 Utama',nav_screening:'🔬 Saringan',nav_history:'📋 Sejarah',nav_clinic:'🏥 Klinik',
+        nav_home:'🏠 Utama',nav_screening:'🔬 Saringan',nav_history:'📋 Sejarah',nav_clinic:'🏥 Klinik', nav_about:'👥 Tentang Kami',
         hero_desc:'Saringan Retinopati Diabetik Berkuasa AI untuk pengesanan awal.',
         ai_status:'Sistem AI Aktif — Sedia Analisis',
         stat_accuracy:'Ketepatan AI',stat_speed:'Kelajuan',stat_classes:'Kelas DR',
@@ -859,6 +909,7 @@ var LANG = {
         hist_title:'📋 Sejarah',hist_desc:'Semak rekod',filter_all:'Semua',sort_new:'Terbaru',sort_old:'Terlama',
         clinic_title:'🏥 Klinik Mata',clinic_desc:'Cari berhampiran',type_all:'Semua',type_eye:'Klinik Mata',type_hospital:'Hospital',type_med:'Pusat Perubatan',
         search_placeholder:'🔍 Cari...',btn_search:'🔍 Cari',map_hint:'🗺️ Klik Cari',
+        about_title:'👥 Tentang Kami', about_desc:'Pasukan Pembangun',
         footer:'© 2024 InsightRetina.',no_history:'Tiada sejarah',btn_start_first:'Mula',
         loading_preprocess:'🔄 Memproses...',loading_ai:'🤖 AI...',loading_result:'📊 Keputusan...',
         toast_upload_ok:'✅ Berjaya!',toast_upload_type:'❌ JPG/PNG sahaja!',toast_upload_size:'❌ Maks 5MB!',toast_upload_invalid:'❌ Tidak sah!',
