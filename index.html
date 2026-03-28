@@ -20,8 +20,28 @@
             border-bottom: 1px solid rgba(100,181,246,0.2);
             position: sticky; top: 0; z-index: 1000;
         }
-        .logo { font-size: 1.4rem; font-weight: 700; color: #90caf9; }
+
+        /* ★ LOGO - คลิกได้ กลับ Home ★ */
+        .logo {
+            font-size: 1.4rem; font-weight: 700; color: #90caf9;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
+            user-select: none;
+        }
+        .logo:hover { color: #64b5f6; transform: scale(1.03); }
+        .logo:active { transform: scale(0.98); }
         .logo span { color: #fff; }
+        .logo .logo-dot {
+            display: inline-block; width: 8px; height: 8px;
+            background: #42a5f5; border-radius: 50%;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(66,165,245,0.6); }
+            50% { opacity: 0.7; box-shadow: 0 0 10px 4px rgba(66,165,245,0.3); }
+        }
+
         .nav-center { display: flex; gap: 4px; list-style: none; }
         .nav-center li a {
             color: #aaa; text-decoration: none; padding: 10px 14px;
@@ -30,7 +50,7 @@
         .nav-center li a:hover, .nav-center li a.active { color: #fff; background: rgba(66,165,245,0.2); }
         .nav-right { display: flex; align-items: center; gap: 10px; }
 
-        /* ===== LANGUAGE DROPDOWN ===== */
+        /* ===== LANGUAGE ===== */
         .lang-dropdown { position: relative; }
         .lang-btn {
             background: rgba(255,255,255,0.08); border: 1px solid rgba(100,181,246,0.2);
@@ -65,24 +85,278 @@
         .tab { display: none; max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
         .tab.active { display: block; }
 
-        /* ===== HERO ===== */
-        .hero { text-align: center; padding: 60px 20px; }
+        /* ============================================================
+           ★★★ HERO SECTION WITH ANIMATIONS ★★★
+           ============================================================ */
+        .hero { text-align: center; padding: 40px 20px 60px; position: relative; overflow: hidden; }
+
+        /* ★ ANIMATED EYE / RETINA ★ */
+        .retina-animation {
+            position: relative;
+            width: 220px; height: 220px;
+            margin: 0 auto 30px;
+        }
+
+        /* Outer ring - rotating */
+        .retina-outer {
+            position: absolute; inset: 0;
+            border: 3px solid transparent;
+            border-top-color: #42a5f5;
+            border-right-color: #64b5f6;
+            border-radius: 50%;
+            animation: retinaSpin 4s linear infinite;
+        }
+        @keyframes retinaSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Middle ring - counter rotate */
+        .retina-mid {
+            position: absolute; inset: 15px;
+            border: 2px dashed rgba(100,181,246,0.3);
+            border-radius: 50%;
+            animation: retinaSpin 6s linear infinite reverse;
+        }
+
+        /* Inner ring - pulse */
+        .retina-inner {
+            position: absolute; inset: 30px;
+            border: 2px solid rgba(66,165,245,0.4);
+            border-radius: 50%;
+            animation: retinaPulse 2s ease-in-out infinite;
+        }
+        @keyframes retinaPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        /* Eye center */
+        .retina-eye {
+            position: absolute; inset: 50px;
+            background: radial-gradient(circle, #1565c0 20%, #0d47a1 50%, #42a5f5 70%, transparent 72%);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 40px rgba(66,165,245,0.3), inset 0 0 30px rgba(0,0,0,0.5);
+            animation: eyeGlow 3s ease-in-out infinite;
+        }
+        @keyframes eyeGlow {
+            0%, 100% { box-shadow: 0 0 40px rgba(66,165,245,0.3), inset 0 0 30px rgba(0,0,0,0.5); }
+            50% { box-shadow: 0 0 60px rgba(66,165,245,0.5), inset 0 0 30px rgba(0,0,0,0.3); }
+        }
+
+        /* Pupil */
+        .retina-pupil {
+            width: 40px; height: 40px;
+            background: radial-gradient(circle, #000 40%, #0d47a1 100%);
+            border-radius: 50%;
+            position: relative;
+            animation: pupilPulse 3s ease-in-out infinite;
+        }
+        @keyframes pupilPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.85); }
+        }
+
+        /* Light reflection */
+        .retina-pupil::after {
+            content: '';
+            position: absolute; top: 6px; right: 8px;
+            width: 10px; height: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+        }
+
+        /* Scan line */
+        .scan-line {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 2px; height: 50%;
+            background: linear-gradient(to bottom, transparent, #42a5f5, transparent);
+            transform-origin: bottom center;
+            animation: scanRotate 3s linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes scanRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scan beam effect */
+        .scan-beam {
+            position: absolute; inset: 30px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .scan-beam::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(66,165,245,0.1) 30deg,
+                transparent 60deg
+            );
+            animation: scanRotate 3s linear infinite;
+        }
+
+        /* Data points around eye */
+        .data-points {
+            position: absolute; inset: 0;
+            animation: retinaSpin 20s linear infinite;
+        }
+        .data-point {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: #42a5f5;
+            border-radius: 50%;
+            animation: pointBlink 2s ease-in-out infinite;
+        }
+        .data-point:nth-child(1) { top: 5%; left: 50%; animation-delay: 0s; }
+        .data-point:nth-child(2) { top: 20%; right: 10%; animation-delay: 0.3s; }
+        .data-point:nth-child(3) { bottom: 20%; right: 5%; animation-delay: 0.6s; }
+        .data-point:nth-child(4) { bottom: 5%; left: 45%; animation-delay: 0.9s; }
+        .data-point:nth-child(5) { bottom: 20%; left: 5%; animation-delay: 1.2s; }
+        .data-point:nth-child(6) { top: 20%; left: 10%; animation-delay: 1.5s; }
+        @keyframes pointBlink {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.8); box-shadow: 0 0 6px #42a5f5; }
+        }
+
+        /* ★ FLOATING PARTICLES ★ */
+        .particles {
+            position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: rgba(66,165,245,0.4);
+            border-radius: 50%;
+            animation: particleFloat linear infinite;
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20px) scale(1); opacity: 0; }
+        }
+
+        /* ★ STATUS TEXT ANIMATION ★ */
+        .ai-status {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(66,165,245,0.1);
+            border: 1px solid rgba(66,165,245,0.25);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            color: #64b5f6;
+            margin-bottom: 20px;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+        @keyframes statusPulse {
+            0%, 100% { border-color: rgba(66,165,245,0.25); }
+            50% { border-color: rgba(66,165,245,0.6); }
+        }
+        .ai-status .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #66bb6a;
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ★ TYPING TEXT ★ */
+        .typing-text {
+            display: inline-block;
+            border-right: 2px solid #42a5f5;
+            padding-right: 4px;
+            animation: blink 0.8s step-end infinite;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
         .hero h1 {
             font-size: 2.8rem;
             background: linear-gradient(90deg, #64b5f6, #42a5f5, #90caf9);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
+            animation: titleGlow 3s ease-in-out infinite;
         }
-        .hero > p { color: #aaa; font-size: 1.1rem; margin-bottom: 40px; }
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .hero > p { color: #aaa; font-size: 1.1rem; margin-bottom: 35px; }
+
+        /* ★ FEATURE CARDS WITH HOVER ANIMATION ★ */
         .features { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
         .feat-card {
             background: rgba(255,255,255,0.04); border: 1px solid rgba(100,181,246,0.2);
-            border-radius: 16px; padding: 28px 20px; width: 220px; text-align: center; transition: all 0.3s;
+            border-radius: 16px; padding: 28px 20px; width: 220px; text-align: center;
+            transition: all 0.4s; position: relative; overflow: hidden;
         }
-        .feat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(66,165,245,0.15); }
-        .feat-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .feat-card::before {
+            content: '';
+            position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(66,165,245,0.08) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .feat-card:hover::before { opacity: 1; }
+        .feat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(66,165,245,0.15); border-color: rgba(100,181,246,0.4); }
+
+        .feat-card .icon {
+            font-size: 2.5rem; margin-bottom: 12px;
+            display: inline-block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        .feat-card:nth-child(1) .icon { animation-delay: 0s; }
+        .feat-card:nth-child(2) .icon { animation-delay: 0.5s; }
+        .feat-card:nth-child(3) .icon { animation-delay: 1s; }
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
         .feat-card h3 { color: #64b5f6; margin-bottom: 6px; font-size: 1rem; }
         .feat-card p { color: #888; font-size: 0.85rem; }
+
+        /* ★ STATS BAR ANIMATION ★ */
+        .stats-bar {
+            display: flex; justify-content: center; gap: 40px;
+            margin: 30px 0 40px; flex-wrap: wrap;
+        }
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-size: 1.8rem; font-weight: 700; color: #42a5f5;
+            display: block;
+        }
+        .stat-label { font-size: 0.8rem; color: #888; margin-top: 4px; }
+        .stat-number .counter { display: inline; }
+
+        /* ★ START BUTTON ★ */
+        .btn-start-wrap { position: relative; display: inline-block; }
+        .btn-start-wrap::after {
+            content: '';
+            position: absolute; inset: -3px;
+            background: linear-gradient(135deg, #1565c0, #42a5f5, #90caf9, #42a5f5);
+            border-radius: 14px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            background-size: 300% 300%;
+        }
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .disclaimer {
             background: rgba(255,167,38,0.1); border: 1px solid rgba(255,167,38,0.25);
             border-radius: 10px; padding: 14px; text-align: center; color: #ffa726;
@@ -130,7 +404,6 @@
         .preview-info .fname { color: #66bb6a; font-weight: 600; }
         .preview-info .fsize { color: #888; font-size: 0.8rem; margin-top: 4px; }
         .preview-info .fchange { color: #42a5f5; font-size: 0.8rem; margin-top: 4px; }
-
         .progress-bar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 14px 16px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-top: 16px;
@@ -140,20 +413,19 @@
         .p-step.active { color: #42a5f5; }
         .p-step.done { color: #66bb6a; }
         .p-arrow { color: #444; }
-
         .screen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
         @media (max-width: 850px) {
             .screen-grid { grid-template-columns: 1fr; }
             .hero h1 { font-size: 2rem; }
             .features { flex-direction: column; align-items: center; }
             .nav-center li a { padding: 8px 8px; font-size: 0.78rem; }
+            .retina-animation { width: 160px; height: 160px; }
+            .stats-bar { gap: 20px; }
         }
-
         .img-box { background: rgba(0,0,0,0.3); border-radius: 12px; height: 260px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .img-empty { text-align: center; color: #555; }
         .img-empty .ie-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.5; }
-
         .result-card { display: none; }
         .result-card.show { display: block; }
         .sev-label { display: inline-block; padding: 8px 22px; border-radius: 20px; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px; }
@@ -179,7 +451,6 @@
         .find-box li::before { content: "▸"; position: absolute; left: 0; color: #42a5f5; }
         .rec-box { background: rgba(66,165,245,0.08); border: 1px solid rgba(66,165,245,0.2); border-radius: 10px; padding: 14px; margin: 14px 0; font-size: 0.88rem; color: #aaa; line-height: 1.6; }
         .rec-box h4 { color: #90caf9; margin-bottom: 6px; }
-
         .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .filters select { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-family: inherit; }
         .filters select option { background: #1a1a4e; }
@@ -188,7 +459,6 @@
         .hist-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(100,181,246,0.3); }
         .empty-box { text-align: center; padding: 50px; color: #555; }
         .empty-box .eb-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
-
         .search-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .search-row select, .search-row input { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 10px 14px; border-radius: 8px; font-family: inherit; flex: 1; min-width: 140px; }
         .search-row input::placeholder { color: #666; }
@@ -200,28 +470,24 @@
         .clinic-card h3 { color: #90caf9; font-size: 0.95rem; margin-bottom: 8px; }
         .clinic-card p { color: #888; font-size: 0.82rem; margin: 3px 0; }
         .clinic-tag { display: inline-block; background: rgba(66,165,245,0.12); color: #42a5f5; padding: 3px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-top: 8px; }
-
         .overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,30,0.92); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
         .overlay.show { display: flex; }
         .spin { width: 50px; height: 50px; border: 3px solid rgba(66,165,245,0.15); border-top-color: #42a5f5; border-radius: 50%; animation: sp 0.7s linear infinite; }
         @keyframes sp { to { transform: rotate(360deg); } }
         .overlay-text { color: #64b5f6; font-size: 0.95rem; text-align: center; }
-
         .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
         .modal-bg.show { display: flex; }
         .modal-content { background: linear-gradient(135deg, #151550, #1a1a55); border: 1px solid rgba(100,181,246,0.3); border-radius: 16px; padding: 28px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
         .modal-x { position: absolute; top: 12px; right: 16px; background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
         .modal-x:hover { color: #fff; }
         .modal-content h2 { color: #90caf9; margin-bottom: 16px; font-size: 1.15rem; }
-
         #toastBox {
             position: fixed; bottom: 24px; right: 24px;
             background: #1a1a55; border: 1px solid rgba(100,181,246,0.3);
             border-radius: 10px; padding: 12px 20px; color: #fff; font-size: 0.9rem;
             z-index: 9999; opacity: 0; pointer-events: none;
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease; transform: translateY(20px);
         }
         #toastBox.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .footer { text-align: center; padding: 20px; color: #555; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.04); margin-top: 40px; }
@@ -231,7 +497,10 @@
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar">
-    <div class="logo">🔍 <span>Insight</span>Retina</div>
+    <!-- ★ LOGO - คลิกกลับ Home ★ -->
+    <div class="logo" onclick="goTab('home')" title="Go to Home">
+        🔍 <span>Insight</span>Retina <span class="logo-dot"></span>
+    </div>
     <ul class="nav-center">
         <li><a id="n-home" class="active" onclick="goTab('home')" data-lang="nav_home">🏠 Home</a></li>
         <li><a id="n-screening" onclick="goTab('screening')" data-lang="nav_screening">🔬 Screening</a></li>
@@ -239,32 +508,17 @@
         <li><a id="n-clinic" onclick="goTab('clinic')" data-lang="nav_clinic">🏥 Clinic</a></li>
     </ul>
     <div class="nav-right">
-        <!-- ★★★ LANGUAGE DROPDOWN ★★★ -->
         <div class="lang-dropdown" id="langDropdown">
             <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()">
-                <span id="langFlag">🇬🇧</span>
-                <span id="langName">English</span>
-                <span class="arrow">▼</span>
+                <span id="langFlag">🇬🇧</span><span id="langName">English</span><span class="arrow">▼</span>
             </button>
             <div class="lang-menu" id="langMenu">
-                <div class="lang-option selected" data-langcode="en" onclick="changeLang('en')">
-                    <span class="flag">🇬🇧</span> English <span class="check">✓</span>
-                </div>
-                <div class="lang-option" data-langcode="th" onclick="changeLang('th')">
-                    <span class="flag">🇹🇭</span> ไทย <span class="check"></span>
-                </div>
-                <div class="lang-option" data-langcode="id" onclick="changeLang('id')">
-                    <span class="flag">🇮🇩</span> Bahasa Indonesia <span class="check"></span>
-                </div>
-                <div class="lang-option" data-langcode="vi" onclick="changeLang('vi')">
-                    <span class="flag">🇻🇳</span> Tiếng Việt <span class="check"></span>
-                </div>
-                <div class="lang-option" data-langcode="fil" onclick="changeLang('fil')">
-                    <span class="flag">🇵🇭</span> Filipino <span class="check"></span>
-                </div>
-                <div class="lang-option" data-langcode="ms" onclick="changeLang('ms')">
-                    <span class="flag">🇲🇾</span> Bahasa Melayu <span class="check"></span>
-                </div>
+                <div class="lang-option selected" data-langcode="en" onclick="changeLang('en')"><span class="flag">🇬🇧</span> English <span class="check">✓</span></div>
+                <div class="lang-option" data-langcode="th" onclick="changeLang('th')"><span class="flag">🇹🇭</span> ไทย <span class="check"></span></div>
+                <div class="lang-option" data-langcode="id" onclick="changeLang('id')"><span class="flag">🇮🇩</span> Bahasa Indonesia <span class="check"></span></div>
+                <div class="lang-option" data-langcode="vi" onclick="changeLang('vi')"><span class="flag">🇻🇳</span> Tiếng Việt <span class="check"></span></div>
+                <div class="lang-option" data-langcode="fil" onclick="changeLang('fil')"><span class="flag">🇵🇭</span> Filipino <span class="check"></span></div>
+                <div class="lang-option" data-langcode="ms" onclick="changeLang('ms')"><span class="flag">🇲🇾</span> Bahasa Melayu <span class="check"></span></div>
             </div>
         </div>
     </div>
@@ -272,9 +526,55 @@
 
 <!-- ===== HOME ===== -->
 <div class="tab active" id="t-home">
+    <!-- ★ FLOATING PARTICLES ★ -->
+    <div class="particles" id="particlesContainer"></div>
+
     <div class="hero">
+        <!-- ★★★ ANIMATED RETINA EYE ★★★ -->
+        <div class="retina-animation">
+            <div class="retina-outer"></div>
+            <div class="retina-mid"></div>
+            <div class="retina-inner"></div>
+            <div class="scan-beam"></div>
+            <div class="retina-eye">
+                <div class="retina-pupil"></div>
+            </div>
+            <div class="scan-line"></div>
+            <div class="data-points">
+                <div class="data-point"></div>
+                <div class="data-point"></div>
+                <div class="data-point"></div>
+                <div class="data-point"></div>
+                <div class="data-point"></div>
+                <div class="data-point"></div>
+            </div>
+        </div>
+
+        <!-- ★ AI STATUS BADGE ★ -->
+        <div class="ai-status">
+            <span class="dot"></span>
+            <span data-lang="ai_status">AI System Active — Ready for Analysis</span>
+        </div>
+
         <h1>InsightRetina</h1>
         <p data-lang="hero_desc">AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.</p>
+
+        <!-- ★ ANIMATED STATS ★ -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number"><span class="counter" data-target="98.5">0</span>%</span>
+                <span class="stat-label" data-lang="stat_accuracy">AI Accuracy</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number"><span class="counter" data-target="30">0</span>s</span>
+                <span class="stat-label" data-lang="stat_speed">Analysis Speed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number"><span class="counter" data-target="5">0</span></span>
+                <span class="stat-label" data-lang="stat_classes">DR Classes</span>
+            </div>
+        </div>
+
         <div class="features">
             <div class="feat-card">
                 <div class="icon">🔬</div>
@@ -292,7 +592,11 @@
                 <p data-lang="feat_clinic_desc">Find nearby ophthalmology centers</p>
             </div>
         </div>
-        <button class="btn btn-primary" onclick="goTab('screening')" data-lang="btn_start">🔬 Start Screening</button>
+
+        <div class="btn-start-wrap">
+            <button class="btn btn-primary" onclick="goTab('screening')" data-lang="btn_start">🔬 Start Screening</button>
+        </div>
+
         <div class="disclaimer" data-lang="disclaimer">⚠️ This tool is for preliminary screening only. Always consult a qualified ophthalmologist.</div>
     </div>
 </div>
@@ -303,7 +607,6 @@
         <h1 data-lang="scr_title">🔬 Diabetic Retinopathy Screening</h1>
         <p data-lang="scr_desc">Upload a fundus image for AI analysis</p>
     </div>
-
     <div class="card upload-section">
         <div class="upload-box" id="uploadBox">
             <div id="uploadDefault">
@@ -323,7 +626,6 @@
             </div>
         </div>
         <input type="file" id="hiddenFileInput" accept=".jpg,.jpeg,.png,image/jpeg,image/png" style="display:none;" />
-
         <div class="progress-bar">
             <div class="p-step" id="ps-upload"><div class="p-icon">📥</div><span data-lang="step_upload">Upload</span></div>
             <span class="p-arrow">→</span>
@@ -334,25 +636,19 @@
             <div class="p-step" id="ps-result"><div class="p-icon">📊</div><span data-lang="step_result">Result</span></div>
         </div>
     </div>
-
     <div class="screen-grid">
         <div>
             <div class="card" style="margin-bottom:18px;">
                 <div class="card-title" data-lang="orig_image">👁️ Original Image</div>
-                <div class="img-box" id="origBox">
-                    <div class="img-empty"><div class="ie-icon">👁️</div><p data-lang="no_image">No image selected</p></div>
-                </div>
+                <div class="img-box" id="origBox"><div class="img-empty"><div class="ie-icon">👁️</div><p data-lang="no_image">No image selected</p></div></div>
             </div>
             <div class="card" style="margin-bottom:18px;">
                 <div class="card-title" data-lang="proc_image">🔄 Preprocessed Image</div>
-                <div class="img-box" id="procBox">
-                    <div class="img-empty"><div class="ie-icon">🔄</div><p data-lang="waiting">Waiting for analysis</p></div>
-                </div>
+                <div class="img-box" id="procBox"><div class="img-empty"><div class="ie-icon">🔄</div><p data-lang="waiting">Waiting for analysis</p></div></div>
                 <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:10px;" onclick="dlProcessed()" data-lang="btn_save_proc">💾 Save Processed Image</button>
             </div>
             <button class="btn btn-primary" id="btnAnalyze" style="width:100%;justify-content:center;" disabled onclick="doAnalyze()" data-lang="btn_analyze">🔬 Analyze Image</button>
         </div>
-
         <div>
             <div class="card result-card" id="resultCard">
                 <div class="card-title" data-lang="result_title">📊 Screening Result</div>
@@ -376,20 +672,11 @@
 
 <!-- ===== HISTORY ===== -->
 <div class="tab" id="t-history">
-    <div class="section-title">
-        <h1 data-lang="hist_title">📋 Screening History</h1>
-        <p data-lang="hist_desc">Review your screening records</p>
-    </div>
+    <div class="section-title"><h1 data-lang="hist_title">📋 Screening History</h1><p data-lang="hist_desc">Review your screening records</p></div>
     <div class="card">
         <div class="filters">
-            <select id="fSev" onchange="showHist()">
-                <option value="all" data-lang="filter_all">All Severities</option>
-                <option>No DR</option><option>Mild</option><option>Moderate</option><option>Severe</option><option>Proliferative</option>
-            </select>
-            <select id="fSort" onchange="showHist()">
-                <option value="new" data-lang="sort_new">Newest First</option>
-                <option value="old" data-lang="sort_old">Oldest First</option>
-            </select>
+            <select id="fSev" onchange="showHist()"><option value="all" data-lang="filter_all">All Severities</option><option>No DR</option><option>Mild</option><option>Moderate</option><option>Severe</option><option>Proliferative</option></select>
+            <select id="fSort" onchange="showHist()"><option value="new" data-lang="sort_new">Newest First</option><option value="old" data-lang="sort_old">Oldest First</option></select>
         </div>
         <div class="hist-list" id="histArea"></div>
     </div>
@@ -397,18 +684,10 @@
 
 <!-- ===== CLINIC ===== -->
 <div class="tab" id="t-clinic">
-    <div class="section-title">
-        <h1 data-lang="clinic_title">🏥 Nearby Eye Clinics</h1>
-        <p data-lang="clinic_desc">Find ophthalmology clinics near you</p>
-    </div>
+    <div class="section-title"><h1 data-lang="clinic_title">🏥 Nearby Eye Clinics</h1><p data-lang="clinic_desc">Find ophthalmology clinics near you</p></div>
     <div class="card">
         <div class="search-row">
-            <select id="cType">
-                <option value="all" data-lang="type_all">All Types</option>
-                <option value="eye_clinic" data-lang="type_eye">Eye Clinic</option>
-                <option value="hospital" data-lang="type_hospital">Hospital</option>
-                <option value="medical_center" data-lang="type_med">Medical Center</option>
-            </select>
+            <select id="cType"><option value="all" data-lang="type_all">All Types</option><option value="eye_clinic" data-lang="type_eye">Eye Clinic</option><option value="hospital" data-lang="type_hospital">Hospital</option><option value="medical_center" data-lang="type_med">Medical Center</option></select>
             <input type="text" id="cSearch" data-lang-placeholder="search_placeholder" placeholder="🔍 Search..." />
             <button class="btn btn-primary btn-sm" onclick="findClinics()" data-lang="btn_search">🔍 Search</button>
         </div>
@@ -417,684 +696,341 @@
     </div>
 </div>
 
-<!-- OVERLAY -->
-<div class="overlay" id="overlay">
-    <div class="spin"></div>
-    <div class="overlay-text" id="overlayMsg">Analyzing...</div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-    <div class="modal-content">
-        <button class="modal-x" onclick="closeModal()">×</button>
-        <h2 id="mTitle">Record</h2>
-        <div id="mBody"></div>
-    </div>
-</div>
-
-<!-- TOAST -->
+<div class="overlay" id="overlay"><div class="spin"></div><div class="overlay-text" id="overlayMsg">Analyzing...</div></div>
+<div class="modal-bg" id="modalBg"><div class="modal-content"><button class="modal-x" onclick="closeModal()">×</button><h2 id="mTitle">Record</h2><div id="mBody"></div></div></div>
 <div id="toastBox"></div>
-
 <div class="footer" data-lang="footer">© 2024 InsightRetina. For preliminary screening only.</div>
 
 <script>
 /* ================================================================
-   ★★★ MULTI-LANGUAGE SYSTEM — 6 ภาษา ★★★
+   LANGUAGE SYSTEM
    ================================================================ */
 var LANG = {
     en: {
-        _name: 'English', _flag: '🇬🇧',
-        nav_home: '🏠 Home', nav_screening: '🔬 Screening', nav_history: '📋 History', nav_clinic: '🏥 Clinic',
-        hero_desc: 'AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.',
-        feat_ai: 'Advanced AI', feat_ai_desc: 'Deep learning for accurate DR detection',
-        feat_fast: 'Fast Analysis', feat_fast_desc: 'Real-time preprocessing and instant results',
-        feat_clinic: 'Clinical Grade', feat_clinic_desc: 'Find nearby ophthalmology centers',
-        btn_start: '🔬 Start Screening',
-        disclaimer: '⚠️ This tool is for preliminary screening only. Always consult a qualified ophthalmologist.',
-        scr_title: '🔬 Diabetic Retinopathy Screening', scr_desc: 'Upload a fundus image for AI analysis',
-        upload_text: '<b>Drag & drop</b> your image here or <b>click to browse</b>',
-        upload_hint: 'Supported: JPG, PNG (max 5MB)', upload_change: '📎 Click to change image',
-        step_upload: 'Upload', step_preprocess: 'Preprocess', step_ai: 'AI Analysis', step_result: 'Result',
-        orig_image: '👁️ Original Image', proc_image: '🔄 Preprocessed Image',
-        no_image: 'No image selected', waiting: 'Waiting for analysis',
-        btn_save_proc: '💾 Save Processed Image', btn_analyze: '🔬 Analyze Image',
-        result_title: '📊 Screening Result', confidence: 'Confidence Score',
-        class_prob: 'Classification Probabilities', findings: '🔍 Detected Findings',
-        recommendation: '💡 Recommendation',
-        btn_save: '💾 Save Result', btn_download: '📥 Download', btn_find_clinic: '🏥 Find Clinic',
-        hist_title: '📋 Screening History', hist_desc: 'Review your screening records',
-        filter_all: 'All Severities', sort_new: 'Newest First', sort_old: 'Oldest First',
-        clinic_title: '🏥 Nearby Eye Clinics', clinic_desc: 'Find ophthalmology clinics near you',
-        type_all: 'All Types', type_eye: 'Eye Clinic', type_hospital: 'Hospital', type_med: 'Medical Center',
-        search_placeholder: '🔍 Search...', btn_search: '🔍 Search',
-        map_hint: '🗺️ Click Search to find clinics',
-        footer: '© 2024 InsightRetina. For preliminary screening only.',
-        no_history: 'No screening history', btn_start_first: 'Start Screening',
-        loading_preprocess: '🔄 Preprocessing image...', loading_ai: '🤖 Running AI classification...',
-        loading_result: '📊 Generating results...',
-        toast_upload_ok: '✅ Upload successful! Click Analyze.',
-        toast_upload_type: '❌ Please upload JPG or PNG only!',
-        toast_upload_size: '❌ File too large! Max 5MB.',
-        toast_upload_invalid: '❌ Not a valid image file!',
-        toast_saved: '✅ Saved to history!', toast_downloaded: '📥 Downloaded!',
-        toast_deleted: '🗑️ Deleted', toast_no_result: '❌ No result!',
-        toast_no_proc: '❌ No processed image!', toast_no_image: '❌ Please upload an image first!',
-        confirm_delete: 'Delete this record?',
-        found_clinics: '🗺️ Found {n} clinics', no_clinics: 'No clinics found'
+        _name:'English',_flag:'🇬🇧',
+        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 History',nav_clinic:'🏥 Clinic',
+        hero_desc:'AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.',
+        ai_status:'AI System Active — Ready for Analysis',
+        stat_accuracy:'AI Accuracy',stat_speed:'Analysis Speed',stat_classes:'DR Classes',
+        feat_ai:'Advanced AI',feat_ai_desc:'Deep learning for accurate DR detection',
+        feat_fast:'Fast Analysis',feat_fast_desc:'Real-time preprocessing and instant results',
+        feat_clinic:'Clinical Grade',feat_clinic_desc:'Find nearby ophthalmology centers',
+        btn_start:'🔬 Start Screening',
+        disclaimer:'⚠️ This tool is for preliminary screening only. Always consult a qualified ophthalmologist.',
+        scr_title:'🔬 Diabetic Retinopathy Screening',scr_desc:'Upload a fundus image for AI analysis',
+        upload_text:'<b>Drag & drop</b> your image here or <b>click to browse</b>',
+        upload_hint:'Supported: JPG, PNG (max 5MB)',upload_change:'📎 Click to change image',
+        step_upload:'Upload',step_preprocess:'Preprocess',step_ai:'AI Analysis',step_result:'Result',
+        orig_image:'👁️ Original Image',proc_image:'🔄 Preprocessed Image',
+        no_image:'No image selected',waiting:'Waiting for analysis',
+        btn_save_proc:'💾 Save Processed Image',btn_analyze:'🔬 Analyze Image',
+        result_title:'📊 Screening Result',confidence:'Confidence Score',
+        class_prob:'Classification Probabilities',findings:'🔍 Detected Findings',recommendation:'💡 Recommendation',
+        btn_save:'💾 Save Result',btn_download:'📥 Download',btn_find_clinic:'🏥 Find Clinic',
+        hist_title:'📋 Screening History',hist_desc:'Review your screening records',
+        filter_all:'All Severities',sort_new:'Newest First',sort_old:'Oldest First',
+        clinic_title:'🏥 Nearby Eye Clinics',clinic_desc:'Find ophthalmology clinics near you',
+        type_all:'All Types',type_eye:'Eye Clinic',type_hospital:'Hospital',type_med:'Medical Center',
+        search_placeholder:'🔍 Search...',btn_search:'🔍 Search',map_hint:'🗺️ Click Search to find clinics',
+        footer:'© 2024 InsightRetina. For preliminary screening only.',
+        no_history:'No screening history',btn_start_first:'Start Screening',
+        loading_preprocess:'🔄 Preprocessing image...',loading_ai:'🤖 Running AI classification...',loading_result:'📊 Generating results...',
+        toast_upload_ok:'✅ Upload successful!',toast_upload_type:'❌ JPG or PNG only!',toast_upload_size:'❌ Max 5MB!',toast_upload_invalid:'❌ Invalid image!',
+        toast_saved:'✅ Saved!',toast_downloaded:'📥 Downloaded!',toast_deleted:'🗑️ Deleted',toast_no_result:'❌ No result!',toast_no_proc:'❌ No processed image!',toast_no_image:'❌ Upload image first!',
+        confirm_delete:'Delete this record?',found_clinics:'🗺️ Found {n} clinics',no_clinics:'No clinics found'
     },
     th: {
-        _name: 'ไทย', _flag: '🇹🇭',
-        nav_home: '🏠 หน้าแรก', nav_screening: '🔬 ตรวจคัดกรอง', nav_history: '📋 ประวัติ', nav_clinic: '🏥 คลินิก',
-        hero_desc: 'ระบบคัดกรองเบาหวานขึ้นจอตาด้วย AI วิเคราะห์ภาพจอประสาทตาเพื่อตรวจจับตั้งแต่ระยะเริ่มต้น',
-        feat_ai: 'AI ขั้นสูง', feat_ai_desc: 'Deep Learning ตรวจจับ DR อย่างแม่นยำ',
-        feat_fast: 'วิเคราะห์เร็ว', feat_fast_desc: 'ประมวลผลแบบเรียลไทม์ ผลทันที',
-        feat_clinic: 'ระดับคลินิก', feat_clinic_desc: 'ค้นหาศูนย์จักษุใกล้คุณ',
-        btn_start: '🔬 เริ่มตรวจคัดกรอง',
-        disclaimer: '⚠️ เครื่องมือนี้ใช้สำหรับคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์ผู้เชี่ยวชาญ',
-        scr_title: '🔬 ตรวจคัดกรองเบาหวานขึ้นจอตา', scr_desc: 'อัปโหลดภาพถ่ายจอตาเพื่อวิเคราะห์ด้วย AI',
-        upload_text: '<b>ลากและวาง</b> รูปภาพที่นี่ หรือ <b>คลิกเพื่อเลือกไฟล์</b>',
-        upload_hint: 'รองรับ: JPG, PNG (สูงสุด 5MB)', upload_change: '📎 คลิกเพื่อเปลี่ยนรูป',
-        step_upload: 'อัปโหลด', step_preprocess: 'ประมวลผล', step_ai: 'AI วิเคราะห์', step_result: 'ผลลัพธ์',
-        orig_image: '👁️ ภาพต้นฉบับ', proc_image: '🔄 ภาพที่ประมวลผลแล้ว',
-        no_image: 'ยังไม่ได้เลือกรูป', waiting: 'รอการวิเคราะห์',
-        btn_save_proc: '💾 บันทึกภาพที่ประมวลผล', btn_analyze: '🔬 วิเคราะห์ภาพ',
-        result_title: '📊 ผลการตรวจคัดกรอง', confidence: 'คะแนนความเชื่อมั่น',
-        class_prob: 'ค่าความน่าจะเป็นแต่ละระดับ', findings: '🔍 สิ่งที่ตรวจพบ',
-        recommendation: '💡 คำแนะนำ',
-        btn_save: '💾 บันทึกผล', btn_download: '📥 ดาวน์โหลด', btn_find_clinic: '🏥 ค้นหาคลินิก',
-        hist_title: '📋 ประวัติการตรวจ', hist_desc: 'ตรวจสอบบันทึกการคัดกรองของคุณ',
-        filter_all: 'ทุกระดับ', sort_new: 'ใหม่ล่าสุด', sort_old: 'เก่าสุด',
-        clinic_title: '🏥 คลินิกตาใกล้คุณ', clinic_desc: 'ค้นหาคลินิกจักษุใกล้ที่ตั้งของคุณ',
-        type_all: 'ทุกประเภท', type_eye: 'คลินิกตา', type_hospital: 'โรงพยาบาล', type_med: 'ศูนย์การแพทย์',
-        search_placeholder: '🔍 ค้นหา...', btn_search: '🔍 ค้นหา',
-        map_hint: '🗺️ กดค้นหาเพื่อแสดงคลินิก',
-        footer: '© 2024 InsightRetina สำหรับคัดกรองเบื้องต้นเท่านั้น',
-        no_history: 'ยังไม่มีประวัติการตรวจ', btn_start_first: 'เริ่มตรวจ',
-        loading_preprocess: '🔄 กำลังประมวลผลภาพ...', loading_ai: '🤖 กำลังวิเคราะห์ด้วย AI...',
-        loading_result: '📊 กำลังสร้างผลลัพธ์...',
-        toast_upload_ok: '✅ อัปโหลดสำเร็จ! กดวิเคราะห์ได้เลย',
-        toast_upload_type: '❌ กรุณาอัปโหลดไฟล์ JPG หรือ PNG เท่านั้น!',
-        toast_upload_size: '❌ ไฟล์ใหญ่เกินไป! สูงสุด 5MB',
-        toast_upload_invalid: '❌ ไฟล์นี้ไม่ใช่รูปภาพที่ถูกต้อง!',
-        toast_saved: '✅ บันทึกแล้ว!', toast_downloaded: '📥 ดาวน์โหลดแล้ว!',
-        toast_deleted: '🗑️ ลบแล้ว', toast_no_result: '❌ ไม่มีผลลัพธ์!',
-        toast_no_proc: '❌ ไม่มีภาพที่ประมวลผล!', toast_no_image: '❌ กรุณาอัปโหลดรูปก่อน!',
-        confirm_delete: 'ต้องการลบรายการนี้?',
-        found_clinics: '🗺️ พบ {n} คลินิก', no_clinics: 'ไม่พบคลินิก'
+        _name:'ไทย',_flag:'🇹🇭',
+        nav_home:'🏠 หน้าแรก',nav_screening:'🔬 ตรวจคัดกรอง',nav_history:'📋 ประวัติ',nav_clinic:'🏥 คลินิก',
+        hero_desc:'ระบบคัดกรองเบาหวานขึ้นจอตาด้วย AI วิเคราะห์ภาพจอประสาทตาเพื่อตรวจจับตั้งแต่ระยะเริ่มต้น',
+        ai_status:'ระบบ AI พร้อมทำงาน — พร้อมวิเคราะห์',
+        stat_accuracy:'ความแม่นยำ AI',stat_speed:'ความเร็ววิเคราะห์',stat_classes:'ระดับ DR',
+        feat_ai:'AI ขั้นสูง',feat_ai_desc:'Deep Learning ตรวจจับ DR อย่างแม่นยำ',
+        feat_fast:'วิเคราะห์เร็ว',feat_fast_desc:'ประมวลผลแบบเรียลไทม์ ผลทันที',
+        feat_clinic:'ระดับคลินิก',feat_clinic_desc:'ค้นหาศูนย์จักษุใกล้คุณ',
+        btn_start:'🔬 เริ่มตรวจคัดกรอง',
+        disclaimer:'⚠️ เครื่องมือนี้ใช้สำหรับคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์',
+        scr_title:'🔬 ตรวจคัดกรองเบาหวานขึ้นจอตา',scr_desc:'อัปโหลดภาพถ่ายจอตาเพื่อวิเคราะห์ด้วย AI',
+        upload_text:'<b>ลากและวาง</b> รูปภาพที่นี่ หรือ <b>คลิกเพื่อเลือกไฟล์</b>',
+        upload_hint:'รองรับ: JPG, PNG (สูงสุด 5MB)',upload_change:'📎 คลิกเพื่อเปลี่ยนรูป',
+        step_upload:'อัปโหลด',step_preprocess:'ประมวลผล',step_ai:'AI วิเคราะห์',step_result:'ผลลัพธ์',
+        orig_image:'👁️ ภาพต้นฉบับ',proc_image:'🔄 ภาพที่ประมวลผลแล้ว',
+        no_image:'ยังไม่ได้เลือกรูป',waiting:'รอการวิเคราะห์',
+        btn_save_proc:'💾 บันทึกภาพ',btn_analyze:'🔬 วิเคราะห์ภาพ',
+        result_title:'📊 ผลการตรวจ',confidence:'คะแนนความเชื่อมั่น',
+        class_prob:'ค่าความน่าจะเป็น',findings:'🔍 สิ่งที่ตรวจพบ',recommendation:'💡 คำแนะนำ',
+        btn_save:'💾 บันทึกผล',btn_download:'📥 ดาวน์โหลด',btn_find_clinic:'🏥 ค้นหาคลินิก',
+        hist_title:'📋 ประวัติการตรวจ',hist_desc:'ตรวจสอบบันทึกการคัดกรอง',
+        filter_all:'ทุกระดับ',sort_new:'ใหม่ล่าสุด',sort_old:'เก่าสุด',
+        clinic_title:'🏥 คลินิกตาใกล้คุณ',clinic_desc:'ค้นหาคลินิกจักษุใกล้ที่ตั้งของคุณ',
+        type_all:'ทุกประเภท',type_eye:'คลินิกตา',type_hospital:'โรงพยาบาล',type_med:'ศูนย์การแพทย์',
+        search_placeholder:'🔍 ค้นหา...',btn_search:'🔍 ค้นหา',map_hint:'🗺️ กดค้นหาเพื่อแสดงคลินิก',
+        footer:'© 2024 InsightRetina สำหรับคัดกรองเบื้องต้นเท่านั้น',
+        no_history:'ยังไม่มีประวัติ',btn_start_first:'เริ่มตรวจ',
+        loading_preprocess:'🔄 กำลังประมวลผลภาพ...',loading_ai:'🤖 กำลังวิเคราะห์ด้วย AI...',loading_result:'📊 กำลังสร้างผลลัพธ์...',
+        toast_upload_ok:'✅ อัปโหลดสำเร็จ!',toast_upload_type:'❌ รองรับ JPG/PNG เท่านั้น!',toast_upload_size:'❌ ไฟล์ใหญ่เกิน 5MB!',toast_upload_invalid:'❌ ไฟล์ไม่ถูกต้อง!',
+        toast_saved:'✅ บันทึกแล้ว!',toast_downloaded:'📥 ดาวน์โหลดแล้ว!',toast_deleted:'🗑️ ลบแล้ว',toast_no_result:'❌ ไม่มีผลลัพธ์!',toast_no_proc:'❌ ไม่มีภาพ!',toast_no_image:'❌ อัปโหลดรูปก่อน!',
+        confirm_delete:'ลบรายการนี้?',found_clinics:'🗺️ พบ {n} คลินิก',no_clinics:'ไม่พบคลินิก'
     },
     id: {
-        _name: 'Bahasa Indonesia', _flag: '🇮🇩',
-        nav_home: '🏠 Beranda', nav_screening: '🔬 Skrining', nav_history: '📋 Riwayat', nav_clinic: '🏥 Klinik',
-        hero_desc: 'Skrining Retinopati Diabetik Bertenaga AI. Analisis retina canggih untuk deteksi dini.',
-        feat_ai: 'AI Canggih', feat_ai_desc: 'Deep learning untuk deteksi DR akurat',
-        feat_fast: 'Analisis Cepat', feat_fast_desc: 'Preprocessing real-time dan hasil instan',
-        feat_clinic: 'Kelas Klinis', feat_clinic_desc: 'Temukan pusat mata terdekat',
-        btn_start: '🔬 Mulai Skrining',
-        disclaimer: '⚠️ Alat ini hanya untuk skrining awal. Selalu konsultasikan dengan dokter mata.',
-        scr_title: '🔬 Skrining Retinopati Diabetik', scr_desc: 'Unggah gambar fundus untuk analisis AI',
-        upload_text: '<b>Seret & lepas</b> gambar di sini atau <b>klik untuk memilih</b>',
-        upload_hint: 'Format: JPG, PNG (maks 5MB)', upload_change: '📎 Klik untuk mengganti gambar',
-        step_upload: 'Unggah', step_preprocess: 'Proses', step_ai: 'Analisis AI', step_result: 'Hasil',
-        orig_image: '👁️ Gambar Asli', proc_image: '🔄 Gambar Diproses',
-        no_image: 'Belum ada gambar', waiting: 'Menunggu analisis',
-        btn_save_proc: '💾 Simpan Gambar', btn_analyze: '🔬 Analisis Gambar',
-        result_title: '📊 Hasil Skrining', confidence: 'Skor Kepercayaan',
-        class_prob: 'Probabilitas Klasifikasi', findings: '🔍 Temuan',
-        recommendation: '💡 Rekomendasi',
-        btn_save: '💾 Simpan', btn_download: '📥 Unduh', btn_find_clinic: '🏥 Cari Klinik',
-        hist_title: '📋 Riwayat Skrining', hist_desc: 'Tinjau catatan skrining Anda',
-        filter_all: 'Semua', sort_new: 'Terbaru', sort_old: 'Terlama',
-        clinic_title: '🏥 Klinik Mata Terdekat', clinic_desc: 'Temukan klinik mata di dekat Anda',
-        type_all: 'Semua Jenis', type_eye: 'Klinik Mata', type_hospital: 'Rumah Sakit', type_med: 'Pusat Medis',
-        search_placeholder: '🔍 Cari...', btn_search: '🔍 Cari',
-        map_hint: '🗺️ Klik Cari untuk menemukan klinik',
-        footer: '© 2024 InsightRetina. Hanya untuk skrining awal.',
-        no_history: 'Belum ada riwayat', btn_start_first: 'Mulai Skrining',
-        loading_preprocess: '🔄 Memproses gambar...', loading_ai: '🤖 Klasifikasi AI...',
-        loading_result: '📊 Membuat hasil...',
-        toast_upload_ok: '✅ Berhasil diunggah!', toast_upload_type: '❌ Hanya JPG atau PNG!',
-        toast_upload_size: '❌ File terlalu besar! Maks 5MB',
-        toast_upload_invalid: '❌ Bukan file gambar valid!',
-        toast_saved: '✅ Tersimpan!', toast_downloaded: '📥 Terunduh!',
-        toast_deleted: '🗑️ Dihapus', toast_no_result: '❌ Tidak ada hasil!',
-        toast_no_proc: '❌ Tidak ada gambar!', toast_no_image: '❌ Unggah gambar dulu!',
-        confirm_delete: 'Hapus catatan ini?',
-        found_clinics: '🗺️ Ditemukan {n} klinik', no_clinics: 'Tidak ada klinik'
+        _name:'Bahasa Indonesia',_flag:'🇮🇩',
+        nav_home:'🏠 Beranda',nav_screening:'🔬 Skrining',nav_history:'📋 Riwayat',nav_clinic:'🏥 Klinik',
+        hero_desc:'Skrining Retinopati Diabetik Bertenaga AI. Analisis retina canggih untuk deteksi dini.',
+        ai_status:'Sistem AI Aktif — Siap Analisis',
+        stat_accuracy:'Akurasi AI',stat_speed:'Kecepatan',stat_classes:'Kelas DR',
+        feat_ai:'AI Canggih',feat_ai_desc:'Deep learning untuk deteksi DR akurat',
+        feat_fast:'Analisis Cepat',feat_fast_desc:'Preprocessing real-time dan hasil instan',
+        feat_clinic:'Kelas Klinis',feat_clinic_desc:'Temukan pusat mata terdekat',
+        btn_start:'🔬 Mulai Skrining',disclaimer:'⚠️ Hanya untuk skrining awal. Konsultasikan dokter mata.',
+        scr_title:'🔬 Skrining Retinopati Diabetik',scr_desc:'Unggah gambar fundus untuk analisis AI',
+        upload_text:'<b>Seret & lepas</b> gambar atau <b>klik untuk memilih</b>',upload_hint:'Format: JPG, PNG (maks 5MB)',upload_change:'📎 Klik untuk ganti',
+        step_upload:'Unggah',step_preprocess:'Proses',step_ai:'Analisis AI',step_result:'Hasil',
+        orig_image:'👁️ Gambar Asli',proc_image:'🔄 Gambar Diproses',no_image:'Belum ada gambar',waiting:'Menunggu analisis',
+        btn_save_proc:'💾 Simpan Gambar',btn_analyze:'🔬 Analisis',result_title:'📊 Hasil Skrining',confidence:'Skor Kepercayaan',
+        class_prob:'Probabilitas',findings:'🔍 Temuan',recommendation:'💡 Rekomendasi',
+        btn_save:'💾 Simpan',btn_download:'📥 Unduh',btn_find_clinic:'🏥 Cari Klinik',
+        hist_title:'📋 Riwayat',hist_desc:'Tinjau catatan skrining',filter_all:'Semua',sort_new:'Terbaru',sort_old:'Terlama',
+        clinic_title:'🏥 Klinik Mata',clinic_desc:'Temukan klinik mata terdekat',type_all:'Semua',type_eye:'Klinik Mata',type_hospital:'Rumah Sakit',type_med:'Pusat Medis',
+        search_placeholder:'🔍 Cari...',btn_search:'🔍 Cari',map_hint:'🗺️ Klik Cari',
+        footer:'© 2024 InsightRetina. Skrining awal.',no_history:'Belum ada riwayat',btn_start_first:'Mulai',
+        loading_preprocess:'🔄 Memproses...',loading_ai:'🤖 Klasifikasi AI...',loading_result:'📊 Membuat hasil...',
+        toast_upload_ok:'✅ Berhasil!',toast_upload_type:'❌ JPG/PNG saja!',toast_upload_size:'❌ Maks 5MB!',toast_upload_invalid:'❌ Bukan gambar!',
+        toast_saved:'✅ Tersimpan!',toast_downloaded:'📥 Terunduh!',toast_deleted:'🗑️ Dihapus',toast_no_result:'❌ Tidak ada hasil!',toast_no_proc:'❌ Tidak ada gambar!',toast_no_image:'❌ Unggah dulu!',
+        confirm_delete:'Hapus?',found_clinics:'🗺️ {n} klinik',no_clinics:'Tidak ditemukan'
     },
     vi: {
-        _name: 'Tiếng Việt', _flag: '🇻🇳',
-        nav_home: '🏠 Trang chủ', nav_screening: '🔬 Sàng lọc', nav_history: '📋 Lịch sử', nav_clinic: '🏥 Phòng khám',
-        hero_desc: 'Sàng lọc bệnh võng mạc tiểu đường bằng AI. Phân tích võng mạc tiên tiến để phát hiện sớm.',
-        feat_ai: 'AI Tiên tiến', feat_ai_desc: 'Deep learning phát hiện DR chính xác',
-        feat_fast: 'Phân tích nhanh', feat_fast_desc: 'Xử lý thời gian thực, kết quả tức thì',
-        feat_clinic: 'Cấp lâm sàng', feat_clinic_desc: 'Tìm trung tâm nhãn khoa gần bạn',
-        btn_start: '🔬 Bắt đầu sàng lọc',
-        disclaimer: '⚠️ Công cụ này chỉ để sàng lọc sơ bộ. Luôn tham khảo bác sĩ nhãn khoa.',
-        scr_title: '🔬 Sàng lọc bệnh võng mạc', scr_desc: 'Tải ảnh đáy mắt để phân tích AI',
-        upload_text: '<b>Kéo & thả</b> ảnh vào đây hoặc <b>nhấp để chọn</b>',
-        upload_hint: 'Hỗ trợ: JPG, PNG (tối đa 5MB)', upload_change: '📎 Nhấp để đổi ảnh',
-        step_upload: 'Tải lên', step_preprocess: 'Xử lý', step_ai: 'Phân tích AI', step_result: 'Kết quả',
-        orig_image: '👁️ Ảnh gốc', proc_image: '🔄 Ảnh đã xử lý',
-        no_image: 'Chưa chọn ảnh', waiting: 'Đang chờ phân tích',
-        btn_save_proc: '💾 Lưu ảnh đã xử lý', btn_analyze: '🔬 Phân tích ảnh',
-        result_title: '📊 Kết quả sàng lọc', confidence: 'Độ tin cậy',
-        class_prob: 'Xác suất phân loại', findings: '🔍 Phát hiện',
-        recommendation: '💡 Khuyến nghị',
-        btn_save: '💾 Lưu kết quả', btn_download: '📥 Tải xuống', btn_find_clinic: '🏥 Tìm phòng khám',
-        hist_title: '📋 Lịch sử sàng lọc', hist_desc: 'Xem lại hồ sơ sàng lọc',
-        filter_all: 'Tất cả', sort_new: 'Mới nhất', sort_old: 'Cũ nhất',
-        clinic_title: '🏥 Phòng khám mắt gần đây', clinic_desc: 'Tìm phòng khám nhãn khoa gần bạn',
-        type_all: 'Tất cả loại', type_eye: 'Phòng khám mắt', type_hospital: 'Bệnh viện', type_med: 'Trung tâm y tế',
-        search_placeholder: '🔍 Tìm kiếm...', btn_search: '🔍 Tìm',
-        map_hint: '🗺️ Nhấn Tìm để hiển thị phòng khám',
-        footer: '© 2024 InsightRetina. Chỉ để sàng lọc sơ bộ.',
-        no_history: 'Chưa có lịch sử', btn_start_first: 'Bắt đầu sàng lọc',
-        loading_preprocess: '🔄 Đang xử lý ảnh...', loading_ai: '🤖 Đang phân loại AI...',
-        loading_result: '📊 Đang tạo kết quả...',
-        toast_upload_ok: '✅ Tải lên thành công!', toast_upload_type: '❌ Chỉ JPG hoặc PNG!',
-        toast_upload_size: '❌ File quá lớn! Tối đa 5MB',
-        toast_upload_invalid: '❌ Không phải ảnh hợp lệ!',
-        toast_saved: '✅ Đã lưu!', toast_downloaded: '📥 Đã tải!',
-        toast_deleted: '🗑️ Đã xóa', toast_no_result: '❌ Không có kết quả!',
-        toast_no_proc: '❌ Không có ảnh!', toast_no_image: '❌ Vui lòng tải ảnh trước!',
-        confirm_delete: 'Xóa bản ghi này?',
-        found_clinics: '🗺️ Tìm thấy {n} phòng khám', no_clinics: 'Không tìm thấy'
+        _name:'Tiếng Việt',_flag:'🇻🇳',
+        nav_home:'🏠 Trang chủ',nav_screening:'🔬 Sàng lọc',nav_history:'📋 Lịch sử',nav_clinic:'🏥 Phòng khám',
+        hero_desc:'Sàng lọc bệnh võng mạc tiểu đường bằng AI. Phân tích võng mạc tiên tiến.',
+        ai_status:'Hệ thống AI đang hoạt động — Sẵn sàng phân tích',
+        stat_accuracy:'Độ chính xác',stat_speed:'Tốc độ',stat_classes:'Phân loại',
+        feat_ai:'AI Tiên tiến',feat_ai_desc:'Deep learning phát hiện DR chính xác',
+        feat_fast:'Nhanh chóng',feat_fast_desc:'Xử lý thời gian thực',feat_clinic:'Cấp lâm sàng',feat_clinic_desc:'Tìm trung tâm nhãn khoa',
+        btn_start:'🔬 Bắt đầu',disclaimer:'⚠️ Chỉ để sàng lọc sơ bộ. Tham khảo bác sĩ.',
+        scr_title:'🔬 Sàng lọc võng mạc',scr_desc:'Tải ảnh đáy mắt để phân tích',
+        upload_text:'<b>Kéo & thả</b> ảnh hoặc <b>nhấp để chọn</b>',upload_hint:'JPG, PNG (tối đa 5MB)',upload_change:'📎 Đổi ảnh',
+        step_upload:'Tải lên',step_preprocess:'Xử lý',step_ai:'Phân tích AI',step_result:'Kết quả',
+        orig_image:'👁️ Ảnh gốc',proc_image:'🔄 Ảnh xử lý',no_image:'Chưa chọn',waiting:'Đang chờ',
+        btn_save_proc:'💾 Lưu ảnh',btn_analyze:'🔬 Phân tích',result_title:'📊 Kết quả',confidence:'Độ tin cậy',
+        class_prob:'Xác suất',findings:'🔍 Phát hiện',recommendation:'💡 Khuyến nghị',
+        btn_save:'💾 Lưu',btn_download:'📥 Tải',btn_find_clinic:'🏥 Tìm',
+        hist_title:'📋 Lịch sử',hist_desc:'Xem hồ sơ',filter_all:'Tất cả',sort_new:'Mới nhất',sort_old:'Cũ nhất',
+        clinic_title:'🏥 Phòng khám mắt',clinic_desc:'Tìm gần bạn',type_all:'Tất cả',type_eye:'Phòng khám',type_hospital:'Bệnh viện',type_med:'Trung tâm y tế',
+        search_placeholder:'🔍 Tìm...',btn_search:'🔍 Tìm',map_hint:'🗺️ Nhấn Tìm',
+        footer:'© 2024 InsightRetina.',no_history:'Chưa có',btn_start_first:'Bắt đầu',
+        loading_preprocess:'🔄 Xử lý ảnh...',loading_ai:'🤖 AI...',loading_result:'📊 Kết quả...',
+        toast_upload_ok:'✅ Thành công!',toast_upload_type:'❌ JPG/PNG!',toast_upload_size:'❌ Tối đa 5MB!',toast_upload_invalid:'❌ Không hợp lệ!',
+        toast_saved:'✅ Đã lưu!',toast_downloaded:'📥 Đã tải!',toast_deleted:'🗑️ Đã xóa',toast_no_result:'❌ Không có!',toast_no_proc:'❌ Không có ảnh!',toast_no_image:'❌ Tải ảnh trước!',
+        confirm_delete:'Xóa?',found_clinics:'🗺️ {n} phòng khám',no_clinics:'Không tìm thấy'
     },
     fil: {
-        _name: 'Filipino', _flag: '🇵🇭',
-        nav_home: '🏠 Home', nav_screening: '🔬 Screening', nav_history: '📋 Kasaysayan', nav_clinic: '🏥 Klinika',
-        hero_desc: 'AI-Powered Diabetic Retinopathy Screening. Advanced na pagsusuri ng retina para sa maagang pagtuklas.',
-        feat_ai: 'Advanced AI', feat_ai_desc: 'Deep learning para sa tumpak na DR detection',
-        feat_fast: 'Mabilis na Pagsusuri', feat_fast_desc: 'Real-time na preprocessing at instant na resulta',
-        feat_clinic: 'Clinical Grade', feat_clinic_desc: 'Maghanap ng klinika ng mata malapit sa iyo',
-        btn_start: '🔬 Simulan ang Screening',
-        disclaimer: '⚠️ Ang tool na ito ay para sa preliminary screening lamang. Kumonsulta sa ophthalmologist.',
-        scr_title: '🔬 Diabetic Retinopathy Screening', scr_desc: 'Mag-upload ng fundus image para sa AI analysis',
-        upload_text: '<b>I-drag at i-drop</b> ang imahe dito o <b>i-click para pumili</b>',
-        upload_hint: 'Suportado: JPG, PNG (max 5MB)', upload_change: '📎 I-click para palitan',
-        step_upload: 'Upload', step_preprocess: 'Preprocess', step_ai: 'AI Analysis', step_result: 'Resulta',
-        orig_image: '👁️ Orihinal na Imahe', proc_image: '🔄 Na-preprocess na Imahe',
-        no_image: 'Walang napiling imahe', waiting: 'Naghihintay ng pagsusuri',
-        btn_save_proc: '💾 I-save ang Processed', btn_analyze: '🔬 Suriin ang Imahe',
-        result_title: '📊 Resulta ng Screening', confidence: 'Confidence Score',
-        class_prob: 'Classification Probabilities', findings: '🔍 Mga Natuklasan',
-        recommendation: '💡 Rekomendasyon',
-        btn_save: '💾 I-save', btn_download: '📥 I-download', btn_find_clinic: '🏥 Maghanap ng Klinika',
-        hist_title: '📋 Kasaysayan ng Screening', hist_desc: 'Suriin ang iyong mga record',
-        filter_all: 'Lahat', sort_new: 'Pinakabago', sort_old: 'Pinakaluma',
-        clinic_title: '🏥 Mga Klinika ng Mata', clinic_desc: 'Maghanap ng klinika malapit sa iyo',
-        type_all: 'Lahat ng Uri', type_eye: 'Klinika ng Mata', type_hospital: 'Ospital', type_med: 'Medical Center',
-        search_placeholder: '🔍 Maghanap...', btn_search: '🔍 Hanapin',
-        map_hint: '🗺️ I-click ang Hanapin para makita ang mga klinika',
-        footer: '© 2024 InsightRetina. Para sa preliminary screening lamang.',
-        no_history: 'Walang kasaysayan', btn_start_first: 'Simulan ang Screening',
-        loading_preprocess: '🔄 Pinoproseso...', loading_ai: '🤖 AI classification...',
-        loading_result: '📊 Ginagawa ang resulta...',
-        toast_upload_ok: '✅ Na-upload na!', toast_upload_type: '❌ JPG o PNG lamang!',
-        toast_upload_size: '❌ Masyadong malaki! Max 5MB',
-        toast_upload_invalid: '❌ Hindi valid na imahe!',
-        toast_saved: '✅ Na-save!', toast_downloaded: '📥 Na-download!',
-        toast_deleted: '🗑️ Na-delete', toast_no_result: '❌ Walang resulta!',
-        toast_no_proc: '❌ Walang processed image!', toast_no_image: '❌ Mag-upload muna ng imahe!',
-        confirm_delete: 'I-delete ang record na ito?',
-        found_clinics: '🗺️ Natagpuan {n} klinika', no_clinics: 'Walang nahanap'
+        _name:'Filipino',_flag:'🇵🇭',
+        nav_home:'🏠 Home',nav_screening:'🔬 Screening',nav_history:'📋 Kasaysayan',nav_clinic:'🏥 Klinika',
+        hero_desc:'AI-Powered Diabetic Retinopathy Screening para sa maagang pagtuklas.',
+        ai_status:'AI System Aktibo — Handa na',
+        stat_accuracy:'AI Accuracy',stat_speed:'Bilis',stat_classes:'DR Classes',
+        feat_ai:'Advanced AI',feat_ai_desc:'Deep learning para sa tumpak na detection',
+        feat_fast:'Mabilis',feat_fast_desc:'Real-time na resulta',feat_clinic:'Clinical Grade',feat_clinic_desc:'Maghanap ng klinika',
+        btn_start:'🔬 Simulan',disclaimer:'⚠️ Preliminary screening lamang. Kumonsulta sa doktor.',
+        scr_title:'🔬 DR Screening',scr_desc:'Mag-upload ng fundus image',
+        upload_text:'<b>I-drag</b> o <b>i-click</b>',upload_hint:'JPG, PNG (max 5MB)',upload_change:'📎 Palitan',
+        step_upload:'Upload',step_preprocess:'Preprocess',step_ai:'AI',step_result:'Resulta',
+        orig_image:'👁️ Orihinal',proc_image:'🔄 Processed',no_image:'Wala pang imahe',waiting:'Naghihintay',
+        btn_save_proc:'💾 I-save',btn_analyze:'🔬 Suriin',result_title:'📊 Resulta',confidence:'Confidence',
+        class_prob:'Probabilities',findings:'🔍 Natuklasan',recommendation:'💡 Rekomendasyon',
+        btn_save:'💾 Save',btn_download:'📥 Download',btn_find_clinic:'🏥 Hanapin',
+        hist_title:'📋 Kasaysayan',hist_desc:'Mga record',filter_all:'Lahat',sort_new:'Pinakabago',sort_old:'Pinakaluma',
+        clinic_title:'🏥 Klinika',clinic_desc:'Maghanap malapit',type_all:'Lahat',type_eye:'Klinika ng Mata',type_hospital:'Ospital',type_med:'Medical Center',
+        search_placeholder:'🔍 Hanapin...',btn_search:'🔍 Hanapin',map_hint:'🗺️ I-click Hanapin',
+        footer:'© 2024 InsightRetina.',no_history:'Wala pa',btn_start_first:'Simulan',
+        loading_preprocess:'🔄 Pinoproseso...',loading_ai:'🤖 AI...',loading_result:'📊 Resulta...',
+        toast_upload_ok:'✅ Na-upload!',toast_upload_type:'❌ JPG/PNG lang!',toast_upload_size:'❌ Max 5MB!',toast_upload_invalid:'❌ Hindi valid!',
+        toast_saved:'✅ Na-save!',toast_downloaded:'📥 Na-download!',toast_deleted:'🗑️ Na-delete',toast_no_result:'❌ Wala!',toast_no_proc:'❌ Wala!',toast_no_image:'❌ Mag-upload muna!',
+        confirm_delete:'I-delete?',found_clinics:'🗺️ {n} klinika',no_clinics:'Wala'
     },
     ms: {
-        _name: 'Bahasa Melayu', _flag: '🇲🇾',
-        nav_home: '🏠 Utama', nav_screening: '🔬 Saringan', nav_history: '📋 Sejarah', nav_clinic: '🏥 Klinik',
-        hero_desc: 'Saringan Retinopati Diabetik Berkuasa AI. Analisis retina canggih untuk pengesanan awal.',
-        feat_ai: 'AI Canggih', feat_ai_desc: 'Deep learning untuk pengesanan DR tepat',
-        feat_fast: 'Analisis Pantas', feat_fast_desc: 'Pemprosesan masa nyata dan keputusan segera',
-        feat_clinic: 'Gred Klinikal', feat_clinic_desc: 'Cari pusat mata berdekatan',
-        btn_start: '🔬 Mula Saringan',
-        disclaimer: '⚠️ Alat ini hanya untuk saringan awal. Sentiasa rujuk pakar mata.',
-        scr_title: '🔬 Saringan Retinopati Diabetik', scr_desc: 'Muat naik imej fundus untuk analisis AI',
-        upload_text: '<b>Seret & lepas</b> imej di sini atau <b>klik untuk pilih</b>',
-        upload_hint: 'Disokong: JPG, PNG (maks 5MB)', upload_change: '📎 Klik untuk tukar imej',
-        step_upload: 'Muat naik', step_preprocess: 'Proses', step_ai: 'Analisis AI', step_result: 'Keputusan',
-        orig_image: '👁️ Imej Asal', proc_image: '🔄 Imej Diproses',
-        no_image: 'Tiada imej dipilih', waiting: 'Menunggu analisis',
-        btn_save_proc: '💾 Simpan Imej', btn_analyze: '🔬 Analisis Imej',
-        result_title: '📊 Keputusan Saringan', confidence: 'Skor Keyakinan',
-        class_prob: 'Kebarangkalian Klasifikasi', findings: '🔍 Penemuan',
-        recommendation: '💡 Cadangan',
-        btn_save: '💾 Simpan', btn_download: '📥 Muat turun', btn_find_clinic: '🏥 Cari Klinik',
-        hist_title: '📋 Sejarah Saringan', hist_desc: 'Semak rekod saringan anda',
-        filter_all: 'Semua', sort_new: 'Terbaru', sort_old: 'Terlama',
-        clinic_title: '🏥 Klinik Mata Berdekatan', clinic_desc: 'Cari klinik mata berhampiran anda',
-        type_all: 'Semua Jenis', type_eye: 'Klinik Mata', type_hospital: 'Hospital', type_med: 'Pusat Perubatan',
-        search_placeholder: '🔍 Cari...', btn_search: '🔍 Cari',
-        map_hint: '🗺️ Klik Cari untuk cari klinik',
-        footer: '© 2024 InsightRetina. Untuk saringan awal sahaja.',
-        no_history: 'Tiada sejarah', btn_start_first: 'Mula Saringan',
-        loading_preprocess: '🔄 Memproses imej...', loading_ai: '🤖 Klasifikasi AI...',
-        loading_result: '📊 Menjana keputusan...',
-        toast_upload_ok: '✅ Berjaya dimuat naik!', toast_upload_type: '❌ JPG atau PNG sahaja!',
-        toast_upload_size: '❌ Fail terlalu besar! Maks 5MB',
-        toast_upload_invalid: '❌ Bukan imej yang sah!',
-        toast_saved: '✅ Disimpan!', toast_downloaded: '📥 Dimuat turun!',
-        toast_deleted: '🗑️ Dipadam', toast_no_result: '❌ Tiada keputusan!',
-        toast_no_proc: '❌ Tiada imej!', toast_no_image: '❌ Sila muat naik imej dahulu!',
-        confirm_delete: 'Padam rekod ini?',
-        found_clinics: '🗺️ Dijumpai {n} klinik', no_clinics: 'Tiada klinik dijumpai'
+        _name:'Bahasa Melayu',_flag:'🇲🇾',
+        nav_home:'🏠 Utama',nav_screening:'🔬 Saringan',nav_history:'📋 Sejarah',nav_clinic:'🏥 Klinik',
+        hero_desc:'Saringan Retinopati Diabetik Berkuasa AI untuk pengesanan awal.',
+        ai_status:'Sistem AI Aktif — Sedia Analisis',
+        stat_accuracy:'Ketepatan AI',stat_speed:'Kelajuan',stat_classes:'Kelas DR',
+        feat_ai:'AI Canggih',feat_ai_desc:'Deep learning untuk pengesanan tepat',
+        feat_fast:'Analisis Pantas',feat_fast_desc:'Pemprosesan segera',feat_clinic:'Gred Klinikal',feat_clinic_desc:'Cari pusat mata',
+        btn_start:'🔬 Mula',disclaimer:'⚠️ Saringan awal sahaja. Rujuk pakar mata.',
+        scr_title:'🔬 Saringan Retinopati',scr_desc:'Muat naik imej fundus',
+        upload_text:'<b>Seret & lepas</b> atau <b>klik</b>',upload_hint:'JPG, PNG (maks 5MB)',upload_change:'📎 Tukar imej',
+        step_upload:'Muat naik',step_preprocess:'Proses',step_ai:'Analisis AI',step_result:'Keputusan',
+        orig_image:'👁️ Imej Asal',proc_image:'🔄 Imej Diproses',no_image:'Tiada imej',waiting:'Menunggu',
+        btn_save_proc:'💾 Simpan',btn_analyze:'🔬 Analisis',result_title:'📊 Keputusan',confidence:'Skor Keyakinan',
+        class_prob:'Kebarangkalian',findings:'🔍 Penemuan',recommendation:'💡 Cadangan',
+        btn_save:'💾 Simpan',btn_download:'📥 Muat turun',btn_find_clinic:'🏥 Cari',
+        hist_title:'📋 Sejarah',hist_desc:'Semak rekod',filter_all:'Semua',sort_new:'Terbaru',sort_old:'Terlama',
+        clinic_title:'🏥 Klinik Mata',clinic_desc:'Cari berhampiran',type_all:'Semua',type_eye:'Klinik Mata',type_hospital:'Hospital',type_med:'Pusat Perubatan',
+        search_placeholder:'🔍 Cari...',btn_search:'🔍 Cari',map_hint:'🗺️ Klik Cari',
+        footer:'© 2024 InsightRetina.',no_history:'Tiada sejarah',btn_start_first:'Mula',
+        loading_preprocess:'🔄 Memproses...',loading_ai:'🤖 AI...',loading_result:'📊 Keputusan...',
+        toast_upload_ok:'✅ Berjaya!',toast_upload_type:'❌ JPG/PNG sahaja!',toast_upload_size:'❌ Maks 5MB!',toast_upload_invalid:'❌ Tidak sah!',
+        toast_saved:'✅ Disimpan!',toast_downloaded:'📥 Dimuat turun!',toast_deleted:'🗑️ Dipadam',toast_no_result:'❌ Tiada!',toast_no_proc:'❌ Tiada imej!',toast_no_image:'❌ Muat naik dahulu!',
+        confirm_delete:'Padam?',found_clinics:'🗺️ {n} klinik',no_clinics:'Tiada'
     }
 };
 
-var currentLang = 'en';
-
-/* ★ APPLY LANGUAGE ★ */
-function applyLang(lang) {
-    var dict = LANG[lang];
-    if (!dict) return;
-    currentLang = lang;
-
-    // Update all data-lang elements
-    var els = document.querySelectorAll('[data-lang]');
-    for (var i = 0; i < els.length; i++) {
-        var key = els[i].getAttribute('data-lang');
-        if (dict[key]) {
-            els[i].innerHTML = dict[key];
-        }
-    }
-
-    // Update placeholders
-    var pEls = document.querySelectorAll('[data-lang-placeholder]');
-    for (var i = 0; i < pEls.length; i++) {
-        var key = pEls[i].getAttribute('data-lang-placeholder');
-        if (dict[key]) pEls[i].placeholder = dict[key];
-    }
-
-    // Update html lang
-    document.documentElement.lang = lang;
-
-    // Save preference
-    try { localStorage.setItem('drLang', lang); } catch(e) {}
-}
-
-/* ★ CHANGE LANGUAGE ★ */
-function changeLang(lang) {
-    applyLang(lang);
-
-    // Update button
-    document.getElementById('langFlag').textContent = LANG[lang]._flag;
-    document.getElementById('langName').textContent = LANG[lang]._name;
-
-    // Update selected state
-    var opts = document.querySelectorAll('.lang-option');
-    for (var i = 0; i < opts.length; i++) {
-        var code = opts[i].getAttribute('data-langcode');
-        if (code === lang) {
-            opts[i].classList.add('selected');
-            opts[i].querySelector('.check').textContent = '✓';
-        } else {
-            opts[i].classList.remove('selected');
-            opts[i].querySelector('.check').textContent = '';
-        }
-    }
-
-    // Close menu
-    closeLangMenu();
-
-    // Re-render dynamic content
-    showHist();
-}
-
-/* ★ TOGGLE LANG MENU ★ */
-function toggleLangMenu() {
-    var menu = document.getElementById('langMenu');
-    var btn = document.getElementById('langBtn');
-    if (menu.classList.contains('show')) {
-        closeLangMenu();
-    } else {
-        menu.classList.add('show');
-        btn.classList.add('open');
-    }
-}
-
-function closeLangMenu() {
-    document.getElementById('langMenu').classList.remove('show');
-    document.getElementById('langBtn').classList.remove('open');
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(e) {
-    var dd = document.getElementById('langDropdown');
-    if (!dd.contains(e.target)) closeLangMenu();
-});
-
-/* ★ GET TEXT HELPER ★ */
-function T(key, replacements) {
-    var dict = LANG[currentLang] || LANG['en'];
-    var text = dict[key] || LANG['en'][key] || key;
-    if (replacements) {
-        for (var k in replacements) {
-            text = text.replace('{' + k + '}', replacements[k]);
-        }
-    }
-    return text;
-}
-
+var currentLang='en';
+function applyLang(l){var d=LANG[l];if(!d)return;currentLang=l;
+    var els=document.querySelectorAll('[data-lang]');for(var i=0;i<els.length;i++){var k=els[i].getAttribute('data-lang');if(d[k])els[i].innerHTML=d[k];}
+    var pEls=document.querySelectorAll('[data-lang-placeholder]');for(var i=0;i<pEls.length;i++){var k=pEls[i].getAttribute('data-lang-placeholder');if(d[k])pEls[i].placeholder=d[k];}
+    document.documentElement.lang=l;try{localStorage.setItem('drLang',l);}catch(e){}}
+function changeLang(l){applyLang(l);document.getElementById('langFlag').textContent=LANG[l]._flag;document.getElementById('langName').textContent=LANG[l]._name;
+    var opts=document.querySelectorAll('.lang-option');for(var i=0;i<opts.length;i++){var c=opts[i].getAttribute('data-langcode');if(c===l){opts[i].classList.add('selected');opts[i].querySelector('.check').textContent='✓';}else{opts[i].classList.remove('selected');opts[i].querySelector('.check').textContent='';}}
+    closeLangMenu();showHist();}
+function toggleLangMenu(){var m=document.getElementById('langMenu'),b=document.getElementById('langBtn');if(m.classList.contains('show'))closeLangMenu();else{m.classList.add('show');b.classList.add('open');}}
+function closeLangMenu(){document.getElementById('langMenu').classList.remove('show');document.getElementById('langBtn').classList.remove('open');}
+document.addEventListener('click',function(e){if(!document.getElementById('langDropdown').contains(e.target))closeLangMenu();});
+function T(k,r){var d=LANG[currentLang]||LANG.en;var t=d[k]||LANG.en[k]||k;if(r)for(var p in r)t=t.replace('{'+p+'}',r[p]);return t;}
 
 /* ================================================================
-   CONSTANTS
+   ★★★ ANIMATIONS - Particles & Counter ★★★
    ================================================================ */
-var LBL = ['No DR','Mild','Moderate','Severe','Proliferative'];
-var CLR = ['#66bb6a','#ffee58','#ffa726','#ef5350','#ff1744'];
-var FIND_MAP = {
-    0: ['No abnormalities detected'],
-    1: ['Microaneurysms detected','Minor retinal hemorrhages'],
-    2: ['Microaneurysms','Dot/blot hemorrhages','Hard exudates','Cotton wool spots'],
-    3: ['Significant hemorrhages','Venous beading','IRMA','Multiple cotton wool spots'],
-    4: ['Neovascularization','Vitreous hemorrhage','Fibrous proliferation','Retinal detachment risk']
-};
-var REC_MAP = {
-    0: 'No DR detected. Annual routine screening recommended.',
-    1: 'Mild DR. Follow-up in 9-12 months. Control blood sugar.',
-    2: 'Moderate DR. Refer to ophthalmologist within 3-6 months.',
-    3: 'Severe DR. URGENT referral within 2-4 weeks.',
-    4: 'Proliferative DR. IMMEDIATE specialist referral required!'
-};
 
-/* ===== STATE ===== */
-var imgSrc = null, procSrc = null, lastRes = null;
-var hist = [];
-try { hist = JSON.parse(localStorage.getItem('drh3') || '[]'); } catch(e) { hist = []; }
-var toastTimer = null;
+// ★ Create floating particles
+function createParticles(){
+    var container=document.getElementById('particlesContainer');
+    if(!container)return;
+    for(var i=0;i<25;i++){
+        var p=document.createElement('div');
+        p.className='particle';
+        p.style.left=Math.random()*100+'%';
+        p.style.animationDuration=(8+Math.random()*12)+'s';
+        p.style.animationDelay=Math.random()*8+'s';
+        p.style.width=(2+Math.random()*3)+'px';
+        p.style.height=p.style.width;
+        p.style.opacity=0.2+Math.random()*0.4;
+        container.appendChild(p);
+    }
+}
 
-/* ===== TABS ===== */
-function goTab(name) {
-    var tabs = document.querySelectorAll('.tab');
-    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
-    var links = document.querySelectorAll('.nav-center a');
-    for (var i = 0; i < links.length; i++) links[i].classList.remove('active');
-    document.getElementById('t-' + name).classList.add('active');
-    document.getElementById('n-' + name).classList.add('active');
-    if (name === 'history') showHist();
-    if (name === 'clinic') findClinics();
+// ★ Animated counter
+function animateCounters(){
+    var counters=document.querySelectorAll('.counter');
+    for(var i=0;i<counters.length;i++){
+        (function(el){
+            var target=parseFloat(el.getAttribute('data-target'));
+            var isFloat=target%1!==0;
+            var duration=2000;
+            var start=0;
+            var startTime=null;
+            function step(timestamp){
+                if(!startTime)startTime=timestamp;
+                var progress=Math.min((timestamp-startTime)/duration,1);
+                var eased=1-Math.pow(1-progress,3); // ease out cubic
+                var current=start+eased*(target-start);
+                el.textContent=isFloat?current.toFixed(1):Math.round(current);
+                if(progress<1)requestAnimationFrame(step);
+            }
+            // Start when element is visible
+            var observer=new IntersectionObserver(function(entries){
+                if(entries.isIntersecting){
+                    requestAnimationFrame(step);
+                    observer.disconnect();
+                }
+            });
+            observer.observe(el);
+        })(counters[i]);
+    }
+}
+
+/* ================================================================
+   APP LOGIC
+   ================================================================ */
+var LBL=['No DR','Mild','Moderate','Severe','Proliferative'];
+var CLR=['#66bb6a','#ffee58','#ffa726','#ef5350','#ff1744'];
+var FIND_MAP={0:['No abnormalities detected'],1:['Microaneurysms','Minor hemorrhages'],2:['Microaneurysms','Hemorrhages','Hard exudates','Cotton wool spots'],3:['Significant hemorrhages','Venous beading','IRMA','Cotton wool spots'],4:['Neovascularization','Vitreous hemorrhage','Fibrous proliferation','Retinal detachment risk']};
+var REC_MAP={0:'No DR. Annual screening recommended.',1:'Mild DR. Follow-up 9-12 months.',2:'Moderate DR. Refer ophthalmologist 3-6 months.',3:'Severe DR. URGENT referral 2-4 weeks.',4:'Proliferative DR. IMMEDIATE referral!'};
+
+var imgSrc=null,procSrc=null,lastRes=null,toastTimer=null;
+var hist=[];try{hist=JSON.parse(localStorage.getItem('drh4')||'[]');}catch(e){hist=[];}
+
+function goTab(name){
+    var tabs=document.querySelectorAll('.tab');for(var i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
+    var links=document.querySelectorAll('.nav-center a');for(var i=0;i<links.length;i++)links[i].classList.remove('active');
+    document.getElementById('t-'+name).classList.add('active');
+    document.getElementById('n-'+name).classList.add('active');
+    if(name==='history')showHist();if(name==='clinic')findClinics();
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ===== UPLOAD ===== */
-var uploadBox = document.getElementById('uploadBox');
-var hiddenInput = document.getElementById('hiddenFileInput');
+var uploadBox=document.getElementById('uploadBox'),hiddenInput=document.getElementById('hiddenFileInput');
+uploadBox.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();hiddenInput.value='';hiddenInput.click();});
+hiddenInput.addEventListener('change',function(){if(this.files&&this.files.length>0)handleFile(this.files);});
+uploadBox.addEventListener('dragenter',function(e){e.preventDefault();e.stopPropagation();this.classList.add('drag-over');});
+uploadBox.addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();e.dataTransfer.dropEffect='copy';this.classList.add('drag-over');});
+uploadBox.addEventListener('dragleave',function(e){e.preventDefault();e.stopPropagation();this.classList.remove('drag-over');});
+uploadBox.addEventListener('drop',function(e){e.preventDefault();e.stopPropagation();this.classList.remove('drag-over');if(e.dataTransfer.files&&e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files);});
 
-uploadBox.addEventListener('click', function(e) {
-    e.preventDefault(); e.stopPropagation();
-    hiddenInput.value = '';
-    hiddenInput.click();
-});
-
-hiddenInput.addEventListener('change', function() {
-    if (this.files && this.files.length > 0) handleFile(this.files);
-});
-
-uploadBox.addEventListener('dragenter', function(e) { e.preventDefault(); e.stopPropagation(); this.classList.add('drag-over'); });
-uploadBox.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect='copy'; this.classList.add('drag-over'); });
-uploadBox.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); this.classList.remove('drag-over'); });
-uploadBox.addEventListener('drop', function(e) {
-    e.preventDefault(); e.stopPropagation(); this.classList.remove('drag-over');
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files);
-});
-
-function handleFile(file) {
-    var ext = file.name.toLowerCase().split('.').pop();
-    if (['jpg','jpeg','png'].indexOf(ext) === -1) { showToast(T('toast_upload_type')); return; }
-    if (file.size > 5*1024*1024) { showToast(T('toast_upload_size')); return; }
-    if (file.size < 100) { showToast(T('toast_upload_invalid')); return; }
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        imgSrc = e.target.result;
-        var testImg = new Image();
-        testImg.onload = function() {
-            document.getElementById('origBox').innerHTML = '<img src="'+imgSrc+'" alt="Original" />';
-            document.getElementById('uploadDefault').style.display = 'none';
-            document.getElementById('uploadPreview').style.display = 'block';
-            document.getElementById('prevThumb').src = imgSrc;
-            document.getElementById('prevName').textContent = '✅ ' + file.name;
-            document.getElementById('prevSize').textContent = (file.size/1024).toFixed(0)+' KB · '+testImg.width+'×'+testImg.height;
+function handleFile(file){
+    var ext=file.name.toLowerCase().split('.').pop();
+    if(['jpg','jpeg','png'].indexOf(ext)===-1){showToast(T('toast_upload_type'));return;}
+    if(file.size>5*1024*1024){showToast(T('toast_upload_size'));return;}
+    var reader=new FileReader();
+    reader.onload=function(e){
+        imgSrc=e.target.result;
+        var ti=new Image();
+        ti.onload=function(){
+            document.getElementById('origBox').innerHTML='<img src="'+imgSrc+'" />';
+            document.getElementById('uploadDefault').style.display='none';
+            document.getElementById('uploadPreview').style.display='block';
+            document.getElementById('prevThumb').src=imgSrc;
+            document.getElementById('prevName').textContent='✅ '+file.name;
+            document.getElementById('prevSize').textContent=(file.size/1024).toFixed(0)+' KB · '+ti.width+'×'+ti.height;
             uploadBox.classList.add('loaded');
-            document.getElementById('btnAnalyze').disabled = false;
+            document.getElementById('btnAnalyze').disabled=false;
             setStep('upload');
             document.getElementById('resultCard').classList.remove('show');
-            document.getElementById('procBox').innerHTML = '<div class="img-empty"><div class="ie-icon">🔄</div><p>'+T('waiting')+'</p></div>';
-            procSrc = null; lastRes = null;
+            document.getElementById('procBox').innerHTML='<div class="img-empty"><div class="ie-icon">🔄</div><p>'+T('waiting')+'</p></div>';
+            procSrc=null;lastRes=null;
             showToast(T('toast_upload_ok'));
         };
-        testImg.onerror = function() { showToast(T('toast_upload_invalid')); imgSrc = null; };
-        testImg.src = imgSrc;
+        ti.onerror=function(){showToast(T('toast_upload_invalid'));imgSrc=null;};
+        ti.src=imgSrc;
     };
-    reader.onerror = function() { showToast(T('toast_upload_invalid')); };
+    reader.onerror=function(){showToast(T('toast_upload_invalid'));};
     reader.readAsDataURL(file);
 }
 
-/* ===== STEPS ===== */
-function setStep(s) {
-    var order = ['upload','preprocess','ai','result'];
-    var idx = order.indexOf(s);
-    for (var i = 0; i < order.length; i++) {
-        var el = document.getElementById('ps-' + order[i]);
-        el.classList.remove('active','done');
-        if (i < idx) el.classList.add('done');
-        if (i === idx) el.classList.add('active');
-    }
-}
+function setStep(s){var o=['upload','preprocess','ai','result'],idx=o.indexOf(s);for(var i=0;i<o.length;i++){var el=document.getElementById('ps-'+o[i]);el.classList.remove('active','done');if(i<idx)el.classList.add('done');if(i===idx)el.classList.add('active');}}
 
-/* ===== PREPROCESS ===== */
-function preprocessImg(src) {
-    return new Promise(function(resolve) {
-        var img = new Image();
-        img.onload = function() {
-            var S=512, canvas=document.createElement('canvas');
-            canvas.width=S; canvas.height=S;
-            var ctx=canvas.getContext('2d');
-            ctx.drawImage(img,0,0,S,S);
-            var imgData=ctx.getImageData(0,0,S,S), d=imgData.data;
-            var gH=new Array(256); for(var i=0;i<256;i++) gH[i]=0;
-            for(var i=0;i<d.length;i+=4) gH[d[i+1]]++;
-            var cdf=new Array(256); cdf=gH;
-            for(var i=1;i<256;i++) cdf[i]=cdf[i-1]+gH[i];
-            var total=S*S, cdfMin=0;
-            for(var i=0;i<256;i++){if(cdf[i]>0){cdfMin=cdf[i];break;}}
-            for(var i=0;i<d.length;i+=4){
-                var r=d[i],g=d[i+1],b=d[i+2];
-                var eqG=Math.round(((cdf[g]-cdfMin)/(total-cdfMin))*255);
-                d[i]=cc(r*0.7+eqG*0.1+20,1.3);
-                d[i+1]=cc(g*0.5+eqG*0.5+10,1.3);
-                d[i+2]=cc(b*0.7+eqG*0.1+20,1.3);
-            }
-            var cx=S/2,cy=S/2,rad=S/2-8;
-            for(var y=0;y<S;y++){for(var x=0;x<S;x++){
-                var dist=Math.sqrt((x-cx)*(x-cx)+(y-cy)*(y-cy));
-                if(dist>rad){var idx=(y*S+x)*4;var fade=Math.max(0,1-(dist-rad)/12);
-                d[idx]=Math.round(d[idx]*fade);d[idx+1]=Math.round(d[idx+1]*fade);d[idx+2]=Math.round(d[idx+2]*fade);}
-            }}
-            ctx.putImageData(imgData,0,0);
-            procSrc=canvas.toDataURL('image/png');
-            resolve(procSrc);
-        };
-        img.src=src;
-    });
-}
+function preprocessImg(src){return new Promise(function(resolve){var img=new Image();img.onload=function(){var S=512,c=document.createElement('canvas');c.width=S;c.height=S;var ctx=c.getContext('2d');ctx.drawImage(img,0,0,S,S);var id=ctx.getImageData(0,0,S,S),d=id.data;var gH=new Array(256);for(var i=0;i<256;i++)gH[i]=0;for(var i=0;i<d.length;i+=4)gH[d[i+1]]++;var cdf=new Array(256);cdf=gH;for(var i=1;i<256;i++)cdf[i]=cdf[i-1]+gH[i];var total=S*S,cdfMin=0;for(var i=0;i<256;i++){if(cdf[i]>0){cdfMin=cdf[i];break;}}for(var i=0;i<d.length;i+=4){var r=d[i],g=d[i+1],b=d[i+2];var eqG=Math.round(((cdf[g]-cdfMin)/(total-cdfMin))*255);d[i]=cc(r*0.7+eqG*0.1+20,1.3);d[i+1]=cc(g*0.5+eqG*0.5+10,1.3);d[i+2]=cc(b*0.7+eqG*0.1+20,1.3);}var cx=S/2,cy=S/2,rad=S/2-8;for(var y=0;y<S;y++)for(var x=0;x<S;x++){var dist=Math.sqrt((x-cx)*(x-cx)+(y-cy)*(y-cy));if(dist>rad){var idx=(y*S+x)*4;var fade=Math.max(0,1-(dist-rad)/12);d[idx]=Math.round(d[idx]*fade);d[idx+1]=Math.round(d[idx+1]*fade);d[idx+2]=Math.round(d[idx+2]*fade);}}ctx.putImageData(id,0,0);procSrc=c.toDataURL('image/png');resolve(procSrc);};img.src=src;});}
 function cc(v,c){v=((v/255-0.5)*c+0.5)*255;return Math.max(0,Math.min(255,Math.round(v)));}
 
-/* ===== AI ===== */
-function classifyImg(src) {
-    return new Promise(function(resolve) {
-        var img=new Image();
-        img.onload=function(){
-            var c=document.createElement('canvas');c.width=224;c.height=224;
-            var ctx=c.getContext('2d');ctx.drawImage(img,0,0,224,224);
-            var data=ctx.getImageData(0,0,224,224).data,N=224*224;
-            var rS=0,gS=0,darkPx=0,brightPx=0,redPx=0;
-            for(var i=0;i<data.length;i+=4){
-                var r=data[i],g=data[i+1],b=data[i+2];
-                rS+=r;gS+=g;
-                if(r+g+b<60)darkPx++;if(r+g+b>600)brightPx++;
-                if(r>g*1.5&&r>b*1.5&&r>100)redPx++;
-            }
-            var dR=darkPx/N,bR=brightPx/N,rR=redPx/N;
-            var probs;
-            if(rR>0.08)probs=[0.03,0.07,0.20,0.35,0.35];
-            else if(rR>0.04)probs=[0.05,0.10,0.35,0.30,0.20];
-            else if(bR>0.06)probs=[0.10,0.30,0.35,0.15,0.10];
-            else if(dR>0.55)probs=[0.08,0.12,0.20,0.30,0.30];
-            else probs=[0.60,0.18,0.12,0.06,0.04];
-            var sum=0;
-            for(var i=0;i<probs.length;i++){probs[i]=Math.max(0.01,probs[i]+Math.random()*0.08-0.04);sum+=probs[i];}
-            for(var i=0;i<probs.length;i++)probs[i]/=sum;
-            var maxV=0,pred=0;
-            for(var i=0;i<probs.length;i++){if(probs[i]>maxV){maxV=probs[i];pred=i;}}
-            resolve({prediction:pred,confidence:maxV,probabilities:probs,label:LBL[pred]});
-        };
-        img.src=src;
-    });
-}
+function classifyImg(src){return new Promise(function(resolve){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=224;c.height=224;var ctx=c.getContext('2d');ctx.drawImage(img,0,0,224,224);var data=ctx.getImageData(0,0,224,224).data,N=224*224;var rS=0,gS=0,dPx=0,bPx=0,rPx=0;for(var i=0;i<data.length;i+=4){var r=data[i],g=data[i+1],b=data[i+2];rS+=r;gS+=g;if(r+g+b<60)dPx++;if(r+g+b>600)bPx++;if(r>g*1.5&&r>b*1.5&&r>100)rPx++;}var dR=dPx/N,bR=bPx/N,rR=rPx/N;var probs;if(rR>0.08)probs=[0.03,0.07,0.20,0.35,0.35];else if(rR>0.04)probs=[0.05,0.10,0.35,0.30,0.20];else if(bR>0.06)probs=[0.10,0.30,0.35,0.15,0.10];else if(dR>0.55)probs=[0.08,0.12,0.20,0.30,0.30];else probs=[0.60,0.18,0.12,0.06,0.04];var sum=0;for(var i=0;i<probs.length;i++){probs[i]=Math.max(0.01,probs[i]+Math.random()*0.08-0.04);sum+=probs[i];}for(var i=0;i<probs.length;i++)probs[i]/=sum;var maxV=0,pred=0;for(var i=0;i<probs.length;i++){if(probs[i]>maxV){maxV=probs[i];pred=i;}}resolve({prediction:pred,confidence:maxV,probabilities:probs,label:LBL[pred]});};img.src=src;});}
 
-/* ===== ANALYZE ===== */
-function doAnalyze() {
-    if(!imgSrc){showToast(T('toast_no_image'));return;}
-    var ov=document.getElementById('overlay'),msg=document.getElementById('overlayMsg');
-    ov.classList.add('show');
-    msg.textContent=T('loading_preprocess');setStep('preprocess');
-    setTimeout(function(){
-        preprocessImg(imgSrc).then(function(processed){
-            document.getElementById('procBox').innerHTML='<img src="'+processed+'" alt="Processed" />';
-            msg.textContent=T('loading_ai');setStep('ai');
-            setTimeout(function(){
-                classifyImg(processed).then(function(result){
-                    lastRes=result;msg.textContent=T('loading_result');setStep('result');
-                    setTimeout(function(){ov.classList.remove('show');showResult(result);},500);
-                });
-            },1200);
-        });
-    },700);
-}
+function doAnalyze(){if(!imgSrc){showToast(T('toast_no_image'));return;}var ov=document.getElementById('overlay'),msg=document.getElementById('overlayMsg');ov.classList.add('show');msg.textContent=T('loading_preprocess');setStep('preprocess');setTimeout(function(){preprocessImg(imgSrc).then(function(p){document.getElementById('procBox').innerHTML='<img src="'+p+'" />';msg.textContent=T('loading_ai');setStep('ai');setTimeout(function(){classifyImg(p).then(function(r){lastRes=r;msg.textContent=T('loading_result');setStep('result');setTimeout(function(){ov.classList.remove('show');showResult(r);},500);});},1200);});},700);}
 
-/* ===== RESULT ===== */
-function showResult(res) {
-    var card=document.getElementById('resultCard');card.classList.add('show');
-    var p=res.prediction,conf=(res.confidence*100).toFixed(1);
-    document.getElementById('sevLabel').textContent=LBL[p];
-    document.getElementById('sevLabel').className='sev-label s'+p;
-    document.getElementById('confVal').textContent=conf+'%';
-    var bar=document.getElementById('confBar');
-    bar.style.width='0%';bar.style.background=CLR[p];
-    setTimeout(function(){bar.style.width=conf+'%';bar.textContent=conf+'%';},80);
-    var html='';
-    for(var i=0;i<5;i++){var v=(res.probabilities[i]*100).toFixed(1);
-        html+='<div class="prob-row"><div class="prob-hd"><span>'+LBL[i]+'</span><span>'+v+'%</span></div>';
-        html+='<div class="prob-tk"><div class="prob-fl" style="width:0%;background:'+CLR[i]+';" data-w="'+v+'"></div></div></div>';}
-    document.getElementById('probArea').innerHTML=html;
-    setTimeout(function(){var fills=document.querySelectorAll('.prob-fl[data-w]');
-        for(var i=0;i<fills.length;i++)fills[i].style.width=fills[i].getAttribute('data-w')+'%';},150);
-    var fH='';var f=FIND_MAP[p];for(var i=0;i<f.length;i++)fH+='<li>'+f[i]+'</li>';
-    document.getElementById('findList').innerHTML=fH;
-    document.getElementById('recText').textContent=REC_MAP[p];
-    card.scrollIntoView({behavior:'smooth'});
-}
+function showResult(res){var card=document.getElementById('resultCard');card.classList.add('show');var p=res.prediction,conf=(res.confidence*100).toFixed(1);document.getElementById('sevLabel').textContent=LBL[p];document.getElementById('sevLabel').className='sev-label s'+p;document.getElementById('confVal').textContent=conf+'%';var bar=document.getElementById('confBar');bar.style.width='0%';bar.style.background=CLR[p];setTimeout(function(){bar.style.width=conf+'%';bar.textContent=conf+'%';},80);var html='';for(var i=0;i<5;i++){var v=(res.probabilities[i]*100).toFixed(1);html+='<div class="prob-row"><div class="prob-hd"><span>'+LBL[i]+'</span><span>'+v+'%</span></div><div class="prob-tk"><div class="prob-fl" style="width:0%;background:'+CLR[i]+';" data-w="'+v+'"></div></div></div>';}document.getElementById('probArea').innerHTML=html;setTimeout(function(){var f=document.querySelectorAll('.prob-fl[data-w]');for(var i=0;i<f.length;i++)f[i].style.width=f[i].getAttribute('data-w')+'%';},150);var fH='';var fi=FIND_MAP[p];for(var i=0;i<fi.length;i++)fH+='<li>'+fi[i]+'</li>';document.getElementById('findList').innerHTML=fH;document.getElementById('recText').textContent=REC_MAP[p];card.scrollIntoView({behavior:'smooth'});}
 
-/* ===== SAVE/DOWNLOAD ===== */
-function saveHist(){
-    if(!lastRes){showToast(T('toast_no_result'));return;}
-    hist.unshift({id:Date.now(),dt:new Date().toLocaleString(),pred:lastRes.prediction,label:lastRes.label,conf:lastRes.confidence,probs:lastRes.probabilities});
-    try{localStorage.setItem('drh3',JSON.stringify(hist));}catch(e){}
-    showToast(T('toast_saved'));
-}
-function dlProcessed(){
-    if(!procSrc){showToast(T('toast_no_proc'));return;}
-    var a=document.createElement('a');a.href=procSrc;a.download='DR_processed_'+Date.now()+'.png';a.click();
-    showToast(T('toast_downloaded'));
-}
+function saveHist(){if(!lastRes){showToast(T('toast_no_result'));return;}hist.unshift({id:Date.now(),dt:new Date().toLocaleString(),pred:lastRes.prediction,label:lastRes.label,conf:lastRes.confidence,probs:lastRes.probabilities});try{localStorage.setItem('drh4',JSON.stringify(hist));}catch(e){}showToast(T('toast_saved'));}
+function dlProcessed(){if(!procSrc){showToast(T('toast_no_proc'));return;}var a=document.createElement('a');a.href=procSrc;a.download='DR_'+Date.now()+'.png';a.click();showToast(T('toast_downloaded'));}
 
-/* ===== HISTORY ===== */
-function showHist(){
-    var area=document.getElementById('histArea');
-    var sev=document.getElementById('fSev').value,sort=document.getElementById('fSort').value;
-    var data=hist.slice();
-    if(sev!=='all'){var f=[];for(var i=0;i<data.length;i++){if(data[i].label===sev)f.push(data[i]);}data=f;}
-    if(sort==='old')data.reverse();
-    if(!data.length){
-        area.innerHTML='<div class="empty-box"><div class="eb-icon">📋</div><p>'+T('no_history')+'</p><button class="btn btn-primary btn-sm" onclick="goTab(\'screening\')">'+T('btn_start_first')+'</button></div>';
-        return;
-    }
-    var html='';
-    for(var i=0;i<data.length;i++){var r=data[i];
-        html+='<div class="hist-item" onclick="viewRec('+r.id+')">';
-        html+='<div><strong>'+r.label+'</strong><br><small style="color:#888">'+r.dt+'</small></div>';
-        html+='<div class="sev-label s'+r.pred+'" style="font-size:0.8rem;padding:5px 14px;">'+(r.conf*100).toFixed(1)+'%</div></div>';}
-    area.innerHTML=html;
-}
-function viewRec(id){
-    var r=null;for(var i=0;i<hist.length;i++){if(hist[i].id===id){r=hist[i];break;}}
-    if(!r)return;
-    document.getElementById('mTitle').textContent='📋 Case #'+String(r.id).slice(-6);
-    var html='<p style="color:#888;margin-bottom:10px;">📅 '+r.dt+'</p>';
-    html+='<div class="sev-label s'+r.pred+'" style="margin-bottom:14px;">'+r.label+'</div>';
-    html+='<p><b>'+T('confidence')+':</b> '+(r.conf*100).toFixed(1)+'%</p>';
-    html+='<div class="prob-sec" style="margin-top:12px;"><h4>'+T('class_prob')+'</h4>';
-    for(var i=0;i<5;i++){var v=(r.probs[i]*100).toFixed(1);
-        html+='<div class="prob-row"><div class="prob-hd"><span>'+LBL[i]+'</span><span>'+v+'%</span></div>';
-        html+='<div class="prob-tk"><div class="prob-fl" style="width:'+v+'%;background:'+CLR[i]+';"></div></div></div>';}
-    html+='</div><div class="find-box"><h4>'+T('findings')+'</h4><ul>';
-    var f=FIND_MAP[r.pred];for(var i=0;i<f.length;i++)html+='<li>'+f[i]+'</li>';
-    html+='</ul></div><div class="rec-box"><h4>'+T('recommendation')+'</h4><p>'+REC_MAP[r.pred]+'</p></div>';
-    html+='<div class="btn-group"><button class="btn btn-sm" style="background:rgba(239,83,80,0.15);color:#ef5350;" onclick="delRec('+r.id+')">🗑️ Delete</button>';
-    html+='<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button></div>';
-    document.getElementById('mBody').innerHTML=html;
-    document.getElementById('modalBg').classList.add('show');
-}
-function delRec(id){
-    if(!confirm(T('confirm_delete')))return;
-    var n=[];for(var i=0;i<hist.length;i++){if(hist[i].id!==id)n.push(hist[i]);}
-    hist=n;try{localStorage.setItem('drh3',JSON.stringify(hist));}catch(e){}
-    closeModal();showHist();showToast(T('toast_deleted'));
-}
+function showHist(){var area=document.getElementById('histArea');var sev=document.getElementById('fSev').value,sort=document.getElementById('fSort').value;var data=hist.slice();if(sev!=='all'){var f=[];for(var i=0;i<data.length;i++)if(data[i].label===sev)f.push(data[i]);data=f;}if(sort==='old')data.reverse();if(!data.length){area.innerHTML='<div class="empty-box"><div class="eb-icon">📋</div><p>'+T('no_history')+'</p><button class="btn btn-primary btn-sm" onclick="goTab(\'screening\')">'+T('btn_start_first')+'</button></div>';return;}var html='';for(var i=0;i<data.length;i++){var r=data[i];html+='<div class="hist-item" onclick="viewRec('+r.id+')"><div><strong>'+r.label+'</strong><br><small style="color:#888">'+r.dt+'</small></div><div class="sev-label s'+r.pred+'" style="font-size:0.8rem;padding:5px 14px;">'+(r.conf*100).toFixed(1)+'%</div></div>';}area.innerHTML=html;}
+
+function viewRec(id){var r=null;for(var i=0;i<hist.length;i++)if(hist[i].id===id){r=hist[i];break;}if(!r)return;document.getElementById('mTitle').textContent='📋 #'+String(r.id).slice(-6);var html='<p style="color:#888;margin-bottom:10px;">📅 '+r.dt+'</p><div class="sev-label s'+r.pred+'" style="margin-bottom:14px;">'+r.label+'</div><p><b>'+T('confidence')+':</b> '+(r.conf*100).toFixed(1)+'%</p><div class="prob-sec" style="margin-top:12px;"><h4>'+T('class_prob')+'</h4>';for(var i=0;i<5;i++){var v=(r.probs[i]*100).toFixed(1);html+='<div class="prob-row"><div class="prob-hd"><span>'+LBL[i]+'</span><span>'+v+'%</span></div><div class="prob-tk"><div class="prob-fl" style="width:'+v+'%;background:'+CLR[i]+';"></div></div></div>';}html+='</div><div class="find-box"><h4>'+T('findings')+'</h4><ul>';var f=FIND_MAP[r.pred];for(var i=0;i<f.length;i++)html+='<li>'+f[i]+'</li>';html+='</ul></div><div class="rec-box"><h4>'+T('recommendation')+'</h4><p>'+REC_MAP[r.pred]+'</p></div><div class="btn-group"><button class="btn btn-sm" style="background:rgba(239,83,80,0.15);color:#ef5350;" onclick="delRec('+r.id+')">🗑️</button><button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button></div>';document.getElementById('mBody').innerHTML=html;document.getElementById('modalBg').classList.add('show');}
+
+function delRec(id){if(!confirm(T('confirm_delete')))return;var n=[];for(var i=0;i<hist.length;i++)if(hist[i].id!==id)n.push(hist[i]);hist=n;try{localStorage.setItem('drh4',JSON.stringify(hist));}catch(e){}closeModal();showHist();showToast(T('toast_deleted'));}
 function closeModal(){document.getElementById('modalBg').classList.remove('show');}
 
-/* ===== CLINICS ===== */
-var CL=[
-    {name:'Bangkok Eye Center',type:'eye_clinic',addr:'123 Sukhumvit Rd',phone:'02-123-4567',rate:4.8},
-    {name:'Ramathibodi Ophthalmology',type:'hospital',addr:'270 Rama VI Rd',phone:'02-201-1000',rate:4.9},
-    {name:'Rutnin Eye Hospital',type:'hospital',addr:'80/1 Sukhumvit 21',phone:'02-639-3399',rate:4.7},
-    {name:'Pacific Eye Clinic',type:'eye_clinic',addr:'456 Silom Rd',phone:'02-234-5678',rate:4.5},
-    {name:'Chula Eye Center',type:'medical_center',addr:'1873 Rama IV Rd',phone:'02-256-4000',rate:4.8},
-    {name:'Bumrungrad Eye',type:'hospital',addr:'33 Sukhumvit 3',phone:'02-066-8888',rate:4.9}
-];
-function findClinics(){
-    var type=document.getElementById('cType').value,q=document.getElementById('cSearch').value.toLowerCase();
-    var res=[];
-    for(var i=0;i<CL.length;i++){var c=CL[i];
-        if(type!=='all'&&c.type!==type)continue;
-        if(q&&c.name.toLowerCase().indexOf(q)===-1&&c.addr.toLowerCase().indexOf(q)===-1)continue;
-        res.push(c);}
-    document.getElementById('mapArea').textContent=T('found_clinics',{n:res.length});
-    var html='';
-    for(var i=0;i<res.length;i++){var c=res[i];
-        html+='<div class="clinic-card"><h3>'+c.name+'</h3><p>📍 '+c.addr+'</p><p>📞 '+c.phone+'</p><p>⭐ '+c.rate+'/5</p><span class="clinic-tag">'+c.type.replace(/_/g,' ')+'</span></div>';}
-    document.getElementById('clinicArea').innerHTML=html||'<p style="text-align:center;color:#888;padding:30px;grid-column:1/-1;">'+T('no_clinics')+'</p>';
-}
+var CL=[{name:'Bangkok Eye Center',type:'eye_clinic',addr:'123 Sukhumvit Rd',phone:'02-123-4567',rate:4.8},{name:'Ramathibodi Ophthalmology',type:'hospital',addr:'270 Rama VI Rd',phone:'02-201-1000',rate:4.9},{name:'Rutnin Eye Hospital',type:'hospital',addr:'80/1 Sukhumvit 21',phone:'02-639-3399',rate:4.7},{name:'Pacific Eye Clinic',type:'eye_clinic',addr:'456 Silom Rd',phone:'02-234-5678',rate:4.5},{name:'Chula Eye Center',type:'medical_center',addr:'1873 Rama IV Rd',phone:'02-256-4000',rate:4.8},{name:'Bumrungrad Eye',type:'hospital',addr:'33 Sukhumvit 3',phone:'02-066-8888',rate:4.9}];
+function findClinics(){var type=document.getElementById('cType').value,q=document.getElementById('cSearch').value.toLowerCase();var res=[];for(var i=0;i<CL.length;i++){var c=CL[i];if(type!=='all'&&c.type!==type)continue;if(q&&c.name.toLowerCase().indexOf(q)===-1&&c.addr.toLowerCase().indexOf(q)===-1)continue;res.push(c);}document.getElementById('mapArea').textContent=T('found_clinics',{n:res.length});var html='';for(var i=0;i<res.length;i++){var c=res[i];html+='<div class="clinic-card"><h3>'+c.name+'</h3><p>📍 '+c.addr+'</p><p>📞 '+c.phone+'</p><p>⭐ '+c.rate+'/5</p><span class="clinic-tag">'+c.type.replace(/_/g,' ')+'</span></div>';}document.getElementById('clinicArea').innerHTML=html||'<p style="text-align:center;color:#888;padding:30px;grid-column:1/-1;">'+T('no_clinics')+'</p>';}
 
-/* ===== TOAST ===== */
-function showToast(msg){
-    var el=document.getElementById('toastBox');
-    if(toastTimer){clearTimeout(toastTimer);toastTimer=null;}
-    el.classList.remove('visible');el.textContent=msg;
-    void el.offsetWidth;
-    el.classList.add('visible');
-    toastTimer=setTimeout(function(){el.classList.remove('visible');toastTimer=null;},3000);
-}
+function showToast(msg){var el=document.getElementById('toastBox');if(toastTimer){clearTimeout(toastTimer);toastTimer=null;}el.classList.remove('visible');el.textContent=msg;void el.offsetWidth;el.classList.add('visible');toastTimer=setTimeout(function(){el.classList.remove('visible');toastTimer=null;},3000);}
 
 /* ===== INIT ===== */
 (function(){
-    // Load saved language
-    var saved = '';
-    try { saved = localStorage.getItem('drLang'); } catch(e) {}
-    if (saved && LANG[saved]) {
-        changeLang(saved);
-    } else {
-        changeLang('en');
-    }
+    var saved='';try{saved=localStorage.getItem('drLang');}catch(e){}
+    if(saved&&LANG[saved])changeLang(saved);else changeLang('en');
     showHist();
+    createParticles();
+    animateCounters();
 })();
 </script>
 
