@@ -1,1397 +1,1574 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InsightRetina - DR Screening</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --primary: #7c3aed;
-    --primary-light: #a78bfa;
-    --primary-lighter: #c4b5fd;
-    --primary-dark: #6d28d9;
-    --primary-darker: #5b21b6;
-    --accent: #8b5cf6;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --bg: #faf5ff;
-    --bg-gradient: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 30%, #ede9fe 60%, #f5f3ff 100%);
-    --card: #ffffff;
-    --text: #1e1b4b;
-    --text-secondary: #6b7280;
-    --border: #e9d5ff;
-    --border-light: #f3e8ff;
-    --radius: 16px;
-    --shadow: 0 4px 6px -1px rgba(124,58,237,0.1), 0 2px 4px -2px rgba(124,58,237,0.06);
-    --shadow-lg: 0 10px 25px -5px rgba(124,58,237,0.15), 0 8px 10px -6px rgba(124,58,237,0.1);
-    --shadow-glow: 0 0 30px rgba(124,58,237,0.15);
-  }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg-gradient);
-    color: var(--text); line-height: 1.6;
-    min-height: 100vh; overflow-x: hidden;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightRetina - AI DR Screening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           GLOBAL RESET & VARIABLES
+           ============================================ */
+        :root {
+            --bg-primary: #0a0a2e;
+            --bg-secondary: #12124a;
+            --bg-card: rgba(255,255,255,0.04);
+            --border: rgba(100,181,246,0.15);
+            --border-hover: rgba(100,181,246,0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --text-muted: #666666;
+            --accent: #42a5f5;
+            --accent-dark: #1565c0;
+            --accent-light: #90caf9;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --danger-dark: #ff1744;
+            --yellow: #ffee58;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
 
-  /* ===== Background Particles ===== */
-  .bg-particles {
-    position: fixed; top:0; left:0;
-    width:100%; height:100%;
-    pointer-events: none; z-index: 0; overflow: hidden;
-  }
-  .particle {
-    position: absolute; border-radius: 50%; opacity: 0.12;
-    animation: floatP linear infinite;
-  }
-  .particle:nth-child(1){width:20px;height:20px;background:#7c3aed;left:10%;animation-duration:18s;animation-delay:0s}
-  .particle:nth-child(2){width:14px;height:14px;background:#a78bfa;left:20%;animation-duration:22s;animation-delay:2s}
-  .particle:nth-child(3){width:28px;height:28px;background:#c4b5fd;left:35%;animation-duration:16s;animation-delay:4s}
-  .particle:nth-child(4){width:10px;height:10px;background:#8b5cf6;left:50%;animation-duration:24s;animation-delay:1s}
-  .particle:nth-child(5){width:22px;height:22px;background:#ddd6fe;left:65%;animation-duration:20s;animation-delay:3s}
-  .particle:nth-child(6){width:16px;height:16px;background:#7c3aed;left:78%;animation-duration:19s;animation-delay:5s}
-  .particle:nth-child(7){width:24px;height:24px;background:#a78bfa;left:88%;animation-duration:21s;animation-delay:2s}
-  .particle:nth-child(8){width:12px;height:12px;background:#c4b5fd;left:5%;animation-duration:17s;animation-delay:6s}
-  @keyframes floatP {
-    0%{transform:translateY(110vh) rotate(0deg);opacity:0}
-    10%{opacity:0.12} 90%{opacity:0.12}
-    100%{transform:translateY(-10vh) rotate(720deg);opacity:0}
-  }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
-  /* ===== Navbar ===== */
-  .navbar {
-    background: rgba(255,255,255,0.88);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem; display: flex; align-items: center;
-    justify-content: space-between; height: 68px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 1px 20px rgba(124,58,237,0.08);
-  }
-  .navbar .logo {
-    font-size: 1.5rem; font-weight: 800;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; cursor: pointer;
-  }
-  .nav-links { display: flex; gap: 0.3rem; }
-  .nav-links button {
-    background: none; border: none; padding: 0.55rem 1.1rem;
-    border-radius: 10px; cursor: pointer; font-size: 0.95rem;
-    color: var(--text-secondary); transition: all 0.25s; font-weight: 500;
-  }
-  .nav-links button:hover { background: #f3e8ff; color: var(--primary); }
-  .nav-links button.active {
-    background: linear-gradient(135deg, #ede9fe, #f3e8ff);
-    color: var(--primary); font-weight: 700;
-  }
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0d0d3b 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-  /* ===== Language ===== */
-  .lang-dropdown { position: relative; }
-  .lang-btn {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    border: 1px solid var(--border); padding: 0.5rem 1.1rem;
-    border-radius: 10px; cursor: pointer; font-size: 0.9rem;
-    display: flex; align-items: center; gap: 0.4rem;
-    transition: all 0.25s; font-weight: 500;
-  }
-  .lang-btn:hover { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
-  .lang-menu {
-    display: none; position: absolute; top: 115%; right: 0;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--radius); box-shadow: var(--shadow-lg);
-    min-width: 210px; overflow: hidden; z-index: 200;
-  }
-  .lang-menu.show { display: block; animation: fadeDown 0.2s ease; }
-  @keyframes fadeDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-  .lang-menu button {
-    display: block; width: 100%; text-align: left;
-    padding: 0.75rem 1.2rem; border: none; background: none;
-    cursor: pointer; font-size: 0.9rem; transition: background 0.15s;
-  }
-  .lang-menu button:hover { background: #f5f3ff; }
-  .lang-menu button.active-lang { background: #ede9fe; color: var(--primary); font-weight: 700; }
+        /* ============================================
+           SCROLLBAR
+           ============================================ */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 3px; }
 
-  /* ===== Sections ===== */
-  .section {
-    display: none; padding: 2rem; max-width: 1100px;
-    margin: 0 auto; position: relative; z-index: 1;
-  }
-  .section.active { display: block; animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        /* ============================================
+           NAVBAR
+           ============================================ */
+        .navbar {
+            background: rgba(10,10,46,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 64px;
+        }
 
-  /* ===== Hero ===== */
-  .hero {
-    text-align: center; padding: 2rem 1rem 3rem;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-  }
-  .eye-animation-container {
-    width: 220px; height: 220px;
-    margin: 0 auto 1.5rem; position: relative;
-  }
-  .eye-svg { width: 100%; height: 100%; }
-  .eye-ring-outer { animation: rotRing 12s linear infinite; transform-origin: 110px 110px; }
-  @keyframes rotRing { to { transform: rotate(360deg); } }
-  .eye-ring-inner { animation: rotRingR 8s linear infinite; transform-origin: 110px 110px; }
-  @keyframes rotRingR { to { transform: rotate(-360deg); } }
-  .scan-line { animation: scanP 3s ease-in-out infinite; transform-origin: 110px 110px; }
-  @keyframes scanP { 0%,100%{opacity:0.3;transform:rotate(0)} 50%{opacity:1;transform:rotate(180deg)} }
-  .eye-pupil-pulse { animation: ppulse 2.5s ease-in-out infinite; transform-origin: 110px 110px; }
-  @keyframes ppulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  .eye-glow { animation: glowP 3s ease-in-out infinite; }
-  @keyframes glowP { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
-  .data-dot { animation: dBlink 2s ease-in-out infinite; }
-  .data-dot:nth-child(1){animation-delay:0s}.data-dot:nth-child(2){animation-delay:.3s}
-  .data-dot:nth-child(3){animation-delay:.6s}.data-dot:nth-child(4){animation-delay:.9s}
-  .data-dot:nth-child(5){animation-delay:1.2s}.data-dot:nth-child(6){animation-delay:1.5s}
-  @keyframes dBlink { 0%,100%{opacity:0.2;r:2} 50%{opacity:1;r:3.5} }
-  .floating-label {
-    position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white; padding: 0.3rem 1rem; border-radius: 20px;
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
-    animation: lFloat 3s ease-in-out infinite; white-space: nowrap;
-  }
-  @keyframes lFloat { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-4px)} }
-  .hero h1 {
-    font-size: 2.8rem; font-weight: 900;
-    background: linear-gradient(135deg, var(--primary-dark), var(--accent), var(--primary));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; margin-bottom: 0.5rem;
-  }
-  .hero .subtitle {
-    font-size: 1.15rem; color: var(--text-secondary);
-    max-width: 600px; margin: 0 auto 2rem; line-height: 1.7;
-  }
-  .feature-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem; margin: 2rem 0; width: 100%; max-width: 900px;
-  }
-  .feature-card {
-    background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 2rem 1.5rem; text-align: center; box-shadow: var(--shadow);
-    transition: all 0.3s; position: relative; overflow: hidden;
-  }
-  .feature-card::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary-light));
-  }
-  .feature-card:hover { transform:translateY(-6px); box-shadow: var(--shadow-lg), var(--shadow-glow); }
-  .feature-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: inline-block; }
-  .feature-card h3 { margin-bottom: 0.4rem; color: var(--primary-dark); }
-  .feature-card p { font-size: 0.9rem; color: var(--text-secondary); }
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-  /* ===== Buttons ===== */
-  .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white; border: none; padding: 0.85rem 2.5rem;
-    border-radius: 12px; font-size: 1.05rem; font-weight: 700;
-    cursor: pointer; transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(124,58,237,0.3);
-    position: relative; overflow: hidden;
-  }
-  .btn-primary::after {
-    content:''; position:absolute; top:0; left:-100%;
-    width:100%; height:100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-  }
-  .btn-primary:hover::after { left: 100%; }
-  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 25px rgba(124,58,237,0.4); }
-  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
-  .btn-secondary {
-    background: rgba(255,255,255,0.8); color: var(--primary);
-    border: 1px solid var(--border); padding: 0.65rem 1.5rem;
-    border-radius: 10px; font-size: 0.95rem; cursor: pointer;
-    transition: all 0.25s; font-weight: 600;
-  }
-  .btn-secondary:hover { background: #f5f3ff; border-color: var(--primary-light); }
-  .btn-success {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    color: white; border: none; padding: 0.65rem 1.5rem;
-    border-radius: 10px; font-size: 0.95rem; cursor: pointer;
-    transition: all 0.25s; font-weight: 600;
-    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-  }
-  .btn-success:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(16,185,129,0.4); }
+        .logo-icon { font-size: 1.6rem; }
+        .logo-text { color: var(--accent-light); }
+        .logo-text span { color: var(--text-primary); }
 
-  /* ===== Disclaimer ===== */
-  .disclaimer {
-    background: linear-gradient(135deg, #fef3c7, #fffbeb);
-    border: 1px solid #fbbf24; border-radius: var(--radius);
-    padding: 1.2rem 1.8rem; margin-top: 2.5rem;
-    display: flex; gap: 0.8rem; align-items: flex-start;
-    max-width: 650px; text-align: left;
-    margin-left: auto; margin-right: auto;
-  }
-  .disclaimer-icon { font-size: 1.5rem; flex-shrink: 0; }
-  .disclaimer strong { color: #92400e; display: block; margin-bottom: 0.2rem; }
-  .disclaimer p { font-size: 0.9rem; color: #78350f; }
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+            height: 100%;
+            align-items: center;
+        }
 
-  /* ===== Card ===== */
-  .card {
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 1.8rem; box-shadow: var(--shadow); margin-bottom: 1.5rem;
-  }
-  .card h2 { margin-bottom: 1rem; color: var(--primary-dark); }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-  /* ===== Upload Area ===== */
-  .upload-area {
-    border: 2px dashed var(--primary-lighter);
-    border-radius: var(--radius); padding: 3rem;
-    text-align: center; cursor: pointer; transition: all 0.3s;
-    background: linear-gradient(135deg, #faf5ff, #f5f3ff);
-    position: relative;
-  }
-  .upload-area:hover, .upload-area.dragover {
-    border-color: var(--primary);
-    background: linear-gradient(135deg, #f3e8ff, #ede9fe);
-    box-shadow: 0 0 20px rgba(124,58,237,0.1);
-  }
-  .upload-area.has-file { border-color: var(--success); border-style: solid; }
-  .upload-area .icon { font-size: 3rem; margin-bottom: 0.5rem; }
-  .upload-area input[type="file"] {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; cursor: pointer; z-index: 10;
-  }
-  .upload-area .sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
-  .file-name {
-    display: none; margin-top: 0.5rem; padding: 0.4rem 1rem;
-    background: #dcfce7; color: #166534; border-radius: 8px;
-    font-size: 0.85rem; font-weight: 600;
-  }
-  .file-name.show { display: inline-block; }
+        .nav-links a:hover { color: var(--text-primary); background: rgba(66,165,245,0.1); }
+        .nav-links a.active { color: var(--text-primary); background: rgba(66,165,245,0.2); }
 
-  /* ===== Image Grid ===== */
-  .image-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 1rem; margin: 1rem 0;
-  }
-  .image-box {
-    background: #faf5ff; border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden; text-align: center;
-  }
-  .image-box .label {
-    background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-    padding: 0.6rem; font-weight: 700; font-size: 0.9rem;
-    border-bottom: 1px solid var(--border); color: var(--primary-dark);
-  }
-  .image-box .img-container {
-    position: relative; min-height: 200px;
-    display: flex; align-items: center; justify-content: center;
-    background: #1e1b4b;
-  }
-  .image-box .placeholder {
-    padding: 3rem 1rem; color: var(--text-secondary); background: #faf5ff;
-  }
-  .image-box .placeholder .big-icon { font-size: 2rem; display: block; margin-bottom: 0.3rem; }
-  .image-box img {
-    width: 100%; display: block; max-height: 350px; object-fit: contain;
-  }
-  .image-box canvas {
-    width: 100%; display: block; max-height: 350px; object-fit: contain;
-  }
+        .lang-select {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
 
-  /* ===== Download Button on Preprocessed Image ===== */
-  .download-overlay {
-    position: absolute; bottom: 10px; right: 10px;
-    z-index: 5; display: none;
-  }
-  .download-overlay.show { display: block; }
-  .download-overlay button {
-    background: rgba(124,58,237,0.9); color: white;
-    border: none; padding: 0.5rem 1rem; border-radius: 8px;
-    font-size: 0.8rem; font-weight: 600; cursor: pointer;
-    transition: all 0.2s; backdrop-filter: blur(4px);
-  }
-  .download-overlay button:hover { background: rgba(124,58,237,1); transform: scale(1.05); }
+        /* ============================================
+           TAB SYSTEM
+           ============================================ */
+        .tab-content {
+            display: none;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 30px 24px 60px;
+            animation: fadeIn 0.4s ease;
+        }
 
-  /* ===== Progress Steps ===== */
-  .progress-steps {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0; margin: 1.5rem 0;
-  }
-  .step {
-    display: flex; align-items: center; gap: 0.4rem;
-    padding: 0.4rem 0.8rem; border-radius: 8px;
-    font-size: 0.85rem; font-weight: 600;
-    color: var(--text-secondary); transition: all 0.3s;
-  }
-  .step.active { color: var(--primary); background: #ede9fe; }
-  .step.done { color: var(--success); }
-  .step-arrow { color: var(--border); margin: 0 0.2rem; font-size: 1.1rem; }
+        .tab-content.active { display: block; }
 
-  /* ===== Results ===== */
-  .result-section { display: none; }
-  .result-section.show { display: block; animation: fadeIn 0.5s ease; }
-  .severity-badge {
-    display: inline-block; padding: 0.5rem 1.5rem;
-    border-radius: 25px; font-weight: 800; font-size: 1.1rem;
-  }
-  .severity-0{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#166534}
-  .severity-1{background:linear-gradient(135deg,#fef9c3,#fef08a);color:#854d0e}
-  .severity-2{background:linear-gradient(135deg,#fed7aa,#fdba74);color:#9a3412}
-  .severity-3{background:linear-gradient(135deg,#fecaca,#fca5a5);color:#991b1b}
-  .severity-4{background:linear-gradient(135deg,#fca5a5,#f87171);color:#7f1d1d}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-  .confidence-bar-container { margin: 1.2rem 0; }
-  .confidence-bar-container .label-row {
-    display: flex; justify-content: space-between;
-    margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600;
-  }
-  .bar-bg { background: #ede9fe; border-radius: 10px; height: 28px; overflow: hidden; }
-  .bar-fill {
-    height: 100%; border-radius: 10px; transition: width 1s ease;
-    display: flex; align-items: center; justify-content: flex-end;
-    padding-right: 8px; font-size: 0.75rem; color: white; font-weight: 700;
-  }
-  .prob-item { margin-bottom: 0.7rem; }
-  .prob-item .label-row { display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px; font-weight:500; }
-  .prob-bar-bg { background:#ede9fe; border-radius:8px; height:16px; overflow:hidden; }
-  .prob-bar-fill { height:100%; border-radius:8px; transition:width 1s ease; }
-  .findings-box,.recommendation-box {
-    background: linear-gradient(135deg, #faf5ff, #f5f3ff);
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 1.2rem; margin-top: 1rem;
-  }
-  .findings-box h4,.recommendation-box h4 { margin-bottom:0.5rem; color:var(--primary-dark); }
-  .action-btns { display:flex; gap:0.8rem; margin-top:1.2rem; flex-wrap:wrap; }
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            text-align: center;
+            padding: 70px 20px 40px;
+        }
 
-  /* ===== Loading ===== */
-  .loading-overlay {
-    display:none; position:fixed; inset:0;
-    background:rgba(30,27,75,0.6); backdrop-filter:blur(8px);
-    z-index:500; justify-content:center; align-items:center;
-  }
-  .loading-overlay.show { display:flex; }
-  .loading-box {
-    background:white; border-radius:var(--radius);
-    padding:2.5rem 3.5rem; text-align:center; box-shadow:var(--shadow-lg);
-  }
-  .spinner {
-    width:52px; height:52px;
-    border:4px solid #ede9fe; border-top:4px solid var(--primary);
-    border-radius:50%; animation:spin 0.8s linear infinite;
-    margin:0 auto 1rem;
-  }
-  @keyframes spin { to{transform:rotate(360deg)} }
-  .loading-steps { margin-top: 0.8rem; }
-  .loading-step {
-    font-size: 0.85rem; padding: 0.2rem 0;
-    color: var(--text-secondary); transition: all 0.3s;
-  }
-  .loading-step.active { color: var(--primary); font-weight: 700; }
-  .loading-step.done { color: var(--success); }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(66,165,245,0.15);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
 
-  /* ===== History ===== */
-  .filter-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
-  .filter-bar select {
-    padding:0.55rem 1rem; border-radius:10px;
-    border:1px solid var(--border); background:white; font-size:0.9rem; cursor:pointer;
-  }
-  .history-table { width:100%; border-collapse:collapse; }
-  .history-table th {
-    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-    text-align:left; padding:0.8rem 1rem; font-size:0.85rem;
-    border-bottom:2px solid var(--border); color:var(--primary-dark);
-  }
-  .history-table td {
-    padding:0.8rem 1rem; border-bottom:1px solid var(--border-light);
-    font-size:0.9rem; vertical-align:middle;
-  }
-  .history-table tr:hover { background:#faf5ff; }
-  .history-thumb { width:50px; height:50px; border-radius:8px; object-fit:cover; border:2px solid var(--border); }
-  .empty-state { text-align:center; padding:3rem; color:var(--text-secondary); }
-  .empty-state .big-icon { font-size:3rem; display:block; margin-bottom:0.5rem; }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
 
-  /* ===== Clinic ===== */
-  .clinic-controls { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
-  .clinic-controls select { padding:0.55rem 1rem; border-radius:10px; border:1px solid var(--border); font-size:0.9rem; }
-  .map-placeholder {
-    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-    border:1px solid var(--border); border-radius:var(--radius);
-    height:350px; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; color:var(--text-secondary);
-  }
-  .clinic-list { margin-top:1rem; }
-  .clinic-item {
-    background:rgba(255,255,255,0.9); border:1px solid var(--border);
-    border-radius:var(--radius); padding:1.2rem; margin-bottom:0.8rem;
-    display:flex; justify-content:space-between; align-items:center;
-    box-shadow:var(--shadow); transition:all 0.25s;
-  }
-  .clinic-item:hover { transform:translateX(4px); border-color:var(--primary-light); }
-  .clinic-item h4 { color:var(--primary-dark); }
-  .clinic-item p { font-size:0.85rem; color:var(--text-secondary); }
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto 45px;
+            line-height: 1.6;
+        }
 
-  /* ===== Modal ===== */
-  .modal-overlay {
-    display:none; position:fixed; inset:0;
-    background:rgba(30,27,75,0.6); backdrop-filter:blur(8px);
-    z-index:300; justify-content:center; align-items:center;
-  }
-  .modal-overlay.show { display:flex; }
-  .modal-content {
-    background:white; border-radius:var(--radius);
-    max-width:700px; width:90%; max-height:85vh;
-    overflow-y:auto; padding:2rem; position:relative;
-    box-shadow:var(--shadow-lg); animation:fadeIn 0.3s ease;
-  }
-  .modal-close {
-    position:absolute; top:1rem; right:1rem;
-    background:#f5f3ff; border:none; font-size:1.3rem;
-    cursor:pointer; color:var(--text-secondary);
-    width:36px; height:36px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .modal-close:hover { background:#ede9fe; color:var(--primary); }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto 50px;
+        }
 
-  /* ===== Toast ===== */
-  .toast {
-    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px);
-    background:var(--primary-dark); color:white; padding:0.8rem 2rem;
-    border-radius:12px; font-weight:600; font-size:0.95rem; z-index:600;
-    box-shadow:var(--shadow-lg); transition:transform 0.4s ease; opacity:0;
-  }
-  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
 
-  footer {
-    text-align:center; padding:2rem; color:var(--text-secondary);
-    font-size:0.85rem; border-top:1px solid var(--border);
-    margin-top:2rem; position:relative; z-index:1;
-    background:rgba(255,255,255,0.5);
-  }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(66,165,245,0.15);
+            border-color: var(--border-hover);
+        }
 
-  @media (max-width: 768px) {
-    .image-grid { grid-template-columns: 1fr; }
-    .navbar { padding: 0 0.8rem; }
-    .nav-links button { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
-    .hero h1 { font-size: 1.8rem; }
-    .section { padding: 1rem; }
-    .eye-animation-container { width: 160px; height: 160px; }
-    .feature-grid { grid-template-columns: 1fr; max-width: 400px; }
-  }
-</style>
+        .feature-icon { font-size: 2.5rem; margin-bottom: 14px; }
+        .feature-card h3 { color: var(--accent-light); margin-bottom: 8px; font-size: 1rem; }
+        .feature-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+            color: white;
+            padding: 14px 36px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(66,165,245,0.4);
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+            color: white;
+            width: 100%;
+            justify-content: center;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            box-shadow: 0 6px 25px rgba(66,165,245,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-analyze:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+
+        .btn-success { background: rgba(102,187,106,0.15); color: var(--success); border: 1px solid rgba(102,187,106,0.3); }
+        .btn-success:hover { background: rgba(102,187,106,0.25); }
+
+        .btn-danger { background: rgba(239,83,80,0.15); color: var(--danger); }
+        .btn-danger:hover { background: rgba(239,83,80,0.25); }
+
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* ============================================
+           CARDS
+           ============================================ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            color: var(--accent-light);
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============================================
+           SECTION HEADER
+           ============================================ */
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h1 {
+            color: var(--accent-light);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* ============================================
+           DISCLAIMER
+           ============================================ */
+        .disclaimer {
+            background: rgba(255,167,38,0.08);
+            border: 1px solid rgba(255,167,38,0.25);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            text-align: center;
+            color: var(--warning);
+            font-size: 0.9rem;
+            margin: 30px auto;
+            max-width: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* ============================================
+           UPLOAD AREA
+           ============================================ */
+        .upload-wrapper {
+            margin-bottom: 24px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(100,181,246,0.35);
+            border-radius: var(--radius);
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(66,165,245,0.06);
+            transform: scale(1.005);
+        }
+
+        .upload-area.has-file {
+            border-color: var(--success);
+            background: rgba(102,187,106,0.05);
+            padding: 25px 20px;
+        }
+
+        .upload-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.8; }
+        .upload-area p { color: var(--text-secondary); margin-bottom: 6px; }
+        .upload-area small { color: var(--text-muted); font-size: 0.8rem; }
+
+        #fileInput { display: none; }
+
+        /* ============================================
+           PROGRESS STEPS
+           ============================================ */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 16px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-sm);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .step-icon {
+            font-size: 1.4rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.4s;
+        }
+
+        .step.active .step-icon { background: rgba(66,165,245,0.2); }
+        .step.active { color: var(--accent); }
+        .step.done .step-icon { background: rgba(102,187,106,0.2); }
+        .step.done { color: var(--success); }
+
+        .step-arrow { color: var(--text-muted); font-size: 1rem; }
+
+        /* ============================================
+           IMAGE DISPLAY
+           ============================================ */
+        .screening-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .screening-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; max-width: 320px; }
+        }
+
+        .image-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .image-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .image-placeholder .ph-icon { font-size: 2.8rem; margin-bottom: 10px; opacity: 0.5; }
+        .image-placeholder p { font-size: 0.9rem; }
+
+        /* ============================================
+           RESULTS
+           ============================================ */
+        .result-panel { display: none; }
+        .result-panel.show { display: block; }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+        }
+
+        .sev-0 { background: rgba(102,187,106,0.15); color: var(--success); }
+        .sev-1 { background: rgba(255,238,88,0.15); color: var(--yellow); }
+        .sev-2 { background: rgba(255,167,38,0.15); color: var(--warning); }
+        .sev-3 { background: rgba(239,83,80,0.15); color: var(--danger); }
+        .sev-4 { background: rgba(213,0,0,0.15); color: var(--danger-dark); }
+
+        .confidence-section { margin: 16px 0; }
+        .confidence-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.9rem; }
+        .confidence-bar { background: rgba(255,255,255,0.08); border-radius: 12px; height: 28px; overflow: hidden; }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+            min-width: 45px;
+            color: rgba(0,0,0,0.7);
+        }
+
+        .prob-section { margin: 20px 0; }
+        .prob-section h4 { margin-bottom: 12px; font-size: 0.95rem; color: var(--text-secondary); }
+
+        .prob-item { margin-bottom: 10px; }
+        .prob-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.82rem; color: var(--text-secondary); }
+        .prob-track { background: rgba(255,255,255,0.06); border-radius: 6px; height: 7px; overflow: hidden; }
+        .prob-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+        .findings-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .findings-card h4 { margin-bottom: 10px; font-size: 0.95rem; }
+        .findings-list { list-style: none; }
+        .findings-list li { padding: 4px 0 4px 16px; position: relative; color: var(--text-secondary); font-size: 0.9rem; }
+        .findings-list li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+
+        .recommendation-card {
+            background: rgba(66,165,245,0.08);
+            border: 1px solid rgba(66,165,245,0.2);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .recommendation-card h4 { margin-bottom: 8px; color: var(--accent-light); }
+
+        /* ============================================
+           HISTORY
+           ============================================ */
+        .filters-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .filter-select option { background: var(--bg-secondary); }
+
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .history-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--border-hover);
+        }
+
+        .history-meta { display: flex; flex-direction: column; gap: 4px; }
+        .history-meta strong { font-size: 0.95rem; }
+        .history-meta small { color: var(--text-muted); font-size: 0.8rem; }
+        .history-badge { font-size: 0.78rem; padding: 5px 14px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.4; }
+        .empty-state p { margin-bottom: 20px; }
+
+        /* ============================================
+           CLINICS
+           ============================================ */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar select,
+        .search-bar input {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar select option { background: var(--bg-secondary); }
+
+        .map-box {
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .clinics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .clinic-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .clinic-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .clinic-card h3 { color: var(--accent-light); font-size: 1rem; margin-bottom: 10px; }
+        .clinic-card .clinic-info { color: var(--text-muted); font-size: 0.85rem; margin: 4px 0; }
+        .clinic-type-tag {
+            display: inline-block;
+            background: rgba(66,165,245,0.12);
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================
+           LOADING OVERLAY
+           ============================================ */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(5,5,30,0.9);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-overlay.show { display: flex; }
+
+        .spinner-ring {
+            width: 56px;
+            height: 56px;
+            border: 3px solid rgba(66,165,245,0.15);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-steps {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loading-step {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .loading-step.active { color: var(--accent); font-weight: 600; }
+        .loading-step.done { color: var(--success); }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 6000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-box {
+            background: linear-gradient(135deg, #151550, #1a1a55);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.6rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-box h2 { color: var(--accent-light); margin-bottom: 20px; font-size: 1.2rem; }
+
+        /* ============================================
+           TOAST NOTIFICATION
+           ============================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            padding: 14px 22px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.show { display: flex; }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+    </style>
 </head>
 <body>
 
-<div class="bg-particles">
-  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-  <div class="particle"></div><div class="particle"></div>
-</div>
-
-<!-- NAVBAR -->
+<!-- ======= NAVBAR ======= -->
 <nav class="navbar">
-  <div class="logo" onclick="showSection('home')">🔍 InsightRetina</div>
-  <div class="nav-links">
-    <button class="active" data-section="home" data-i18n="nav_home">Home</button>
-    <button data-section="screening" data-i18n="nav_screening">Screening</button>
-    <button data-section="history" data-i18n="nav_history">History</button>
-    <button data-section="clinic" data-i18n="nav_clinic">Clinic</button>
-  </div>
-  <div class="lang-dropdown">
-    <button class="lang-btn" id="langToggle">🌐 English ▾</button>
-    <div class="lang-menu" id="langMenu">
-      <button data-lang="th" onclick="setLanguage('th')">🇹🇭 ไทย</button>
-      <button data-lang="en" class="active-lang" onclick="setLanguage('en')">🇬🇧 English</button>
-      <button data-lang="id" onclick="setLanguage('id')">🇮🇩 Bahasa Indonesia</button>
-      <button data-lang="vi" onclick="setLanguage('vi')">🇻🇳 Tiếng Việt</button>
-      <button data-lang="ph" onclick="setLanguage('ph')">🇵🇭 Filipino</button>
-      <button data-lang="my" onclick="setLanguage('my')">🇲🇾 Bahasa Melayu</button>
+    <div class="logo">
+        <span class="logo-icon">🔍</span>
+        <span class="logo-text"><span>Insight</span>Retina</span>
     </div>
-  </div>
+    <ul class="nav-links">
+        <li><a onclick="switchTab('home')" id="nav-home" class="active">🏠 Home</a></li>
+        <li><a onclick="switchTab('screening')" id="nav-screening">🔬 Screening</a></li>
+        <li><a onclick="switchTab('history')" id="nav-history">📋 History</a></li>
+        <li><a onclick="switchTab('clinic')" id="nav-clinic">🏥 Clinic</a></li>
+    </ul>
+    <select class="lang-select">
+        <option>🇬🇧 English</option>
+        <option>🇹🇭 ไทย</option>
+        <option>🇮🇩 Bahasa</option>
+        <option>🇻🇳 Tiếng Việt</option>
+    </select>
 </nav>
 
-<!-- HOME -->
-<div id="section-home" class="section active">
-  <div class="hero">
-    <div class="eye-animation-container">
-      <svg class="eye-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.4"/>
-            <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="pupilGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#1e1b4b"/><stop offset="70%" stop-color="#312e81"/>
-            <stop offset="100%" stop-color="#4c1d95"/>
-          </radialGradient>
-          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#8b5cf6"/><stop offset="50%" stop-color="#7c3aed"/>
-            <stop offset="100%" stop-color="#6d28d9"/>
-          </radialGradient>
-        </defs>
-        <circle class="eye-glow" cx="110" cy="110" r="105" fill="url(#eyeGlow)"/>
-        <g class="eye-ring-outer">
-          <circle cx="110" cy="110" r="100" fill="none" stroke="#c4b5fd" stroke-width="1" stroke-dasharray="8 12" opacity="0.5"/>
-        </g>
-        <g class="eye-ring-inner">
-          <circle cx="110" cy="110" r="80" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="12 8" opacity="0.4"/>
-        </g>
-        <g class="eye-pupil-pulse">
-          <circle cx="110" cy="110" r="60" fill="url(#irisGrad)" opacity="0.3"/>
-          <circle cx="110" cy="110" r="60" fill="none" stroke="#7c3aed" stroke-width="2" opacity="0.6"/>
-          <g opacity="0.4" stroke="#c4b5fd" stroke-width="1.2" fill="none">
-            <path d="M110 110 Q125 85 145 75"/><path d="M110 110 Q135 100 155 95"/>
-            <path d="M110 110 Q130 120 150 130"/><path d="M110 110 Q120 135 130 155"/>
-            <path d="M110 110 Q95 135 85 150"/><path d="M110 110 Q85 120 65 125"/>
-            <path d="M110 110 Q80 100 60 95"/><path d="M110 110 Q90 85 75 70"/>
-          </g>
-          <circle cx="110" cy="110" r="22" fill="url(#pupilGrad)"/>
-          <circle cx="110" cy="110" r="22" fill="none" stroke="#4c1d95" stroke-width="1.5"/>
-          <ellipse cx="100" cy="102" rx="5" ry="3" fill="white" opacity="0.6"/>
-        </g>
-        <g class="scan-line">
-          <line x1="110" y1="110" x2="110" y2="15" stroke="#7c3aed" stroke-width="1.5" opacity="0.6"/>
-          <circle cx="110" cy="15" r="3" fill="#7c3aed" opacity="0.8"/>
-        </g>
-        <g>
-          <circle class="data-dot" cx="140" cy="60" r="2" fill="#a78bfa"/>
-          <circle class="data-dot" cx="165" cy="110" r="2" fill="#8b5cf6"/>
-          <circle class="data-dot" cx="140" cy="160" r="2" fill="#a78bfa"/>
-          <circle class="data-dot" cx="80" cy="160" r="2" fill="#8b5cf6"/>
-          <circle class="data-dot" cx="55" cy="110" r="2" fill="#a78bfa"/>
-          <circle class="data-dot" cx="80" cy="60" r="2" fill="#8b5cf6"/>
-        </g>
-      </svg>
-      <div class="floating-label">AI RETINA SCAN</div>
-    </div>
-    <h1>InsightRetina</h1>
-    <p class="subtitle" data-i18n="hero_subtitle">AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.</p>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🔬</div>
-        <h3 data-i18n="feat_ai">Advanced AI</h3>
-        <p data-i18n="feat_ai_desc">Deep learning for accurate DR detection</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3 data-i18n="feat_fast">Fast Analysis</h3>
-        <p data-i18n="feat_fast_desc">Real-time preprocessing and instant results</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🏥</div>
-        <h3 data-i18n="feat_clinic">Clinical Grade</h3>
-        <p data-i18n="feat_clinic_desc">Find nearby ophthalmology centers</p>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="showSection('screening')" data-i18n="btn_start">🔬 Start Screening</button>
-    <div class="disclaimer">
-      <span class="disclaimer-icon">⚠️</span>
-      <div>
-        <strong data-i18n="disclaimer_title">Medical Disclaimer</strong>
-        <p data-i18n="disclaimer_text">This tool is for preliminary screening only. Always consult with a qualified ophthalmologist.</p>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- ======= HOME ======= -->
+<section class="tab-content active" id="tab-home">
+    <div class="hero">
+        <div class="hero-badge">AI RETINA SCAN</div>
+        <h1>InsightRetina</h1>
+        <p>AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.</p>
 
-<!-- SCREENING -->
-<div id="section-screening" class="section">
-  <div class="card">
-    <h2 data-i18n="screening_title">🔬 Diabetic Retinopathy Screening</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="screening_subtitle">Upload a fundus image for AI analysis</p>
-
-    <!-- ★★★ FIXED UPLOAD AREA ★★★ -->
-    <div class="upload-area" id="uploadArea">
-      <div class="icon">📸</div>
-      <p class="upload-main-text" data-i18n="upload_text">Drag & drop your image here or click to browse</p>
-      <p class="sub" data-i18n="upload_sub">Supported formats: JPG, PNG (max 5MB)</p>
-      <!-- ★ input อยู่ทับเต็มพื้นที่ด้วย absolute + opacity:0 -->
-      <input type="file" id="fileInput" accept="image/jpeg,image/png,.jpg,.jpeg,.png">
-      <div class="file-name" id="fileName"></div>
-    </div>
-
-    <!-- Progress Steps -->
-    <div class="progress-steps" id="progressSteps" style="display:none;">
-      <div class="step" id="step1">📥 Upload</div>
-      <span class="step-arrow">→</span>
-      <div class="step" id="step2">🔄 Preprocess</div>
-      <span class="step-arrow">→</span>
-      <div class="step" id="step3">🤖 AI Analysis</div>
-      <span class="step-arrow">→</span>
-      <div class="step" id="step4">📊 Result</div>
-    </div>
-
-    <!-- Image Previews -->
-    <div class="image-grid" style="margin-top:1rem;">
-      <div class="image-box">
-        <div class="label" data-i18n="original_image">👁️ Original Image</div>
-        <div class="img-container">
-          <div class="placeholder" id="origPlaceholder">
-            <span class="big-icon">👁️</span>
-            <span data-i18n="no_image">No image selected</span>
-          </div>
-          <img id="origImg" style="display:none;" alt="Original">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Advanced AI</h3>
+                <p>Deep learning for accurate DR detection</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Analysis</h3>
+                <p>Real-time preprocessing and instant results</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏥</div>
+                <h3>Clinical Grade</h3>
+                <p>Find nearby ophthalmology centers</p>
+            </div>
         </div>
-      </div>
-      <div class="image-box">
-        <div class="label" data-i18n="preprocessed_image">🔄 Preprocessed Image</div>
-        <div class="img-container" style="position:relative;">
-          <div class="placeholder" id="prepPlaceholder">
-            <span class="big-icon">🔄</span>
-            <span data-i18n="waiting_analysis">Waiting for analysis</span>
-          </div>
-          <canvas id="prepCanvas" style="display:none;"></canvas>
-          <!-- ★★★ DOWNLOAD BUTTON FOR PREPROCESSED IMAGE ★★★ -->
-          <div class="download-overlay" id="downloadOverlay">
-            <button onclick="downloadPreprocessed()" title="Download preprocessed image">
-              💾 Save Processed Image
-            </button>
-          </div>
+
+        <button class="btn btn-primary" onclick="switchTab('screening')">🔬 Start Screening</button>
+
+        <div class="disclaimer">⚠️ <span>This tool is for preliminary screening only. Always consult a qualified ophthalmologist.</span></div>
+    </div>
+</section>
+
+<!-- ======= SCREENING ======= -->
+<section class="tab-content" id="tab-screening">
+    <div class="section-header">
+        <h1>🔬 Diabetic Retinopathy Screening</h1>
+        <p>Upload a fundus image for AI analysis</p>
+    </div>
+
+    <!-- Upload -->
+    <div class="card upload-wrapper">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📸</div>
+            <p><strong>Drag & drop</strong> your image here or <strong>click to browse</strong></p>
+            <small>Supported formats: JPG, PNG (max 5MB)</small>
         </div>
-      </div>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png" />
+
+        <div class="progress-steps">
+            <div class="step" id="step-upload"><div class="step-icon">📥</div><span>Upload</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-preprocess"><div class="step-icon">🔄</div><span>Preprocess</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-ai"><div class="step-icon">🤖</div><span>AI Analysis</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-result"><div class="step-icon">📊</div><span>Result</span></div>
+        </div>
     </div>
 
-    <div style="margin-top:1.2rem;text-align:center;">
-      <button class="btn-primary" id="analyzeBtn" disabled onclick="analyzeImage()" data-i18n="btn_analyze">🔬 Analyze Image</button>
-    </div>
-  </div>
+    <div class="screening-grid">
+        <!-- LEFT COLUMN -->
+        <div>
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-title">👁️ Original Image</div>
+                <div class="image-box" id="originalBox">
+                    <div class="image-placeholder">
+                        <div class="ph-icon">👁️</div>
+                        <p>No image selected</p>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Results -->
-  <div class="card result-section" id="resultCard">
-    <h2 data-i18n="screening_result">📊 Screening Result</h2>
-    <div style="text-align:center;margin:1rem 0;">
-      <span class="severity-badge" id="severityBadge">No DR</span>
-    </div>
-    <div class="confidence-bar-container">
-      <div class="label-row">
-        <span data-i18n="confidence">Confidence Score</span>
-        <span id="confPercent">0%</span>
-      </div>
-      <div class="bar-bg"><div class="bar-fill" id="confBar" style="width:0%;"></div></div>
-    </div>
-    <h4 style="margin-top:1rem;color:var(--primary-dark);" data-i18n="class_prob">Classification Probabilities</h4>
-    <div id="probBars"></div>
-    <div class="findings-box">
-      <h4 data-i18n="findings">🔍 Detected Findings</h4>
-      <p id="findingsText">No abnormalities detected</p>
-    </div>
-    <div class="recommendation-box">
-      <h4 data-i18n="recommendation">💡 Recommendation</h4>
-      <p id="recommendText">Routine eye examination recommended</p>
-    </div>
-    <div class="action-btns">
-      <button class="btn-primary" onclick="saveResult()" data-i18n="btn_save">💾 Save Result</button>
-      <button class="btn-success" onclick="downloadPreprocessed()">📥 Download Processed Image</button>
-      <button class="btn-secondary" onclick="showSection('clinic')" data-i18n="btn_find_clinic">🏥 Find Clinic</button>
-    </div>
-  </div>
-</div>
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-title">🔄 Preprocessed Image</div>
+                <div class="image-box" id="processedBox">
+                    <div class="image-placeholder">
+                        <div class="ph-icon">🔄</div>
+                        <p>Waiting for analysis</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top:12px; width:100%; justify-content:center;" onclick="downloadProcessed()">💾 Save Processed Image</button>
+            </div>
 
-<!-- HISTORY -->
-<div id="section-history" class="section">
-  <div class="card">
-    <h2 data-i18n="history_title">📋 Screening History</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="history_subtitle">Review your screening records</p>
-    <div class="filter-bar">
-      <select id="filterSeverity">
-        <option value="all">All Severities</option>
-        <option value="No DR">No DR</option><option value="Mild">Mild</option>
-        <option value="Moderate">Moderate</option><option value="Severe">Severe</option>
-        <option value="Proliferative">Proliferative</option>
-      </select>
-      <select id="filterSort">
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-      </select>
-    </div>
-    <div id="historyContent">
-      <div class="empty-state">
-        <span class="big-icon">📋</span>
-        <p data-i18n="no_history">No screening history yet</p>
-        <button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">Start First Screening</button>
-      </div>
-    </div>
-  </div>
-</div>
+            <button class="btn btn-analyze" id="btnAnalyze" disabled onclick="runAnalysis()">🔬 Analyze Image</button>
+        </div>
 
-<!-- CLINIC -->
-<div id="section-clinic" class="section">
-  <div class="card">
-    <h2 data-i18n="clinic_title">🏥 Nearby Eye Clinics</h2>
-    <p style="color:var(--text-secondary);margin-bottom:1rem;" data-i18n="clinic_subtitle">Find ophthalmology clinics near you</p>
-    <div class="clinic-controls">
-      <select id="clinicType">
-        <option value="all">All Types</option>
-        <option value="eye_clinic">Eye Clinic</option>
-        <option value="hospital">Hospital</option>
-        <option value="medical_center">Medical Center</option>
-      </select>
-      <button class="btn-primary" onclick="searchClinics()">🔍 Search Clinics</button>
-    </div>
-    <div class="map-placeholder" id="mapArea">
-      <div><div style="font-size:2.5rem;margin-bottom:0.5rem;">🗺️</div><span data-i18n="map_text">Map view will appear here</span></div>
-    </div>
-    <div class="clinic-list" id="clinicList"></div>
-  </div>
-</div>
+        <!-- RIGHT COLUMN -->
+        <div>
+            <div class="card result-panel" id="resultPanel">
+                <div class="card-title">📊 Screening Result</div>
 
-<!-- LOADING -->
+                <div id="sevBadge" class="severity-badge sev-0">No DR</div>
+
+                <div class="confidence-section">
+                    <div class="confidence-label">
+                        <span>Confidence Score</span>
+                        <span id="confValue">0%</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confFill" style="width:0%;background:var(--accent);">0%</div>
+                    </div>
+                </div>
+
+                <div class="prob-section">
+                    <h4>Classification Probabilities</h4>
+                    <div id="probBars"></div>
+                </div>
+
+                <div class="findings-card">
+                    <h4>🔍 Detected Findings</h4>
+                    <ul class="findings-list" id="findingsList"></ul>
+                </div>
+
+                <div class="recommendation-card">
+                    <h4>💡 Recommendation</h4>
+                    <p id="recText">Routine eye examination recommended</p>
+                </div>
+
+                <div class="btn-group" style="margin-top:20px;">
+                    <button class="btn btn-success" onclick="saveToHistory()">💾 Save Result</button>
+                    <button class="btn btn-secondary" onclick="downloadProcessed()">📥 Download Image</button>
+                    <button class="btn btn-secondary" onclick="switchTab('clinic')">🏥 Find Clinic</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======= HISTORY ======= -->
+<section class="tab-content" id="tab-history">
+    <div class="section-header">
+        <h1>📋 Screening History</h1>
+        <p>Review your diabetic retinopathy screening records</p>
+    </div>
+
+    <div class="card">
+        <div class="filters-bar">
+            <select class="filter-select" id="filterSeverity" onchange="renderHistory()">
+                <option value="all">All Severities</option>
+                <option value="No DR">No DR</option>
+                <option value="Mild">Mild</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Severe">Severe</option>
+                <option value="Proliferative">Proliferative</option>
+            </select>
+            <select class="filter-select" id="filterSort" onchange="renderHistory()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
+
+        <div class="history-list" id="historyList"></div>
+    </div>
+</section>
+
+<!-- ======= CLINIC ======= -->
+<section class="tab-content" id="tab-clinic">
+    <div class="section-header">
+        <h1>🏥 Nearby Eye Clinics</h1>
+        <p>Find ophthalmology clinics near you</p>
+    </div>
+
+    <div class="card">
+        <div class="search-bar">
+            <select id="clinicTypeFilter">
+                <option value="all">All Types</option>
+                <option value="eye_clinic">Eye Clinic</option>
+                <option value="hospital">Hospital</option>
+                <option value="medical_center">Medical Center</option>
+            </select>
+            <input type="text" id="clinicSearchInput" placeholder="🔍 Search by name or location..." />
+            <button class="btn btn-primary" style="padding:10px 20px; font-size:0.9rem;" onclick="searchClinics()">🔍 Search</button>
+        </div>
+
+        <div class="map-box" id="mapBox">🗺️ Click "Search" to find nearby clinics</div>
+
+        <div class="clinics-grid" id="clinicsList"></div>
+    </div>
+</section>
+
+<!-- ======= LOADING OVERLAY ======= -->
 <div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-box">
-    <div class="spinner"></div>
-    <p style="font-weight:700;color:var(--primary-dark);" data-i18n="analyzing">Analyzing image...</p>
+    <div class="spinner-ring"></div>
     <div class="loading-steps">
-      <div class="loading-step" id="ls1">📥 Loading image...</div>
-      <div class="loading-step" id="ls2">🔄 Preprocessing...</div>
-      <div class="loading-step" id="ls3">🤖 AI Classification...</div>
-      <div class="loading-step" id="ls4">📊 Generating results...</div>
+        <div class="loading-step" id="ls-preprocess">📥 Preprocessing image...</div>
+        <div class="loading-step" id="ls-ai">🤖 Running AI classification...</div>
+        <div class="loading-step" id="ls-result">📊 Generating results...</div>
     </div>
-  </div>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeModal()">&times;</button>
-    <h2 style="color:var(--primary-dark);">Record Details</h2>
-    <div id="modalBody"></div>
-  </div>
+<!-- ======= MODAL ======= -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modalTitle">📋 Record Details</h2>
+        <div id="modalBody"></div>
+    </div>
 </div>
 
-<!-- TOAST -->
+<!-- ======= TOAST ======= -->
 <div class="toast" id="toast"></div>
 
-<footer>
-  <p>© 2024 InsightRetina. <span data-i18n="footer">For preliminary screening only.</span></p>
-</footer>
+<!-- ======= FOOTER ======= -->
+<footer class="footer">© 2024 InsightRetina. For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.</footer>
 
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
-// ===================================================================
-// STATE
-// ===================================================================
-let currentLang = 'en';
-let screeningHistory = [];
-let currentResult = null;
-let uploadedImageData = null;   // base64 ของภาพต้นฉบับ
-let preprocessedImageData = null; // base64 ของภาพ processed
+// ==========================================
+// CONSTANTS
+// ==========================================
+const LABELS = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative'];
+const COLORS = ['#66bb6a', '#ffee58', '#ffa726', '#ef5350', '#ff1744'];
 
-// Load history from localStorage
-try { screeningHistory = JSON.parse(localStorage.getItem('drHistory') || '[]'); } catch(e) { screeningHistory = []; }
-
-// ===================================================================
-// TRANSLATIONS (ย่อ - ใส่แค่ en + th สำหรับตัวอย่าง, เพิ่มภาษาอื่นได้)
-// ===================================================================
-const T = {
-  en: {
-    nav_home:"Home",nav_screening:"Screening",nav_history:"History",nav_clinic:"Clinic",
-    hero_subtitle:"AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.",
-    feat_ai:"Advanced AI",feat_ai_desc:"Deep learning for accurate DR detection",
-    feat_fast:"Fast Analysis",feat_fast_desc:"Real-time preprocessing and instant results",
-    feat_clinic:"Clinical Grade",feat_clinic_desc:"Find nearby ophthalmology centers",
-    btn_start:"🔬 Start Screening",
-    disclaimer_title:"Medical Disclaimer",
-    disclaimer_text:"This tool is for preliminary screening only. Always consult with a qualified ophthalmologist.",
-    screening_title:"🔬 Diabetic Retinopathy Screening",
-    screening_subtitle:"Upload a fundus image for AI analysis",
-    upload_text:"Drag & drop your image here or click to browse",
-    upload_sub:"Supported formats: JPG, PNG (max 5MB)",
-    original_image:"👁️ Original Image",preprocessed_image:"🔄 Preprocessed Image",
-    no_image:"No image selected",waiting_analysis:"Waiting for analysis",
-    btn_analyze:"🔬 Analyze Image",screening_result:"📊 Screening Result",
-    confidence:"Confidence Score",class_prob:"Classification Probabilities",
-    findings:"🔍 Detected Findings",recommendation:"💡 Recommendation",
-    btn_save:"💾 Save Result",btn_find_clinic:"🏥 Find Clinic",
-    history_title:"📋 Screening History",history_subtitle:"Review your screening records",
-    no_history:"No screening history yet",
-    clinic_title:"🏥 Nearby Eye Clinics",clinic_subtitle:"Find ophthalmology clinics near you",
-    map_text:"Map view will appear here",analyzing:"Analyzing image...",
-    footer:"For preliminary screening only.",
-    lang_label:"English",
-    sev:["No DR","Mild","Moderate","Severe","Proliferative"],
-    find:["No abnormalities detected","Microaneurysms detected","Microaneurysms, hard exudates, retinal hemorrhages","Extensive hemorrhages, venous beading, IRMA","Neovascularization, vitreous hemorrhage, fibrous proliferation"],
-    rec:["Routine eye examination recommended","Follow-up in 12 months. Monitor blood sugar.","Follow-up in 6 months. Consult ophthalmologist.","Urgent referral within 1 month.","Immediate referral for treatment."],
-    saved:"✅ Result saved to history!",
-    downloaded:"✅ Preprocessed image downloaded!",
-    th_img:"Image",th_date:"Date",th_case:"Case ID",th_sev:"Severity",th_conf:"Confidence",th_act:"Action",btn_view:"View"
-  },
-  th: {
-    nav_home:"หน้าหลัก",nav_screening:"ตรวจคัดกรอง",nav_history:"ประวัติ",nav_clinic:"คลินิก",
-    hero_subtitle:"ระบบคัดกรองเบาหวานขึ้นจอประสาทตาด้วย AI วิเคราะห์ภาพจอประสาทตาขั้นสูง",
-    feat_ai:"AI ขั้นสูง",feat_ai_desc:"Deep Learning สำหรับตรวจจับ DR อย่างแม่นยำ",
-    feat_fast:"วิเคราะห์รวดเร็ว",feat_fast_desc:"ประมวลผลแบบเรียลไทม์",
-    feat_clinic:"ระดับคลินิก",feat_clinic_desc:"ค้นหาศูนย์จักษุวิทยาใกล้คุณ",
-    btn_start:"🔬 เริ่มตรวจคัดกรอง",
-    disclaimer_title:"คำเตือนทางการแพทย์",
-    disclaimer_text:"เครื่องมือนี้ใช้สำหรับการคัดกรองเบื้องต้นเท่านั้น กรุณาปรึกษาจักษุแพทย์เสมอ",
-    screening_title:"🔬 ตรวจคัดกรองเบาหวานขึ้นจอประสาทตา",
-    screening_subtitle:"อัปโหลดภาพจอประสาทตาเพื่อวิเคราะห์ด้วย AI",
-    upload_text:"ลากและวางภาพที่นี่ หรือคลิกเพื่อเลือกไฟล์",
-    upload_sub:"รองรับ: JPG, PNG (สูงสุด 5MB)",
-    original_image:"👁️ ภาพต้นฉบับ",preprocessed_image:"🔄 ภาพหลังประมวลผล",
-    no_image:"ยังไม่ได้เลือกภาพ",waiting_analysis:"รอการวิเคราะห์",
-    btn_analyze:"🔬 วิเคราะห์ภาพ",screening_result:"📊 ผลการคัดกรอง",
-    confidence:"คะแนนความเชื่อมั่น",class_prob:"ความน่าจะเป็นของแต่ละระดับ",
-    findings:"🔍 ผลที่ตรวจพบ",recommendation:"💡 คำแนะนำ",
-    btn_save:"💾 บันทึกผล",btn_find_clinic:"🏥 ค้นหาคลินิก",
-    history_title:"📋 ประวัติการตรวจคัดกรอง",history_subtitle:"ทบทวนบันทึกการตรวจ",
-    no_history:"ยังไม่มีประวัติการตรวจ",
-    clinic_title:"🏥 คลินิกตาใกล้เคียง",clinic_subtitle:"ค้นหาคลินิกจักษุใกล้คุณ",
-    map_text:"แผนที่จะแสดงที่นี่",analyzing:"กำลังวิเคราะห์ภาพ...",
-    footer:"สำหรับการคัดกรองเบื้องต้นเท่านั้น",
-    lang_label:"ไทย",
-    sev:["ไม่มี DR","เล็กน้อย","ปานกลาง","รุนแรง","ระยะแพร่กระจาย"],
-    find:["ไม่พบความผิดปกติ","พบ Microaneurysms","พบ Microaneurysms, hard exudates, เลือดออก","พบเลือดออกมาก, venous beading, IRMA","พบหลอดเลือดใหม่, เลือดออกในวุ้นตา"],
-    rec:["แนะนำตรวจตาตามปกติ","ติดตามผลใน 12 เดือน","ติดตามผลใน 6 เดือน ปรึกษาจักษุแพทย์","ส่งต่อจักษุแพทย์ด่วนภายใน 1 เดือน","ส่งต่อรักษาทันที"],
-    saved:"✅ บันทึกผลแล้ว!",
-    downloaded:"✅ ดาวน์โหลดภาพแล้ว!",
-    th_img:"ภาพ",th_date:"วันที่",th_case:"รหัสเคส",th_sev:"ระดับ",th_conf:"ความเชื่อมั่น",th_act:"การดำเนินการ",btn_view:"ดู"
-  }
+const FINDINGS_MAP = {
+    0: ['No abnormalities detected'],
+    1: ['Microaneurysms detected', 'Minor retinal hemorrhages'],
+    2: ['Microaneurysms present', 'Dot/blot hemorrhages', 'Hard exudates', 'Cotton wool spots possible'],
+    3: ['Significant hemorrhages in 4 quadrants', 'Venous beading in 2+ quadrants', 'IRMA (Intraretinal Microvascular Abnormalities)', 'Multiple cotton wool spots'],
+    4: ['Neovascularization (new blood vessels)', 'Vitreous/preretinal hemorrhage', 'Fibrous proliferation', 'Tractional retinal detachment risk']
 };
 
-function t(key) { return (T[currentLang] && T[currentLang][key]) || (T.en[key]) || key; }
+const RECOMMENDATIONS = {
+    0: '✅ No signs of diabetic retinopathy detected. Continue annual routine eye examinations. Maintain blood sugar and blood pressure control.',
+    1: '⚠️ Mild nonproliferative DR detected. Schedule follow-up in 9–12 months. Monitor and control blood glucose, blood pressure, and lipid levels.',
+    2: '⚠️ Moderate nonproliferative DR detected. Refer to ophthalmologist within 3–6 months. Close monitoring of metabolic control required.',
+    3: '🚨 Severe nonproliferative DR detected. URGENT referral to retina specialist within 2–4 weeks. High risk of progression to proliferative DR.',
+    4: '🚨 Proliferative DR detected. IMMEDIATE referral to retinal specialist. May require laser photocoagulation or anti-VEGF injection.'
+};
 
-// ===================================================================
-// LANGUAGE
-// ===================================================================
-function setLanguage(lang) {
-  currentLang = lang;
-  const tr = T[lang] || T.en;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    if (tr[k]) el.textContent = tr[k];
-  });
-  const flags = {th:'🇹🇭',en:'🇬🇧',id:'🇮🇩',vi:'🇻🇳',ph:'🇵🇭',my:'🇲🇾'};
-  document.getElementById('langToggle').textContent = `${flags[lang]||'🌐'} ${tr.lang_label||lang} ▾`;
-  document.querySelectorAll('.lang-menu button').forEach(btn =>
-    btn.classList.toggle('active-lang', btn.getAttribute('data-lang')===lang));
-  document.getElementById('langMenu').classList.remove('show');
-  if (currentResult) updateResultDisplay(currentResult);
-  renderHistory();
+// ==========================================
+// STATE
+// ==========================================
+let currentImageSrc = null;
+let processedImageSrc = null;
+let lastResult = null;
+let history = JSON.parse(localStorage.getItem('dr_history') || '[]');
+
+// ==========================================
+// TAB NAVIGATION
+// ==========================================
+function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    if (name === 'history') renderHistory();
+    if (name === 'clinic') searchClinics();
 }
-document.getElementById('langToggle').addEventListener('click', e => {
-  e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show');
-});
-document.addEventListener('click', () => document.getElementById('langMenu').classList.remove('show'));
 
-// ===================================================================
-// NAVIGATION
-// ===================================================================
-function showSection(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('section-'+name).classList.add('active');
-  document.querySelectorAll('.nav-links button').forEach(btn =>
-    btn.classList.toggle('active', btn.getAttribute('data-section')===name));
-  if (name==='history') renderHistory();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-document.querySelectorAll('.nav-links button').forEach(btn =>
-  btn.addEventListener('click', () => showSection(btn.getAttribute('data-section'))));
-
-// ===================================================================
-// ★★★ FILE UPLOAD - FIXED ★★★
-// ===================================================================
+// ==========================================
+// FILE UPLOAD & DRAG-DROP
+// ==========================================
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
 
-// ★ Key fix: ให้ input file คลุมทั้ง upload area แล้ว
-// ★ ไม่ต้อง click trigger จาก JS อีก (หมดปัญหา event conflict)
+['dragenter', 'dragover'].forEach(evt => {
+    uploadArea.addEventListener(evt, e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+});
 
-// แต่ยัง support drag & drop
-uploadArea.addEventListener('dragover', e => {
-  e.preventDefault(); e.stopPropagation();
-  uploadArea.classList.add('dragover');
+['dragleave', 'drop'].forEach(evt => {
+    uploadArea.addEventListener(evt, e => { e.preventDefault(); uploadArea.classList.remove('dragover'); });
 });
-uploadArea.addEventListener('dragleave', e => {
-  e.preventDefault(); e.stopPropagation();
-  uploadArea.classList.remove('dragover');
-});
+
 uploadArea.addEventListener('drop', e => {
-  e.preventDefault(); e.stopPropagation();
-  uploadArea.classList.remove('dragover');
-  const files = e.dataTransfer.files;
-  if (files && files.length > 0) {
-    // ★ ใส่ไฟล์เข้า input เพื่อ trigger change event
-    const dt = new DataTransfer();
-    dt.items.add(files);
-    fileInput.files = dt.files;
-    handleFile(files);
-  }
+    const file = e.dataTransfer.files;
+    if (file) processFile(file);
 });
 
-// ★★★ THE MAIN FIX: listen to 'change' event on file input ★★★
-fileInput.addEventListener('change', function(e) {
-  console.log('📁 File input changed!', this.files);
-  if (this.files && this.files.length > 0) {
-    handleFile(this.files);
-  }
+fileInput.addEventListener('change', e => {
+    const file = e.target.files;
+    if (file) processFile(file);
 });
 
-function handleFile(file) {
-  console.log('📁 handleFile called:', file.name, file.type, file.size);
-
-  // Validate type
-  if (!file.type.match(/image\/(jpeg|png|jpg)/i) && !file.name.match(/\.(jpg|jpeg|png)$/i)) {
-    showToast('❌ Please upload a JPG or PNG image.');
-    return;
-  }
-  // Validate size
-  if (file.size > 5 * 1024 * 1024) {
-    showToast('❌ File size exceeds 5MB limit.');
-    return;
-  }
-
-  // ★★★ Read file as Data URL ★★★
-  const reader = new FileReader();
-
-  reader.onloadstart = () => {
-    console.log('📖 FileReader: start reading...');
-  };
-
-  reader.onprogress = (e) => {
-    if (e.lengthComputable) {
-      console.log(`📖 FileReader: ${Math.round(e.loaded/e.total*100)}%`);
+function processFile(file) {
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        showToast('❌ Please upload JPG or PNG format only!');
+        return;
     }
-  };
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('❌ File too large! Maximum 5MB.');
+        return;
+    }
 
-  reader.onload = function(e) {
-    console.log('✅ FileReader: load complete! Data length:', e.target.result.length);
+    const reader = new FileReader();
+    reader.onload = e => {
+        currentImageSrc = e.target.result;
 
-    uploadedImageData = e.target.result;
+        // Show original
+        document.getElementById('originalBox').innerHTML = `<img src="${currentImageSrc}" alt="Original fundus" />`;
 
-    // Show original image
-    const origImg = document.getElementById('origImg');
-    origImg.onload = function() {
-      console.log('✅ Image displayed! Size:', this.naturalWidth, 'x', this.naturalHeight);
+        // Update upload area
+        uploadArea.classList.add('has-file');
+        uploadArea.innerHTML = `
+            <div style="display:flex;align-items:center;gap:15px;justify-content:center;">
+                <img src="${currentImageSrc}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;" />
+                <div style="text-align:left;">
+                    <p style="margin:0;color:var(--success);font-weight:600;">✅ ${file.name}</p>
+                    <small style="color:var(--text-muted);">${(file.size/1024).toFixed(0)} KB — Click to change</small>
+                </div>
+            </div>
+        `;
+
+        // Enable button & update step
+        document.getElementById('btnAnalyze').disabled = false;
+        updateSteps('upload');
+
+        // Reset results
+        document.getElementById('resultPanel').classList.remove('show');
+        document.getElementById('processedBox').innerHTML = `<div class="image-placeholder"><div class="ph-icon">🔄</div><p>Waiting for analysis</p></div>`;
     };
-    origImg.onerror = function() {
-      console.error('❌ Image failed to display');
-    };
-    origImg.src = uploadedImageData;
-    origImg.style.display = 'block';
-    document.getElementById('origPlaceholder').style.display = 'none';
-
-    // Show file name
-    const fnEl = document.getElementById('fileName');
-    fnEl.textContent = '✅ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-    fnEl.classList.add('show');
-
-    // Update upload area style
-    uploadArea.classList.add('has-file');
-
-    // Enable analyze button
-    document.getElementById('analyzeBtn').disabled = false;
-
-    // Show progress steps
-    document.getElementById('progressSteps').style.display = 'flex';
-    setStep(1);
-
-    // Reset previous results
-    document.getElementById('resultCard').classList.remove('show');
-    document.getElementById('prepCanvas').style.display = 'none';
-    document.getElementById('prepPlaceholder').style.display = 'block';
-    document.getElementById('downloadOverlay').classList.remove('show');
-    preprocessedImageData = null;
-
-    showToast('✅ Image loaded successfully!');
-  };
-
-  reader.onerror = function(e) {
-    console.error('❌ FileReader error:', e);
-    showToast('❌ Error reading file. Please try again.');
-  };
-
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
 }
 
-// ===================================================================
-// PROGRESS STEPS
-// ===================================================================
-function setStep(n) {
-  for (let i=1; i<=4; i++) {
-    const el = document.getElementById('step'+i);
-    el.classList.remove('active','done');
-    if (i < n) el.classList.add('done');
-    else if (i === n) el.classList.add('active');
-  }
+// ==========================================
+// STEP INDICATOR
+// ==========================================
+function updateSteps(current) {
+    const order = ['upload', 'preprocess', 'ai', 'result'];
+    const idx = order.indexOf(current);
+    order.forEach((s, i) => {
+        const el = document.getElementById('step-' + s);
+        el.classList.remove('active', 'done');
+        if (i < idx) el.classList.add('done');
+        else if (i === idx) el.classList.add('active');
+    });
 }
 
-// ===================================================================
-// ★★★ PREPROCESSING - FIXED ★★★
-// ===================================================================
-function preprocessImage(base64src) {
-  return new Promise((resolve, reject) => {
-    console.log('🔄 Starting preprocessing...');
+// ==========================================
+// IMAGE PREPROCESSING (Real client-side)
+// ==========================================
+function preprocessFundusImage(src) {
+    return new Promise(resolve => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            const SIZE = 512;
+            const canvas = document.createElement('canvas');
+            canvas.width = SIZE;
+            canvas.height = SIZE;
+            const ctx = canvas.getContext('2d');
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous'; // ★ ป้องกัน CORS issue
+            // 1. Resize to 512x512
+            ctx.drawImage(img, 0, 0, SIZE, SIZE);
 
-    img.onload = function() {
-      console.log('🔄 Image loaded for preprocessing:', img.naturalWidth, 'x', img.naturalHeight);
+            // 2. Get pixel data
+            let imgData = ctx.getImageData(0, 0, SIZE, SIZE);
+            let d = imgData.data;
 
-      const canvas = document.getElementById('prepCanvas');
-      const ctx = canvas.getContext('2d');
+            // 3. Green channel enhancement (fundus standard)
+            // + Adaptive contrast (CLAHE-like)
+            let greenHist = new Array(256).fill(0);
+            for (let i = 0; i < d.length; i += 4) {
+                greenHist[d[i + 1]]++;
+            }
 
-      // ★ Set actual canvas pixel size (ไม่ใช่แค่ CSS size)
-      const targetSize = 512;
-      canvas.width = targetSize;
-      canvas.height = targetSize;
+            // Build CDF for green channel
+            let cdf = new Array(256).fill(0);
+            cdf = greenHist;
+            for (let i = 1; i < 256; i++) cdf[i] = cdf[i - 1] + greenHist[i];
+            const totalPx = SIZE * SIZE;
+            const cdfMin = cdf.find(v => v > 0);
 
-      // Draw image - fit to square
-      const scale = Math.min(targetSize / img.naturalWidth, targetSize / img.naturalHeight);
-      const w = img.naturalWidth * scale;
-      const h = img.naturalHeight * scale;
-      const x = (targetSize - w) / 2;
-      const y = (targetSize - h) / 2;
+            for (let i = 0; i < d.length; i += 4) {
+                let r = d[i], g = d[i + 1], b = d[i + 2];
 
-      // Black background
-      ctx.fillStyle = '#0a0a1a';
-      ctx.fillRect(0, 0, targetSize, targetSize);
+                // Green channel histogram equalization
+                let eqG = Math.round(((cdf[g] - cdfMin) / (totalPx - cdfMin)) * 255);
 
-      // Draw centered
-      ctx.drawImage(img, x, y, w, h);
+                // Blend original with equalized
+                let newR = clamp(r * 0.7 + eqG * 0.1 + 20);
+                let newG = clamp(g * 0.5 + eqG * 0.5 + 10);
+                let newB = clamp(b * 0.7 + eqG * 0.1 + 20);
 
-      // ★★★ Actual image processing (CLAHE-like + Green channel enhance) ★★★
-      const imageData = ctx.getImageData(0, 0, targetSize, targetSize);
-      const data = imageData.data;
+                // Contrast stretch
+                newR = contrastStretch(newR, 1.3);
+                newG = contrastStretch(newG, 1.3);
+                newB = contrastStretch(newB, 1.3);
 
-      // Step 1: Calculate histogram for adaptive contrast
-      let histogram = new Array(256).fill(0);
-      let pixelCount = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        if (data[i] + data[i+1] + data[i+2] > 10) { // skip black bg
-          const gray = Math.round(0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2]);
-          histogram[gray]++;
-          pixelCount++;
-        }
-      }
+                d[i] = newR;
+                d[i + 1] = newG;
+                d[i + 2] = newB;
+            }
 
-      // Step 2: Build cumulative distribution for CLAHE-like mapping
-      let cdf = new Array(256).fill(0);
-      cdf = histogram;
-      for (let i = 1; i < 256; i++) cdf[i] = cdf[i-1] + histogram[i];
-      const cdfMin = cdf.find(v => v > 0) || 0;
-      let lut = new Array(256).fill(0);
-      for (let i = 0; i < 256; i++) {
-        lut[i] = Math.round(((cdf[i] - cdfMin) / (pixelCount - cdfMin)) * 255);
-        lut[i] = Math.max(0, Math.min(255, lut[i]));
-      }
+            // 4. Circular mask (fundus images are circular)
+            const cx = SIZE / 2, cy = SIZE / 2, rad = SIZE / 2 - 8;
+            for (let y = 0; y < SIZE; y++) {
+                for (let x = 0; x < SIZE; x++) {
+                    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+                    if (dist > rad) {
+                        const idx = (y * SIZE + x) * 4;
+                        const fade = Math.max(0, 1 - (dist - rad) / 15);
+                        d[idx] = Math.round(d[idx] * fade);
+                        d[idx + 1] = Math.round(d[idx + 1] * fade);
+                        d[idx + 2] = Math.round(d[idx + 2] * fade);
+                    }
+                }
+            }
 
-      // Step 3: Apply enhancement
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i], g = data[i+1], b = data[i+2];
-
-        if (r + g + b < 10) continue; // skip black bg
-
-        // Green channel is most informative for DR
-        const greenEnhanced = Math.min(255, g * 1.3);
-
-        // Apply histogram equalization
-        const gray = Math.round(0.299*r + 0.587*greenEnhanced + 0.114*b);
-        const equalized = lut[gray];
-
-        // Blend: enhanced contrast with purple tint for theme
-        const contrast = 1.3;
-        const adjusted = ((equalized / 255 - 0.5) * contrast + 0.5) * 255;
-        const f = Math.max(0, Math.min(255, adjusted));
-
-        // Apply color mapping (purple-tinted medical view)
-        data[i]   = Math.min(255, Math.round(f * 0.45 + r * 0.1));  // R - slight warmth
-        data[i+1] = Math.min(255, Math.round(f * 0.85 + g * 0.05)); // G - preserved detail
-        data[i+2] = Math.min(255, Math.round(f * 0.65 + b * 0.1));  // B - purple tint
-      }
-
-      ctx.putImageData(imageData, 0, 0);
-
-      // Show canvas
-      canvas.style.display = 'block';
-      canvas.style.width = '100%';
-      document.getElementById('prepPlaceholder').style.display = 'none';
-
-      // ★★★ Store preprocessed image data for download ★★★
-      preprocessedImageData = canvas.toDataURL('image/png');
-      console.log('✅ Preprocessing complete! Data length:', preprocessedImageData.length);
-
-      // Show download button
-      document.getElementById('downloadOverlay').classList.add('show');
-
-      resolve(preprocessedImageData);
-    };
-
-    img.onerror = function(e) {
-      console.error('❌ Failed to load image for preprocessing:', e);
-      reject(new Error('Failed to load image'));
-    };
-
-    // ★ Key: set src AFTER attaching onload
-    img.src = base64src;
-  });
+            ctx.putImageData(imgData, 0, 0);
+            processedImageSrc = canvas.toDataURL('image/png');
+            resolve(processedImageSrc);
+        };
+        img.src = src;
+    });
 }
 
-// ===================================================================
-// ★★★ DOWNLOAD PREPROCESSED IMAGE ★★★
-// ===================================================================
-function downloadPreprocessed() {
-  if (!preprocessedImageData) {
-    showToast('❌ No processed image to download. Please analyze an image first.');
-    return;
-  }
+function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
+function contrastStretch(v, factor) { return clamp(((v / 255 - 0.5) * factor + 0.5) * 255); }
 
-  console.log('📥 Downloading preprocessed image...');
+// ==========================================
+// AI CLASSIFICATION (Simulated)
+// Replace with TensorFlow.js for real model
+// ==========================================
+function classifyImage(processedSrc) {
+    return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = 224; c.height = 224;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(img, 0, 0, 224, 224);
+            const data = ctx.getImageData(0, 0, 224, 224).data;
 
-  // Create download link
-  const link = document.createElement('a');
-  link.download = 'InsightRetina_preprocessed_' + Date.now() + '.png';
-  link.href = preprocessedImageData;
+            // Analyze image statistics
+            let stats = { rSum: 0, gSum: 0, bSum: 0, darkPx: 0, brightPx: 0, redSpots: 0, variance: 0 };
+            const N = 224 * 224;
+            let gValues = [];
 
-  // ★ Trigger download
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                stats.rSum += r; stats.gSum += g; stats.bSum += b;
+                if (r + g + b < 60) stats.darkPx++;
+                if (r + g + b > 600) stats.brightPx++;
+                if (r > g * 1.5 && r > b * 1.5 && r > 100) stats.redSpots++;
+                gValues.push(g);
+            }
 
-  showToast(t('downloaded'));
+            const avgR = stats.rSum / N, avgG = stats.gSum / N, avgB = stats.bSum / N;
+            const darkRatio = stats.darkPx / N;
+            const brightRatio = stats.brightPx / N;
+            const redRatio = stats.redSpots / N;
+
+            // Compute variance
+            const meanG = avgG;
+            let varSum = 0;
+            for (const g of gValues) varSum += (g - meanG) ** 2;
+            stats.variance = varSum / N;
+
+            // Generate probabilities based on heuristics
+            let probs;
+            if (redRatio > 0.08) {
+                probs = [0.03, 0.07, 0.20, 0.35, 0.35];
+            } else if (redRatio > 0.04) {
+                probs = [0.05, 0.10, 0.35, 0.30, 0.20];
+            } else if (brightRatio > 0.06) {
+                probs = [0.10, 0.30, 0.35, 0.15, 0.10];
+            } else if (darkRatio > 0.55) {
+                probs = [0.08, 0.12, 0.20, 0.30, 0.30];
+            } else if (stats.variance > 3000) {
+                probs = [0.15, 0.25, 0.30, 0.20, 0.10];
+            } else {
+                probs = [0.60, 0.18, 0.12, 0.06, 0.04];
+            }
+
+            // Add controlled randomness
+            probs = probs.map(p => Math.max(0.01, p + (Math.random() * 0.08 - 0.04)));
+            const sum = probs.reduce((a, b) => a + b);
+            probs = probs.map(p => p / sum);
+
+            const prediction = probs.indexOf(Math.max(...probs));
+
+            resolve({
+                prediction,
+                confidence: Math.max(...probs),
+                probabilities: probs,
+                label: LABELS[prediction]
+            });
+        };
+        img.src = processedSrc;
+    });
 }
 
-// ===================================================================
-// ★★★ ANALYZE - FIXED WITH REAL PROGRESS ★★★
-// ===================================================================
-async function analyzeImage() {
-  if (!uploadedImageData) {
-    showToast('❌ Please upload an image first.');
-    return;
-  }
+// ==========================================
+// MAIN ANALYSIS PIPELINE
+// ==========================================
+async function runAnalysis() {
+    if (!currentImageSrc) return;
 
-  console.log('🤖 Starting analysis...');
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
 
-  const overlay = document.getElementById('loadingOverlay');
-  overlay.classList.add('show');
+    // Reset loading steps
+    ['ls-preprocess', 'ls-ai', 'ls-result'].forEach(id => {
+        document.getElementById(id).className = 'loading-step';
+    });
 
-  // Reset loading steps
-  ['ls1','ls2','ls3','ls4'].forEach(id => {
-    document.getElementById(id).className = 'loading-step';
-  });
+    // Step 1: Preprocess
+    document.getElementById('ls-preprocess').classList.add('active');
+    updateSteps('preprocess');
+    await wait(600);
 
-  try {
-    // Step 1: Loading
-    document.getElementById('ls1').classList.add('active');
-    setStep(1);
-    await sleep(500);
-    document.getElementById('ls1').classList.remove('active');
-    document.getElementById('ls1').classList.add('done');
+    const processed = await preprocessFundusImage(currentImageSrc);
+    document.getElementById('processedBox').innerHTML = `<img src="${processed}" alt="Processed" />`;
 
-    // Step 2: Preprocessing
-    document.getElementById('ls2').classList.add('active');
-    setStep(2);
-    await preprocessImage(uploadedImageData);
-    await sleep(500);
-    document.getElementById('ls2').classList.remove('active');
-    document.getElementById('ls2').classList.add('done');
+    document.getElementById('ls-preprocess').classList.remove('active');
+    document.getElementById('ls-preprocess').classList.add('done');
 
-    // Step 3: AI Classification
-    document.getElementById('ls3').classList.add('active');
-    setStep(3);
-    await sleep(1500); // Simulating AI inference time
-    const result = simulateAIResult();
-    currentResult = result;
-    document.getElementById('ls3').classList.remove('active');
-    document.getElementById('ls3').classList.add('done');
+    // Step 2: AI
+    document.getElementById('ls-ai').classList.add('active');
+    updateSteps('ai');
+    await wait(1200);
 
-    // Step 4: Generating results
-    document.getElementById('ls4').classList.add('active');
-    setStep(4);
-    await sleep(500);
-    document.getElementById('ls4').classList.remove('active');
-    document.getElementById('ls4').classList.add('done');
+    const result = await classifyImage(processed);
+    lastResult = result;
 
+    document.getElementById('ls-ai').classList.remove('active');
+    document.getElementById('ls-ai').classList.add('done');
+
+    // Step 3: Generate results
+    document.getElementById('ls-result').classList.add('active');
+    updateSteps('result');
+    await wait(500);
+
+    document.getElementById('ls-result').classList.remove('active');
+    document.getElementById('ls-result').classList.add('done');
+
+    await wait(300);
     overlay.classList.remove('show');
 
     // Display results
-    updateResultDisplay(result);
-    document.getElementById('resultCard').classList.add('show');
+    displayResults(result);
+}
+
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ==========================================
+// DISPLAY RESULTS
+// ==========================================
+function displayResults(result) {
+    const panel = document.getElementById('resultPanel');
+    panel.classList.add('show');
+
+    const { prediction, confidence, probabilities } = result;
+
+    // Severity badge
+    const badge = document.getElementById('sevBadge');
+    badge.textContent = LABELS[prediction];
+    badge.className = `severity-badge sev-${prediction}`;
+
+    // Confidence
+    const pct = (confidence * 100).toFixed(1);
+    document.getElementById('confValue').textContent = pct + '%';
+    const fill = document.getElementById('confFill');
+    fill.style.width = '0%';
+    fill.style.background = COLORS[prediction];
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            fill.style.width = pct + '%';
+            fill.textContent = pct + '%';
+        }, 50);
+    });
+
+    // Probability bars
+    const probBars = document.getElementById('probBars');
+    probBars.innerHTML = probabilities.map((p, i) => {
+        const val = (p * 100).toFixed(1);
+        return `
+            <div class="prob-item">
+                <div class="prob-header"><span>${LABELS[i]}</span><span>${val}%</span></div>
+                <div class="prob-track"><div class="prob-fill" data-width="${val}" style="width:0%;background:${COLORS[i]};"></div></div>
+            </div>
+        `;
+    }).join('');
+
+    // Animate probability bars
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            document.querySelectorAll('.prob-fill[data-width]').forEach(el => {
+                el.style.width = el.dataset.width + '%';
+            });
+        }, 100);
+    });
+
+    // Findings
+    const fList = document.getElementById('findingsList');
+    fList.innerHTML = FINDINGS_MAP[prediction].map(f => `<li>${f}</li>`).join('');
+
+    // Recommendation
+    document.getElementById('recText').textContent = RECOMMENDATIONS[prediction];
 
     // Scroll to results
-    setTimeout(() => {
-      document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'start'});
-    }, 100);
-
-    showToast('✅ Analysis complete!');
-
-  } catch (error) {
-    console.error('❌ Analysis error:', error);
-    overlay.classList.remove('show');
-    showToast('❌ Error during analysis. Please try again.');
-  }
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-function simulateAIResult() {
-  let probs = [0,0,0,0,0];
-  const rnd = Math.random();
-  let sev;
-  if(rnd<0.4) sev=0; else if(rnd<0.6) sev=1;
-  else if(rnd<0.75) sev=2; else if(rnd<0.9) sev=3; else sev=4;
-  for(let i=0;i<5;i++) probs[i]=Math.random()*0.1;
-  probs[sev]=0.5+Math.random()*0.4;
-  const sum=probs.reduce((a,b)=>a+b,0);
-  probs=probs.map(p=>p/sum);
-  return {
-    severity:sev, confidence:probs[sev], probabilities:probs,
-    timestamp:new Date().toISOString(),
-    caseId:'DR-'+Date.now().toString(36).toUpperCase()
-  };
-}
-
-function updateResultDisplay(result) {
-  const sevNames = t('sev') ? (T[currentLang]||T.en).sev : T.en.sev;
-  const findTexts = (T[currentLang]||T.en).find;
-  const recTexts = (T[currentLang]||T.en).rec;
-  const barColors = ['#22c55e','#eab308','#f97316','#ef4444','#dc2626'];
-
-  const badge = document.getElementById('severityBadge');
-  badge.textContent = sevNames[result.severity];
-  badge.className = 'severity-badge severity-'+result.severity;
-
-  const pct = (result.confidence*100).toFixed(1)+'%';
-  document.getElementById('confPercent').textContent = pct;
-  const bar = document.getElementById('confBar');
-  // Use setTimeout to trigger CSS transition
-  setTimeout(() => {
-    bar.style.width = (result.confidence*100)+'%';
-    bar.style.background = `linear-gradient(90deg, ${barColors[result.severity]}, ${barColors[result.severity]}88)`;
-  }, 100);
-
-  const pc = document.getElementById('probBars');
-  pc.innerHTML = '';
-  for(let i=0;i<5;i++){
-    const p=(result.probabilities[i]*100).toFixed(1);
-    const div = document.createElement('div');
-    div.className = 'prob-item';
-    div.innerHTML = `<div class="label-row"><span>${sevNames[i]}</span><span>${p}%</span></div><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:0%;background:${barColors[i]};"></div></div>`;
-    pc.appendChild(div);
-    // Animate bars
-    setTimeout(() => {
-      div.querySelector('.prob-bar-fill').style.width = p+'%';
-    }, 200 + i*100);
-  }
-
-  document.getElementById('findingsText').textContent = findTexts[result.severity];
-  document.getElementById('recommendText').textContent = recTexts[result.severity];
-}
-
-// ===================================================================
+// ==========================================
 // SAVE RESULT
-// ===================================================================
-function saveResult() {
-  if(!currentResult) { showToast('❌ No result to save.'); return; }
-  const record = {
-    ...currentResult,
-    imageData: uploadedImageData,
-    processedData: preprocessedImageData
-  };
-  screeningHistory.unshift(record);
-  if(screeningHistory.length>20) screeningHistory=screeningHistory.slice(0,20);
+// ==========================================
+function saveToHistory() {
+    if (!lastResult) {
+        showToast('❌ No result to save!');
+        return;
+    }
 
-  // ★ Save to localStorage (with size management)
-  try {
-    // Don't save image data to localStorage (too large), use session
-    const lightHistory = screeningHistory.map(r => ({
-      ...r,
-      imageData: r.imageData ? r.imageData.substring(0, 100) + '...' : null,
-      processedData: null // Don't store in localStorage
-    }));
-    localStorage.setItem('drHistoryMeta', JSON.stringify(lightHistory));
-  } catch(e) { console.warn('localStorage write failed'); }
+    const record = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        dateDisplay: new Date().toLocaleString(),
+        prediction: lastResult.prediction,
+        label: lastResult.label,
+        confidence: lastResult.confidence,
+        probabilities: lastResult.probabilities,
+        thumbnail: currentImageSrc
+    };
 
-  showToast(t('saved'));
-  renderHistory();
+    history.unshift(record);
+    localStorage.setItem('dr_history', JSON.stringify(history));
+    showToast('✅ Result saved to history!');
 }
 
-// ===================================================================
+// ==========================================
+// DOWNLOAD PROCESSED IMAGE
+// ==========================================
+function downloadProcessed() {
+    if (!processedImageSrc) {
+        showToast('❌ No processed image to download!');
+        return;
+    }
+    const a = document.createElement('a');
+    a.href = processedImageSrc;
+    a.download = `DR_processed_${Date.now()}.png`;
+    a.click();
+    showToast('📥 Image downloaded!');
+}
+
+// ==========================================
 // HISTORY
-// ===================================================================
+// ==========================================
 function renderHistory() {
-  const container = document.getElementById('historyContent');
-  const fs = document.getElementById('filterSeverity').value;
-  const fo = document.getElementById('filterSort').value;
-  let records = [...screeningHistory];
-  if(fs!=='all'){ const en=["No DR","Mild","Moderate","Severe","Proliferative"]; records=records.filter(r=>en[r.severity]===fs); }
-  if(fo==='oldest') records.reverse();
+    const list = document.getElementById('historyList');
+    const severity = document.getElementById('filterSeverity').value;
+    const sort = document.getElementById('filterSort').value;
 
-  const sevNames = (T[currentLang]||T.en).sev;
+    let data = [...history];
+    if (severity !== 'all') data = data.filter(d => d.label === severity);
+    if (sort === 'oldest') data.reverse();
 
-  if(!records.length){
-    container.innerHTML=`<div class="empty-state"><span class="big-icon">📋</span><p>${t('no_history')}</p><button class="btn-primary" style="margin-top:1rem;" onclick="showSection('screening')">Start Screening</button></div>`;
-    return;
-  }
-  let html=`<table class="history-table"><thead><tr><th>${t('th_img')}</th><th>${t('th_date')}</th><th>${t('th_case')}</th><th>${t('th_sev')}</th><th>${t('th_conf')}</th><th>${t('th_act')}</th></tr></thead><tbody>`;
-  records.forEach((r,i)=>{
-    const imgSrc = r.imageData && r.imageData.length > 200 ? r.imageData : '';
-    const thumb = imgSrc ? `<img class="history-thumb" src="${imgSrc}" alt="Fundus">` : '🖼️';
-    html+=`<tr><td>${thumb}</td><td>${new Date(r.timestamp).toLocaleString()}</td><td>${r.caseId}</td><td><span class="severity-badge severity-${r.severity}" style="font-size:0.75rem;padding:0.15rem 0.6rem;">${sevNames[r.severity]}</span></td><td>${(r.confidence*100).toFixed(1)}%</td><td><button class="btn-secondary" onclick="viewRecord(${i})">${t('btn_view')}</button></td></tr>`;
-  });
-  html+='</tbody></table>';
-  container.innerHTML=html;
+    if (data.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>No screening history yet</p>
+                <button class="btn btn-primary" style="font-size:0.9rem;padding:10px 24px;" onclick="switchTab('screening')">Start First Screening</button>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = data.map(rec => `
+        <div class="history-item" onclick="showRecordModal(${rec.id})">
+            <div class="history-meta">
+                <strong>${rec.label}</strong>
+                <small>📅 ${rec.dateDisplay} · Case #${String(rec.id).slice(-6)}</small>
+            </div>
+            <div class="severity-badge history-badge sev-${rec.prediction}">${(rec.confidence * 100).toFixed(1)}%</div>
+        </div>
+    `).join('');
 }
-document.getElementById('filterSeverity').addEventListener('change', renderHistory);
-document.getElementById('filterSort').addEventListener('change', renderHistory);
 
-function viewRecord(index) {
-  const r=screeningHistory[index]; if(!r)return;
-  const sevNames=(T[currentLang]||T.en).sev;
-  const findTexts=(T[currentLang]||T.en).find;
-  const recTexts=(T[currentLang]||T.en).rec;
-  const imgSrc = r.imageData && r.imageData.length > 200 ? r.imageData : '';
-  const procSrc = r.processedData && r.processedData.length > 200 ? r.processedData : '';
+function showRecordModal(id) {
+    const rec = history.find(r => r.id === id);
+    if (!rec) return;
 
-  document.getElementById('modalBody').innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr ${procSrc?'1fr':''};gap:1rem;margin:1rem 0;">
-      ${imgSrc?`<div style="text-align:center;"><p style="font-weight:700;margin-bottom:0.5rem;">Original</p><img src="${imgSrc}" style="max-width:100%;max-height:250px;border-radius:12px;border:2px solid var(--border);" alt="Original"></div>`:''}
-      ${procSrc?`<div style="text-align:center;"><p style="font-weight:700;margin-bottom:0.5rem;">Processed</p><img src="${procSrc}" style="max-width:100%;max-height:250px;border-radius:12px;border:2px solid var(--border);" alt="Processed"></div>`:''}
-    </div>
-    <p><strong>${t('th_sev')}:</strong> <span class="severity-badge severity-${r.severity}" style="font-size:0.9rem;">${sevNames[r.severity]}</span></p>
-    <p style="margin-top:0.5rem;"><strong>${t('th_conf')}:</strong> ${(r.confidence*100).toFixed(1)}%</p>
-    <p style="margin-top:0.5rem;"><strong>${t('th_date')}:</strong> ${new Date(r.timestamp).toLocaleString()}</p>
-    <p style="margin-top:0.5rem;"><strong>${t('th_case')}:</strong> ${r.caseId}</p>
-    <div class="findings-box"><h4>${t('findings')}</h4><p>${findTexts[r.severity]}</p></div>
-    <div class="recommendation-box"><h4>${t('recommendation')}</h4><p>${recTexts[r.severity]}</p></div>`;
-  document.getElementById('detailModal').classList.add('show');
+    document.getElementById('modalTitle').textContent = `📋 Case #${String(rec.id).slice(-6)}`;
+    document.getElementById('modalBody').innerHTML = `
+        <p style="margin-bottom:10px;color:var(--text-muted);">📅 ${rec.dateDisplay}</p>
+        <div class="severity-badge sev-${rec.prediction}" style="margin-bottom:16px;">${rec.label}</div>
+        <p style="margin-bottom:16px;"><strong>Confidence:</strong> ${(rec.confidence * 100).toFixed(1)}%</p>
+
+        <h4 style="margin-bottom:10px;color:var(--text-secondary);">Classification Probabilities</h4>
+        ${rec.probabilities.map((p, i) => `
+            <div class="prob-item">
+                <div class="prob-header"><span>${LABELS[i]}</span><span>${(p * 100).toFixed(1)}%</span></div>
+                <div class="prob-track"><div class="prob-fill" style="width:${p * 100}%;background:${COLORS[i]};"></div></div>
+            </div>
+        `).join('')}
+
+        <div class="findings-card" style="margin-top:16px;">
+            <h4>🔍 Findings</h4>
+            <ul class="findings-list">${FINDINGS_MAP[rec.prediction].map(f => `<li>${f}</li>`).join('')}</ul>
+        </div>
+
+        <div class="recommendation-card">
+            <h4>💡 Recommendation</h4>
+            <p>${RECOMMENDATIONS[rec.prediction]}</p>
+        </div>
+
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn btn-danger" onclick="deleteRecord(${rec.id})">🗑️ Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('show');
 }
-function closeModal(){ document.getElementById('detailModal').classList.remove('show'); }
-document.getElementById('detailModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
-// ===================================================================
-// CLINICS
-// ===================================================================
+function deleteRecord(id) {
+    if (!confirm('Delete this record?')) return;
+    history = history.filter(r => r.id !== id);
+    localStorage.setItem('dr_history', JSON.stringify(history));
+    closeModal();
+    renderHistory();
+    showToast('🗑️ Record deleted');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ==========================================
+// CLINIC SEARCH
+// ==========================================
+const SAMPLE_CLINICS = [
+    { name: 'Bangkok Eye Center', type: 'eye_clinic', address: '123 Sukhumvit Rd, Bangkok', phone: '02-123-4567', rating: 4.8, hours: 'Mon-Sat 8:00-17:00' },
+    { name: 'Ramathibodi Hospital - Ophthalmology', type: 'hospital', address: '270 Rama VI Rd, Bangkok', phone: '02-201-1000', rating: 4.9, hours: 'Mon-Fri 8:00-16:00' },
+    { name: 'Rutnin Eye Hospital', type: 'hospital', address: '80/1 Sukhumvit 21, Bangkok', phone: '02-639-3399', rating: 4.7, hours: 'Mon-Sat 7:30-19:00' },
+    { name: 'Pacific Eye Clinic', type: 'eye_clinic', address: '456 Silom Rd, Bangkok', phone: '02-234-5678', rating: 4.5, hours: 'Mon-Fri 9:00-18:00' },
+    { name: 'Chula Eye Center', type: 'medical_center', address: '1873 Rama IV Rd, Bangkok', phone: '02-256-4000', rating: 4.8, hours: 'Mon-Fri 8:00-16:00' },
+    { name: 'Bumrungrad Eye Institute', type: 'hospital', address: '33 Sukhumvit 3, Bangkok', phone: '02-066-8888', rating: 4.9, hours: 'Daily 7:00-20:00' },
+    { name: 'Metta Eye Clinic', type: 'eye_clinic', address: '789 Phetkasem Rd, Bangkok', phone: '02-456-7890', rating: 4.4, hours: 'Mon-Sat 9:00-17:00' },
+    { name: 'Siriraj Retina Center', type: 'hospital', address: '2 Wanglang Rd, Bangkok', phone: '02-419-7000', rating: 4.9, hours: 'Mon-Fri 8:00-16:00' },
+];
+
 function searchClinics() {
-  const type=document.getElementById('clinicType').value;
-  const clinics=[
-    {name:"Bangkok Eye Hospital",type:"hospital",address:"Soi Sukhumvit 3",phone:"02-686-1111",dist:"2.3 km"},
-    {name:"Rutnin Eye Hospital",type:"hospital",address:"80/1 Sukhumvit 21",phone:"02-639-3399",dist:"3.1 km"},
-    {name:"Dr. Vision Eye Clinic",type:"eye_clinic",address:"123 Silom Road",phone:"02-234-5678",dist:"1.8 km"},
-    {name:"Eye Care Medical Center",type:"medical_center",address:"456 Phahon Yothin",phone:"02-789-0123",dist:"4.5 km"},
-    {name:"Bright Eyes Clinic",type:"eye_clinic",address:"789 Ratchada Rd",phone:"02-345-6789",dist:"5.2 km"},
-  ];
-  const filtered=type==='all'?clinics:clinics.filter(c=>c.type===type);
-  const list=document.getElementById('clinicList');
-  list.innerHTML=filtered.map(c=>`
-    <div class="clinic-item"><div><h4>🏥 ${c.name}</h4><p>📍 ${c.address}</p><p>📞 ${c.phone} · 📏 ${c.dist}</p></div>
-    <button class="btn-secondary" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(c.name)}','_blank')">🗺️ Map</button></div>`).join('');
-  document.getElementById('mapArea').innerHTML=`<div style="text-align:center;"><div style="font-size:2rem;">🗺️</div><p>Found <strong>${filtered.length}</strong> clinics</p></div>`;
+    const type = document.getElementById('clinicTypeFilter').value;
+    const query = document.getElementById('clinicSearchInput').value.toLowerCase().trim();
+
+    let results = SAMPLE_CLINICS;
+    if (type !== 'all') results = results.filter(c => c.type === type);
+    if (query) results = results.filter(c => c.name.toLowerCase().includes(query) || c.address.toLowerCase().includes(query));
+
+    document.getElementById('mapBox').innerHTML = results.length
+        ? `<span>🗺️ Found <strong>${results.length}</strong> clinics nearby — Map integration available with Google Maps API</span>`
+        : `<span>🗺️ No clinics found matching your criteria</span>`;
+
+    document.getElementById('clinicsList').innerHTML = results.length
+        ? results.map(c => `
+            <div class="clinic-card">
+                <h3>${c.name}</h3>
+                <p class="clinic-info">📍 ${c.address}</p>
+                <p class="clinic-info">📞 ${c.phone}</p>
+                <p class="clinic-info">🕐 ${c.hours}</p>
+                <p class="clinic-info">⭐ ${c.rating} / 5.0</p>
+                <span class="clinic-type-tag">${c.type.replace(/_/g, ' ')}</span>
+            </div>
+        `).join('')
+        : '<p style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">No clinics found</p>';
 }
 
-// ===================================================================
-// TOAST NOTIFICATION
-// ===================================================================
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+// ==========================================
+// TOAST
+// ==========================================
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ===================================================================
+// ==========================================
 // INIT
-// ===================================================================
-setLanguage('en');
-console.log('🚀 InsightRetina loaded! Ready for screening.');
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderHistory();
+});
 </script>
+
 </body>
 </html>
