@@ -921,7 +921,7 @@ function animateCounters(){
             }
             // Start when element is visible
             var observer=new IntersectionObserver(function(entries){
-                if(entries.isIntersecting){
+                if(entries[0].isIntersecting){
                     requestAnimationFrame(step);
                     observer.disconnect();
                 }
