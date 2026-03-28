@@ -3,1135 +3,949 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InsightRetina - DR Screening</title>
+    <title>InsightRetina - AI DR Screening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ============================================
+           GLOBAL RESET & VARIABLES (จาก index 2)
+           ============================================ */
+        :root {
+            --bg-primary: #0a0a2e;
+            --bg-secondary: #12124a;
+            --bg-card: rgba(255,255,255,0.04);
+            --border: rgba(100,181,246,0.15);
+            --border-hover: rgba(100,181,246,0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --text-muted: #666666;
+            --accent: #42a5f5;
+            --accent-dark: #1565c0;
+            --accent-light: #90caf9;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --danger-dark: #ff1744;
+            --yellow: #ffee58;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(135deg, #0a0a2e, #1a1a4e, #0d0d3b);
-            color: #fff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0d0d3b 100%);
+            color: var(--text-primary);
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 3px; }
 
         /* NAVBAR */
         .navbar {
             background: rgba(10,10,46,0.95);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 0 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 60px;
-            border-bottom: 1px solid rgba(100,181,246,0.2);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1000;
+            height: 64px;
         }
 
-        .logo { font-size: 1.4rem; font-weight: 700; color: #90caf9; }
-        .logo span { color: #fff; }
+        .logo { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .logo-icon { font-size: 1.6rem; }
+        .logo-text { color: var(--accent-light); }
+        .logo-text span { color: var(--text-primary); }
 
-        .nav-links { display: flex; gap: 4px; list-style: none; }
-        .nav-links li a {
-            color: #aaa;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        .nav-links li a:hover, .nav-links li a.active {
-            color: #fff;
-            background: rgba(66,165,245,0.2);
-        }
+        .nav-links { display: flex; gap: 4px; list-style: none; height: 100%; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; padding: 10px 18px; border-radius: var(--radius-sm); transition: all 0.3s; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .nav-links a:hover { color: var(--text-primary); background: rgba(66,165,245,0.1); }
+        .nav-links a.active { color: var(--text-primary); background: rgba(66,165,245,0.2); }
 
-        /* TABS */
-        .tab { display: none; max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
-        .tab.active { display: block; }
+        .lang-select { background: rgba(255,255,255,0.08); color: var(--text-secondary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
-        /* HERO */
-        .hero { text-align: center; padding: 60px 20px; }
-        .hero h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(90deg, #64b5f6, #42a5f5, #90caf9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-        }
-        .hero p { color: #aaa; font-size: 1.1rem; margin-bottom: 40px; }
+        /* TAB SYSTEM */
+        .tab-content { display: none; max-width: 1280px; margin: 0 auto; padding: 30px 24px 60px; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
 
-        .features { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
-        .feat-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(100,181,246,0.2);
-            border-radius: 16px;
-            padding: 28px 20px;
-            width: 220px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .feat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(66,165,245,0.15); }
-        .feat-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
-        .feat-card h3 { color: #64b5f6; margin-bottom: 6px; font-size: 1rem; }
-        .feat-card p { color: #888; font-size: 0.85rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* HERO SECTION */
+        .hero { text-align: center; padding: 70px 20px 40px; }
+        .hero-badge { display: inline-block; background: rgba(66,165,245,0.15); color: var(--accent); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; letter-spacing: 1px; }
+        .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 16px; background: linear-gradient(135deg, var(--accent-light), var(--accent), #64b5f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
+        .hero p { color: var(--text-secondary); font-size: 1.15rem; max-width: 600px; margin: 0 auto 45px; line-height: 1.6; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 800px; margin: 0 auto 50px; }
+        .feature-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px 20px; text-align: center; transition: all 0.3s; }
+        .feature-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(66,165,245,0.15); border-color: var(--border-hover); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 14px; }
+        .feature-card h3 { color: var(--accent-light); margin-bottom: 8px; font-size: 1rem; }
+        .feature-card p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
 
         /* BUTTONS */
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #1565c0, #42a5f5);
-            color: #fff;
-            font-weight: 600;
-        }
-        .btn-primary:hover { box-shadow: 0 6px 25px rgba(66,165,245,0.4); transform: translateY(-2px); }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn { padding: 10px 22px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.9rem; font-weight: 500; font-family: inherit; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-dark), var(--accent)); color: white; padding: 14px 36px; border-radius: 12px; font-size: 1.05rem; font-weight: 600; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(66,165,245,0.4); }
+        .btn-analyze { background: linear-gradient(135deg, var(--accent-dark), var(--accent)); color: white; width: 100%; justify-content: center; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 12px; }
+        .btn-analyze:hover:not(:disabled) { box-shadow: 0 6px 25px rgba(66,165,245,0.4); transform: translateY(-1px); }
+        .btn-analyze:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-secondary { background: rgba(255,255,255,0.08); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.12); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+        .btn-success { background: rgba(102,187,106,0.15); color: var(--success); border: 1px solid rgba(102,187,106,0.3); }
+        .btn-success:hover { background: rgba(102,187,106,0.25); }
+        .btn-danger { background: rgba(239,83,80,0.15); color: var(--danger); }
+        .btn-danger:hover { background: rgba(239,83,80,0.25); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
 
-        .btn-sm {
-            padding: 8px 18px;
-            font-size: 0.85rem;
-            border-radius: 8px;
-        }
-        .btn-outline {
-            background: rgba(255,255,255,0.06);
-            color: #aaa;
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        .btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-green { background: rgba(102,187,106,0.15); color: #66bb6a; border: 1px solid rgba(102,187,106,0.3); }
-        .btn-green:hover { background: rgba(102,187,106,0.25); }
-        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+        /* CARDS */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; backdrop-filter: blur(10px); }
+        .card-title { color: var(--accent-light); margin-bottom: 18px; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
-        /* CARD */
-        .card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(100,181,246,0.15);
-            border-radius: 16px;
-            padding: 24px;
-        }
-        .card-title { color: #90caf9; font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; }
+        /* SECTION HEADER */
+        .section-header { text-align: center; margin-bottom: 30px; }
+        .section-header h1 { color: var(--accent-light); font-size: 1.8rem; margin-bottom: 8px; }
+        .section-header p { color: var(--text-muted); font-size: 1rem; }
 
-        .section-title { text-align: center; margin-bottom: 24px; }
-        .section-title h1 { color: #90caf9; font-size: 1.8rem; margin-bottom: 6px; }
-        .section-title p { color: #888; }
+        /* DISCLAIMER */
+        .disclaimer { background: rgba(255,167,38,0.08); border: 1px solid rgba(255,167,38,0.25); border-radius: var(--radius-sm); padding: 14px 20px; text-align: center; color: var(--warning); font-size: 0.9rem; margin: 30px auto; max-width: 700px; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        .disclaimer {
-            background: rgba(255,167,38,0.1);
-            border: 1px solid rgba(255,167,38,0.25);
-            border-radius: 10px;
-            padding: 14px;
-            text-align: center;
-            color: #ffa726;
-            font-size: 0.9rem;
-            margin: 30px auto;
-            max-width: 650px;
-        }
+        /* UPLOAD AREA */
+        .upload-wrapper { margin-bottom: 24px; }
+        .upload-area { border: 2px dashed rgba(100,181,246,0.35); border-radius: var(--radius); padding: 50px 20px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; }
+        .upload-area:hover, .upload-area.dragover { border-color: var(--accent); background: rgba(66,165,245,0.06); transform: scale(1.005); }
+        .upload-area.has-file { border-color: var(--success); background: rgba(102,187,106,0.05); padding: 25px 20px; }
+        .upload-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.8; }
+        .upload-area p { color: var(--text-secondary); margin-bottom: 6px; }
+        .upload-area small { color: var(--text-muted); font-size: 0.8rem; }
+        #fileInput { display: none; }
 
-        /* ==========================================
-           UPLOAD AREA - แก้ไขให้ทำงานได้จริง 100%
-           ========================================== */
-        .upload-section { margin-bottom: 24px; }
+        /* PROGRESS STEPS */
+        .progress-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding: 16px 20px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); }
+        .step { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); transition: all 0.4s; position: relative; }
+        .step-icon { font-size: 1.4rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.05); transition: all 0.4s; }
+        .step.active .step-icon { background: rgba(66,165,245,0.2); }
+        .step.active { color: var(--accent); }
+        .step.done .step-icon { background: rgba(102,187,106,0.2); }
+        .step.done { color: var(--success); }
+        .step-arrow { color: var(--text-muted); font-size: 1rem; }
 
-        .upload-box {
-            border: 2px dashed rgba(100,181,246,0.4);
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .upload-box:hover {
-            border-color: #42a5f5;
-            background: rgba(66,165,245,0.08);
-        }
-
-        .upload-box.drag-active {
-            border-color: #42a5f5;
-            background: rgba(66,165,245,0.12);
-            transform: scale(1.01);
-        }
-
-        .upload-box.file-loaded {
-            border-color: #66bb6a;
-            background: rgba(102,187,106,0.06);
-        }
-
-        .upload-box .up-icon { font-size: 3rem; margin-bottom: 12px; }
-        .upload-box .up-text { color: #aaa; margin-bottom: 6px; }
-        .upload-box .up-hint { color: #666; font-size: 0.8rem; }
-
-        /* ซ่อน input file แต่ยังทำงานได้ */
-        .file-input-hidden {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .file-preview {
-            display: none;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .file-preview img {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid rgba(102,187,106,0.4);
-        }
-
-        .file-preview .file-info { text-align: left; }
-        .file-preview .file-name { color: #66bb6a; font-weight: 600; font-size: 0.95rem; }
-        .file-preview .file-size { color: #888; font-size: 0.8rem; margin-top: 4px; }
-        .file-preview .file-change { color: #42a5f5; font-size: 0.8rem; margin-top: 4px; }
-
-        .upload-default { display: flex; flex-direction: column; align-items: center; }
-
-        /* PROGRESS */
-        .progress-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            margin-top: 16px;
-        }
-
-        .p-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            color: #555;
-            transition: all 0.3s;
-        }
-        .p-step .p-icon { font-size: 1.3rem; }
-        .p-step.active { color: #42a5f5; }
-        .p-step.done { color: #66bb6a; }
-        .p-arrow { color: #444; }
-
-        /* GRID */
-        .screen-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 24px;
-        }
-        @media (max-width: 850px) {
-            .screen-grid { grid-template-columns: 1fr; }
+        /* IMAGE DISPLAY */
+        .screening-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+        @media (max-width: 900px) {
+            .screening-grid { grid-template-columns: 1fr; }
             .hero h1 { font-size: 2rem; }
-            .features { flex-direction: column; align-items: center; }
+            .features-grid { grid-template-columns: 1fr; max-width: 320px; }
         }
-
-        /* IMAGE BOX */
-        .img-box {
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            height: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .img-empty { text-align: center; color: #555; }
-        .img-empty .ie-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.5; }
+        .image-box { background: rgba(0,0,0,0.3); border-radius: 12px; height: 280px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .image-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+        .image-placeholder { text-align: center; color: var(--text-muted); }
+        .image-placeholder .ph-icon { font-size: 2.8rem; margin-bottom: 10px; opacity: 0.5; }
+        .image-placeholder p { font-size: 0.9rem; }
 
         /* RESULTS */
-        .result-card { display: none; }
-        .result-card.show { display: block; }
-
-        .sev-label {
-            display: inline-block;
-            padding: 8px 22px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-        }
-        .s0 { background: rgba(102,187,106,0.15); color: #66bb6a; }
-        .s1 { background: rgba(255,238,88,0.15); color: #ffee58; }
-        .s2 { background: rgba(255,167,38,0.15); color: #ffa726; }
-        .s3 { background: rgba(239,83,80,0.15); color: #ef5350; }
-        .s4 { background: rgba(213,0,0,0.15); color: #ff1744; }
-
-        .conf-bar-wrap { margin: 14px 0; }
-        .conf-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; }
-        .conf-track { background: rgba(255,255,255,0.08); border-radius: 12px; height: 26px; overflow: hidden; }
-        .conf-fill {
-            height: 100%;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            transition: width 1s ease;
-            color: rgba(0,0,0,0.7);
-        }
-
-        .prob-section { margin: 18px 0; }
-        .prob-section h4 { font-size: 0.9rem; color: #aaa; margin-bottom: 10px; }
-        .prob-row { margin-bottom: 8px; }
-        .prob-head { display: flex; justify-content: space-between; font-size: 0.8rem; color: #aaa; margin-bottom: 3px; }
-        .prob-track { background: rgba(255,255,255,0.06); border-radius: 5px; height: 6px; overflow: hidden; }
-        .prob-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
-
-        .findings-box {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 14px;
-            margin: 14px 0;
-        }
-        .findings-box h4 { margin-bottom: 8px; font-size: 0.9rem; }
-        .findings-box ul { list-style: none; }
-        .findings-box li { padding: 3px 0 3px 14px; color: #aaa; font-size: 0.85rem; position: relative; }
-        .findings-box li::before { content: "▸"; position: absolute; left: 0; color: #42a5f5; }
-
-        .rec-box {
-            background: rgba(66,165,245,0.08);
-            border: 1px solid rgba(66,165,245,0.2);
-            border-radius: 10px;
-            padding: 14px;
-            margin: 14px 0;
-            font-size: 0.88rem;
-            color: #aaa;
-            line-height: 1.6;
-        }
-        .rec-box h4 { color: #90caf9; margin-bottom: 6px; }
+        .result-panel { display: none; }
+        .result-panel.show { display: block; }
+        .severity-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 24px; font-weight: 700; font-size: 1.15rem; margin-bottom: 20px; }
+        .sev-0 { background: rgba(102,187,106,0.15); color: var(--success); }
+        .sev-1 { background: rgba(255,238,88,0.15); color: var(--yellow); }
+        .sev-2 { background: rgba(255,167,38,0.15); color: var(--warning); }
+        .sev-3 { background: rgba(239,83,80,0.15); color: var(--danger); }
+        .sev-4 { background: rgba(213,0,0,0.15); color: var(--danger-dark); }
+        .confidence-section { margin: 16px 0; }
+        .confidence-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.9rem; }
+        .confidence-bar { background: rgba(255,255,255,0.08); border-radius: 12px; height: 28px; overflow: hidden; }
+        .confidence-fill { height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); min-width: 45px; color: rgba(0,0,0,0.7); }
+        .prob-section { margin: 20px 0; }
+        .prob-section h4 { margin-bottom: 12px; font-size: 0.95rem; color: var(--text-secondary); }
+        .prob-item { margin-bottom: 10px; }
+        .prob-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.82rem; color: var(--text-secondary); }
+        .prob-track { background: rgba(255,255,255,0.06); border-radius: 6px; height: 7px; overflow: hidden; }
+        .prob-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+        .findings-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; }
+        .findings-card h4 { margin-bottom: 10px; font-size: 0.95rem; }
+        .findings-list { list-style: none; }
+        .findings-list li { padding: 4px 0 4px 16px; position: relative; color: var(--text-secondary); font-size: 0.9rem; }
+        .findings-list li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+        .recommendation-card { background: rgba(66,165,245,0.08); border: 1px solid rgba(66,165,245,0.2); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); }
+        .recommendation-card h4 { margin-bottom: 8px; color: var(--accent-light); }
 
         /* HISTORY */
-        .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-        .filters select {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: inherit;
-        }
-        .filters select option { background: #1a1a4e; }
-
-        .hist-list { display: flex; flex-direction: column; gap: 10px; }
-        .hist-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .hist-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(100,181,246,0.3); }
-
-        .empty-box { text-align: center; padding: 50px; color: #555; }
-        .empty-box .eb-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
+        .filters-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-select { background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; }
+        .filter-select option { background: var(--bg-secondary); }
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        .history-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.3s; }
+        .history-item:hover { background: rgba(255,255,255,0.06); border-color: var(--border-hover); }
+        .history-meta { display: flex; flex-direction: column; gap: 4px; }
+        .history-meta strong { font-size: 0.95rem; }
+        .history-meta small { color: var(--text-muted); font-size: 0.8rem; }
+        .history-badge { font-size: 0.78rem; padding: 5px 14px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.4; }
+        .empty-state p { margin-bottom: 20px; }
 
         /* CLINICS */
-        .search-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-        .search-row select, .search-row input {
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-family: inherit;
-            flex: 1;
-            min-width: 140px;
-        }
-        .search-row input::placeholder { color: #666; }
-        .search-row select option { background: #1a1a4e; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-bar select, .search-bar input { background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 150px; }
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar select option { background: var(--bg-secondary); }
+        .map-box { background: rgba(0,0,0,0.25); border-radius: 12px; height: 250px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--text-muted); font-size: 0.95rem; }
+        .clinics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .clinic-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; transition: all 0.3s; }
+        .clinic-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .clinic-card h3 { color: var(--accent-light); font-size: 1rem; margin-bottom: 10px; }
+        .clinic-card .clinic-info { color: var(--text-muted); font-size: 0.85rem; margin: 4px 0; }
+        .clinic-type-tag { display: inline-block; background: rgba(66,165,245,0.12); color: var(--accent); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-top: 8px; text-transform: uppercase; }
 
-        .map-area {
-            background: rgba(0,0,0,0.25);
-            border-radius: 12px;
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            margin-bottom: 16px;
-        }
-
-        .clinics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-        .clinic-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 18px;
-            transition: all 0.3s;
-        }
-        .clinic-card:hover { border-color: rgba(100,181,246,0.4); transform: translateY(-2px); }
-        .clinic-card h3 { color: #90caf9; font-size: 0.95rem; margin-bottom: 8px; }
-        .clinic-card p { color: #888; font-size: 0.82rem; margin: 3px 0; }
-        .clinic-tag {
-            display: inline-block;
-            background: rgba(66,165,245,0.12);
-            color: #42a5f5;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-top: 8px;
-        }
-
-        /* LOADING */
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(5,5,30,0.92);
-            z-index: 5000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-        .overlay.show { display: flex; }
-        .spin {
-            width: 50px; height: 50px;
-            border: 3px solid rgba(66,165,245,0.15);
-            border-top-color: #42a5f5;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
+        /* LOADING OVERLAY */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,30,0.9); z-index: 5000; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
+        .loading-overlay.show { display: flex; }
+        .spinner-ring { width: 56px; height: 56px; border: 3px solid rgba(66,165,245,0.15); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .overlay-text { color: #64b5f6; font-size: 0.95rem; text-align: center; }
+        .loading-steps { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .loading-step { font-size: 0.9rem; color: var(--text-muted); transition: color 0.3s; }
+        .loading-step.active { color: var(--accent); font-weight: 600; }
+        .loading-step.done { color: var(--success); }
 
         /* MODAL */
-        .modal-bg {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 6000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-bg.show { display: flex; }
-        .modal-content {
-            background: linear-gradient(135deg, #151550, #1a1a55);
-            border: 1px solid rgba(100,181,246,0.3);
-            border-radius: 16px;
-            padding: 28px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        .modal-x {
-            position: absolute; top: 12px; right: 16px;
-            background: none; border: none; color: #888;
-            font-size: 1.5rem; cursor: pointer;
-        }
-        .modal-x:hover { color: #fff; }
-        .modal-content h2 { color: #90caf9; margin-bottom: 16px; font-size: 1.15rem; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: linear-gradient(135deg, #151550, #1a1a55); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 30px; max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 18px; background: none; border: none; color: var(--text-muted); font-size: 1.6rem; cursor: pointer; line-height: 1; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-box h2 { color: var(--accent-light); margin-bottom: 20px; font-size: 1.2rem; }
 
-        /* TOAST */
-        .toast-msg {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1a1a55;
-            border: 1px solid rgba(100,181,246,0.3);
-            border-radius: 10px;
-            padding: 12px 20px;
-            color: #fff;
-            font-size: 0.9rem;
-            z-index: 9999;
-            display: none;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            animation: toastIn 0.3s ease;
-        }
-        .toast-msg.show { display: block; }
-        @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* TOAST NOTIFICATION */
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: var(--radius-sm); padding: 14px 22px; color: var(--text-primary); font-size: 0.9rem; z-index: 9999; display: none; align-items: center; gap: 10px; box-shadow: var(--shadow); animation: slideUp 0.3s ease; }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .footer { text-align: center; padding: 20px; color: #555; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.04); margin-top: 40px; }
+        /* FOOTER */
+        .footer { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid rgba(255,255,255,0.04); }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
-    <div class="logo">🔍 <span>Insight</span>Retina</div>
+    <div class="logo">
+        <span class="logo-icon">🔍</span>
+        <span class="logo-text"><span>Insight</span>Retina</span>
+    </div>
     <ul class="nav-links">
-        <li><a id="n-home" class="active" onclick="goTab('home')">🏠 Home</a></li>
-        <li><a id="n-screening" onclick="goTab('screening')">🔬 Screening</a></li>
-        <li><a id="n-history" onclick="goTab('history')">📋 History</a></li>
-        <li><a id="n-clinic" onclick="goTab('clinic')">🏥 Clinic</a></li>
+        <li><a onclick="switchTab('home')" id="nav-home" class="active">🏠 Home</a></li>
+        <li><a onclick="switchTab('screening')" id="nav-screening">🔬 Screening</a></li>
+        <li><a onclick="switchTab('history')" id="nav-history">📋 History</a></li>
+        <li><a onclick="switchTab('clinic')" id="nav-clinic">🏥 Clinic</a></li>
     </ul>
+    <select class="lang-select">
+        <option>🇬🇧 English</option>
+        <option>🇹🇭 ไทย</option>
+    </select>
 </nav>
 
-<!-- ==================== HOME ==================== -->
-<div class="tab active" id="t-home">
+<section class="tab-content active" id="tab-home">
     <div class="hero">
+        <div class="hero-badge">AI RETINA SCAN</div>
         <h1>InsightRetina</h1>
-        <p>AI-Powered Diabetic Retinopathy Screening — Upload a fundus image for instant AI analysis</p>
-        <div class="features">
-            <div class="feat-card"><div class="icon">🔬</div><h3>Advanced AI</h3><p>Deep learning DR detection</p></div>
-            <div class="feat-card"><div class="icon">⚡</div><h3>Fast Analysis</h3><p>Real-time preprocessing</p></div>
-            <div class="feat-card"><div class="icon">🏥</div><h3>Clinical Grade</h3><p>Find nearby eye clinics</p></div>
-        </div>
-        <button class="btn btn-primary" onclick="goTab('screening')">🔬 Start Screening</button>
-        <div class="disclaimer">⚠️ This tool is for preliminary screening only. Always consult a qualified ophthalmologist.</div>
-    </div>
-</div>
+        <p>AI-Powered Diabetic Retinopathy Screening. Advanced retinal analysis for early detection.</p>
 
-<!-- ==================== SCREENING ==================== -->
-<div class="tab" id="t-screening">
-    <div class="section-title">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Advanced AI</h3>
+                <p>Deep learning for accurate DR detection</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Analysis</h3>
+                <p>Real-time preprocessing and instant results</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏥</div>
+                <h3>Clinical Grade</h3>
+                <p>Find nearby ophthalmology centers</p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="switchTab('screening')">🔬 Start Screening</button>
+
+        <div class="disclaimer">⚠️ <span>This tool is for preliminary screening only. Always consult a qualified ophthalmologist.</span></div>
+    </div>
+</section>
+
+<section class="tab-content" id="tab-screening">
+    <div class="section-header">
         <h1>🔬 Diabetic Retinopathy Screening</h1>
         <p>Upload a fundus image for AI analysis</p>
     </div>
 
-    <!-- ★★★ UPLOAD AREA - แก้ไขให้ทำงานได้จริง ★★★ -->
-    <div class="card upload-section">
-        <div class="upload-box" id="uploadBox">
-            <!-- input file ซ้อนทับ upload box ทั้งอัน -->
-            <input
-                type="file"
-                id="realFileInput"
-                class="file-input-hidden"
-                accept="image/jpeg,image/png,image/jpg"
-            />
-
-            <!-- ข้อความ default -->
-            <div class="upload-default" id="uploadDefault">
-                <div class="up-icon">📸</div>
-                <p class="up-text"><b>Drag & drop</b> your image here or <b>click to browse</b></p>
-                <p class="up-hint">Supported: JPG, PNG (max 5MB)</p>
-            </div>
-
-            <!-- preview หลังเลือกไฟล์ -->
-            <div class="file-preview" id="filePreview">
-                <img id="thumbImg" src="" alt="thumb" />
-                <div class="file-info">
-                    <div class="file-name" id="fileName">—</div>
-                    <div class="file-size" id="fileSize">—</div>
-                    <div class="file-change">📎 Click to change image</div>
-                </div>
-            </div>
+    <div class="card upload-wrapper">
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📸</div>
+            <p><strong>Drag & drop</strong> your image here or <strong>click to browse</strong></p>
+            <small>Supported formats: JPG, PNG (max 5MB)</small>
         </div>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png" />
 
-        <!-- Progress Steps -->
-        <div class="progress-bar">
-            <div class="p-step" id="ps-upload"><div class="p-icon">📥</div>Upload</div>
-            <span class="p-arrow">→</span>
-            <div class="p-step" id="ps-preprocess"><div class="p-icon">🔄</div>Preprocess</div>
-            <span class="p-arrow">→</span>
-            <div class="p-step" id="ps-ai"><div class="p-icon">🤖</div>AI Analysis</div>
-            <span class="p-arrow">→</span>
-            <div class="p-step" id="ps-result"><div class="p-icon">📊</div>Result</div>
+        <div class="progress-steps">
+            <div class="step" id="step-upload"><div class="step-icon">📥</div><span>Upload</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-preprocess"><div class="step-icon">🔄</div><span>Preprocess</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-ai"><div class="step-icon">🤖</div><span>AI Analysis</span></div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="step-result"><div class="step-icon">📊</div><span>Result</span></div>
         </div>
     </div>
 
-    <div class="screen-grid">
-        <!-- LEFT -->
+    <div class="screening-grid">
         <div>
-            <div class="card" style="margin-bottom:18px;">
+            <div class="card" style="margin-bottom:20px;">
                 <div class="card-title">👁️ Original Image</div>
-                <div class="img-box" id="origBox">
-                    <div class="img-empty"><div class="ie-icon">👁️</div><p>No image selected</p></div>
+                <div class="image-box" id="originalBox">
+                    <div class="image-placeholder">
+                        <div class="ph-icon">👁️</div>
+                        <p>No image selected</p>
+                    </div>
                 </div>
             </div>
-            <div class="card" style="margin-bottom:18px;">
+
+            <div class="card" style="margin-bottom:20px;">
                 <div class="card-title">🔄 Preprocessed Image</div>
-                <div class="img-box" id="procBox">
-                    <div class="img-empty"><div class="ie-icon">🔄</div><p>Waiting for analysis</p></div>
+                <div class="image-box" id="processedBox">
+                    <div class="image-placeholder">
+                        <div class="ph-icon">🔄</div>
+                        <p>Waiting for analysis</p>
+                    </div>
                 </div>
-                <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:10px;" onclick="dlProcessed()">💾 Save Processed Image</button>
+                <button class="btn btn-secondary" style="margin-top:12px; width:100%; justify-content:center;" onclick="downloadProcessed()">💾 Save Processed Image</button>
             </div>
-            <button class="btn btn-primary" id="btnAnalyze" style="width:100%;justify-content:center;" disabled onclick="analyze()">🔬 Analyze Image</button>
+
+            <button class="btn btn-analyze" id="btnAnalyze" disabled onclick="runAnalysis()">🔬 Analyze Image</button>
         </div>
 
-        <!-- RIGHT -->
         <div>
-            <div class="card result-card" id="resultCard">
+            <div class="card result-panel" id="resultPanel">
                 <div class="card-title">📊 Screening Result</div>
-                <div id="sevLabel" class="sev-label s0">No DR</div>
 
-                <div class="conf-bar-wrap">
-                    <div class="conf-header"><span>Confidence Score</span><span id="confVal">0%</span></div>
-                    <div class="conf-track"><div class="conf-fill" id="confBar" style="width:0%;">0%</div></div>
+                <div id="sevBadge" class="severity-badge sev-0">No DR</div>
+
+                <div class="confidence-section">
+                    <div class="confidence-label">
+                        <span>Confidence Score</span>
+                        <span id="confValue">0%</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confFill" style="width:0%;background:var(--accent);">0%</div>
+                    </div>
                 </div>
 
                 <div class="prob-section">
                     <h4>Classification Probabilities</h4>
-                    <div id="probArea"></div>
+                    <div id="probBars"></div>
                 </div>
 
-                <div class="findings-box">
+                <div class="findings-card">
                     <h4>🔍 Detected Findings</h4>
-                    <ul id="findList"></ul>
+                    <ul class="findings-list" id="findingsList"></ul>
                 </div>
 
-                <div class="rec-box">
+                <div class="recommendation-card">
                     <h4>💡 Recommendation</h4>
                     <p id="recText">Routine eye examination recommended</p>
                 </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-green btn-sm" onclick="saveHist()">💾 Save Result</button>
-                    <button class="btn btn-outline btn-sm" onclick="dlProcessed()">📥 Download</button>
-                    <button class="btn btn-outline btn-sm" onclick="goTab('clinic')">🏥 Find Clinic</button>
+                <div class="btn-group" style="margin-top:20px;">
+                    <button class="btn btn-success" onclick="saveToHistory()">💾 Save Result</button>
+                    <button class="btn btn-secondary" onclick="downloadProcessed()">📥 Download Image</button>
+                    <button class="btn btn-secondary" onclick="switchTab('clinic')">🏥 Find Clinic</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- ==================== HISTORY ==================== -->
-<div class="tab" id="t-history">
-    <div class="section-title">
+<section class="tab-content" id="tab-history">
+    <div class="section-header">
         <h1>📋 Screening History</h1>
-        <p>Review your screening records</p>
+        <p>Review your diabetic retinopathy screening records</p>
     </div>
+
     <div class="card">
-        <div class="filters">
-            <select id="fSev" onchange="showHistory()">
+        <div class="filters-bar">
+            <select class="filter-select" id="filterSeverity" onchange="renderHistory()">
                 <option value="all">All Severities</option>
-                <option>No DR</option><option>Mild</option>
-                <option>Moderate</option><option>Severe</option>
-                <option>Proliferative</option>
+                <option value="No DR">No DR</option>
+                <option value="Mild">Mild</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Severe">Severe</option>
+                <option value="Proliferative">Proliferative</option>
             </select>
-            <select id="fSort" onchange="showHistory()">
-                <option value="new">Newest First</option>
-                <option value="old">Oldest First</option>
+            <select class="filter-select" id="filterSort" onchange="renderHistory()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
             </select>
         </div>
-        <div class="hist-list" id="histArea"></div>
-    </div>
-</div>
 
-<!-- ==================== CLINIC ==================== -->
-<div class="tab" id="t-clinic">
-    <div class="section-title">
+        <div class="history-list" id="historyList"></div>
+    </div>
+</section>
+
+<section class="tab-content" id="tab-clinic">
+    <div class="section-header">
         <h1>🏥 Nearby Eye Clinics</h1>
         <p>Find ophthalmology clinics near you</p>
     </div>
+
     <div class="card">
-        <div class="search-row">
-            <select id="cType">
+        <div class="search-bar">
+            <select id="clinicTypeFilter">
                 <option value="all">All Types</option>
                 <option value="eye_clinic">Eye Clinic</option>
                 <option value="hospital">Hospital</option>
                 <option value="medical_center">Medical Center</option>
             </select>
-            <input type="text" id="cSearch" placeholder="🔍 Search..." />
-            <button class="btn btn-primary btn-sm" onclick="findClinics()">🔍 Search</button>
+            <input type="text" id="clinicSearchInput" placeholder="🔍 Search by name or location..." />
+            <button class="btn btn-primary" style="padding:10px 20px; font-size:0.9rem;" onclick="searchClinics()">🔍 Search</button>
         </div>
-        <div class="map-area" id="mapArea">🗺️ Click Search to find clinics</div>
-        <div class="clinics-grid" id="clinicArea"></div>
+
+        <div class="map-box" id="mapBox">🗺️ Click "Search" to find nearby clinics</div>
+
+        <div class="clinics-grid" id="clinicsList"></div>
+    </div>
+</section>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-ring"></div>
+    <div class="loading-steps">
+        <div class="loading-step" id="ls-preprocess">📥 Preprocessing image...</div>
+        <div class="loading-step" id="ls-ai">🤖 Running AI classification...</div>
+        <div class="loading-step" id="ls-result">📊 Generating results...</div>
     </div>
 </div>
 
-<!-- LOADING -->
-<div class="overlay" id="overlay">
-    <div class="spin"></div>
-    <div class="overlay-text" id="overlayMsg">Analyzing...</div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-    <div class="modal-content">
-        <button class="modal-x" onclick="closeModal()">×</button>
-        <h2 id="mTitle">Record</h2>
-        <div id="mBody"></div>
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modalTitle">📋 Record Details</h2>
+        <div id="modalBody"></div>
     </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast-msg" id="toastEl"></div>
+<div class="toast" id="toast"></div>
 
-<div class="footer">© 2024 InsightRetina. For preliminary screening only.</div>
+<footer class="footer">© 2024 InsightRetina. For preliminary screening only. Consult a qualified ophthalmologist for diagnosis.</footer>
 
-<!-- ============================================
-     JAVASCRIPT - ทุกอย่างทำงานได้จริง
-     ============================================ -->
 <script>
-/* ========== CONSTANTS ========== */
-const LBL = ['No DR','Mild','Moderate','Severe','Proliferative'];
-const CLR = ['#66bb6a','#ffee58','#ffa726','#ef5350','#ff1744'];
+// ==========================================
+// CONSTANTS (อิงตามไฟล์ test.html)
+// ==========================================
+const LABELS = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative'];
+const COLORS = ['#66bb6a', '#ffee58', '#ffa726', '#ef5350', '#ff1744'];
 
-const FIND = {
-    0: ['No abnormalities detected'],
-    1: ['Microaneurysms detected','Minor retinal hemorrhages'],
-    2: ['Microaneurysms','Dot/blot hemorrhages','Hard exudates','Cotton wool spots'],
-    3: ['Significant hemorrhages','Venous beading','IRMA','Multiple cotton wool spots'],
-    4: ['Neovascularization','Vitreous hemorrhage','Fibrous proliferation','Retinal detachment risk']
+const RECOMMENDATIONS = {
+    0: 'Routine eye examination recommended',
+    1: 'Follow-up within 12 months recommended',
+    2: 'Urgent ophthalmology consultation recommended',
+    3: 'Immediate specialist referral required',
+    4: 'Emergency ophthalmology intervention required'
 };
 
-const REC = {
-    0: '✅ No DR detected. Annual routine screening recommended.',
-    1: '⚠️ Mild DR. Follow-up in 9-12 months. Control blood sugar.',
-    2: '⚠️ Moderate DR. Refer to ophthalmologist within 3-6 months.',
-    3: '🚨 Severe DR. URGENT referral within 2-4 weeks.',
-    4: '🚨 Proliferative DR. IMMEDIATE specialist referral required!'
-};
+// ==========================================
+// STATE
+// ==========================================
+let currentImageSrc = null;
+let processedImageSrc = null;
+let lastResult = null;
+let history = JSON.parse(localStorage.getItem('dr_history') || '[]');
 
-/* ========== STATE ========== */
-let imgSrc = null;
-let procSrc = null;
-let lastRes = null;
-let hist = JSON.parse(localStorage.getItem('drh') || '[]');
-
-/* ========== TABS ========== */
-function goTab(name) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    document.getElementById('t-' + name).classList.add('active');
-    document.getElementById('n-' + name).classList.add('active');
-    if (name === 'history') showHistory();
-    if (name === 'clinic') findClinics();
+// ==========================================
+// TAB NAVIGATION
+// ==========================================
+function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    if (name === 'history') renderHistory();
+    if (name === 'clinic') searchClinics();
 }
 
-/* ==========================================================
-   ★★★ FILE UPLOAD - แก้ไขใหม่ ทำงานได้จริง 100% ★★★
-   ========================================================== */
+// ==========================================
+// FILE UPLOAD & DRAG-DROP
+// ==========================================
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
 
-// ดึง element
-const realInput = document.getElementById('realFileInput');
-const uploadBox = document.getElementById('uploadBox');
-
-// ★ เมื่อเลือกไฟล์ผ่าน input
-realInput.addEventListener('change', function(e) {
-    console.log('File input changed!');
-    const file = this.files;
-    if (file) {
-        console.log('File selected:', file.name, file.type, file.size);
-        loadFile(file);
-    }
+['dragenter', 'dragover'].forEach(evt => {
+    uploadArea.addEventListener(evt, e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
 });
 
-// ★ Drag & Drop events
-uploadBox.addEventListener('dragenter', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.add('drag-active');
+['dragleave', 'drop'].forEach(evt => {
+    uploadArea.addEventListener(evt, e => { e.preventDefault(); uploadArea.classList.remove('dragover'); });
 });
 
-uploadBox.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.add('drag-active');
+uploadArea.addEventListener('drop', e => {
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
 });
 
-uploadBox.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.remove('drag-active');
+fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) processFile(file);
 });
 
-uploadBox.addEventListener('drop', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.classList.remove('drag-active');
-    console.log('File dropped!');
-
-    const file = e.dataTransfer.files;
-    if (file) {
-        console.log('Dropped file:', file.name, file.type, file.size);
-        loadFile(file);
-    }
-});
-
-// ★ ฟังก์ชันหลักที่จัดการไฟล์
-function loadFile(file) {
-    // ตรวจสอบประเภท
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (!validTypes.includes(file.type)) {
-        toast('❌ กรุณาอัปโหลดไฟล์ JPG หรือ PNG เท่านั้น!');
+function processFile(file) {
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        showToast('❌ Please upload JPG or PNG format only!');
         return;
     }
-
-    // ตรวจสอบขนาด
     if (file.size > 5 * 1024 * 1024) {
-        toast('❌ ไฟล์ใหญ่เกินไป! สูงสุด 5MB');
+        showToast('❌ File too large! Maximum 5MB.');
         return;
     }
 
-    // อ่านไฟล์
     const reader = new FileReader();
+    reader.onload = e => {
+        currentImageSrc = e.target.result;
 
-    reader.onload = function(e) {
-        console.log('FileReader loaded successfully!');
-        imgSrc = e.target.result;
+        // Show original
+        document.getElementById('originalBox').innerHTML = `<img src="${currentImageSrc}" alt="Original fundus" />`;
 
-        // แสดง original image
-        document.getElementById('origBox').innerHTML =
-            '<img src="' + imgSrc + '" alt="Original fundus image" />';
+        // Update upload area
+        uploadArea.classList.add('has-file');
+        uploadArea.innerHTML = `
+            <div style="display:flex;align-items:center;gap:15px;justify-content:center;">
+                <img src="${currentImageSrc}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;" />
+                <div style="text-align:left;">
+                    <p style="margin:0;color:var(--success);font-weight:600;">✅ ${file.name}</p>
+                    <small style="color:var(--text-muted);">${(file.size/1024).toFixed(0)} KB — Click to change</small>
+                </div>
+            </div>
+        `;
 
-        // แสดง preview ใน upload box
-        document.getElementById('uploadDefault').style.display = 'none';
-        document.getElementById('filePreview').style.display = 'flex';
-        document.getElementById('thumbImg').src = imgSrc;
-        document.getElementById('fileName').textContent = '✅ ' + file.name;
-        document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(0) + ' KB';
-        uploadBox.classList.add('file-loaded');
-
-        // เปิดปุ่ม Analyze
+        // Enable button & update step
         document.getElementById('btnAnalyze').disabled = false;
+        updateSteps('upload');
 
-        // อัปเดต step
-        setStep('upload');
-
-        // Reset result
-        document.getElementById('resultCard').classList.remove('show');
-        document.getElementById('procBox').innerHTML =
-            '<div class="img-empty"><div class="ie-icon">🔄</div><p>Waiting for analysis</p></div>';
-        procSrc = null;
-
-        toast('✅ อัปโหลดรูปสำเร็จ! กดปุ่ม Analyze ได้เลย');
+        // Reset results
+        document.getElementById('resultPanel').classList.remove('show');
+        document.getElementById('processedBox').innerHTML = `<div class="image-placeholder"><div class="ph-icon">🔄</div><p>Waiting for analysis</p></div>`;
     };
-
-    reader.onerror = function() {
-        console.error('FileReader error!');
-        toast('❌ เกิดข้อผิดพลาดในการอ่านไฟล์');
-    };
-
     reader.readAsDataURL(file);
 }
 
-/* ========== STEPS ========== */
-function setStep(s) {
-    const order = ['upload','preprocess','ai','result'];
-    const idx = order.indexOf(s);
-    order.forEach((name, i) => {
-        const el = document.getElementById('ps-' + name);
-        el.classList.remove('active','done');
+// ==========================================
+// STEP INDICATOR
+// ==========================================
+function updateSteps(current) {
+    const order = ['upload', 'preprocess', 'ai', 'result'];
+    const idx = order.indexOf(current);
+    order.forEach((s, i) => {
+        const el = document.getElementById('step-' + s);
+        el.classList.remove('active', 'done');
         if (i < idx) el.classList.add('done');
-        if (i === idx) el.classList.add('active');
+        else if (i === idx) el.classList.add('active');
     });
 }
 
-/* ========== PREPROCESSING ========== */
-function preprocess(src) {
-    return new Promise(function(resolve) {
+// ==========================================
+// IMAGE PREPROCESSING (Logic จาก test.html - Circular Mask & Contrast)
+// ==========================================
+function preprocessFundusImage(src) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
         const img = new Image();
-        img.onload = function() {
-            const S = 512;
-            const canvas = document.createElement('canvas');
-            canvas.width = S;
-            canvas.height = S;
-            const ctx = canvas.getContext('2d');
 
-            // Resize
-            ctx.drawImage(img, 0, 0, S, S);
-            const imgData = ctx.getImageData(0, 0, S, S);
-            const d = imgData.data;
+        img.onload = () => {
+            canvas.width = 512;
+            canvas.height = 512;
 
-            // Green channel histogram
-            const gHist = new Array(256).fill(0);
-            for (let i = 0; i < d.length; i += 4) gHist[d[i+1]]++;
+            // Circular crop
+            ctx.beginPath();
+            ctx.arc(256, 256, 240, 0, Math.PI * 2);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-in';
 
-            // CDF
-            const cdf = new Array(256);
-            cdf = gHist;
-            for (let i = 1; i < 256; i++) cdf[i] = cdf[i-1] + gHist[i];
-            const total = S * S;
-            const cdfMin = cdf.find(function(v) { return v > 0; });
+            // Draw image
+            const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+            const x = (canvas.width - img.width * scale) / 2;
+            const y = (canvas.height - img.height * scale) / 2;
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 
-            for (let i = 0; i < d.length; i += 4) {
-                const r = d[i], g = d[i+1], b = d[i+2];
-
-                // Equalize green
-                const eqG = Math.round(((cdf[g] - cdfMin) / (total - cdfMin)) * 255);
-
-                // Blend
-                d[i]   = clp(r * 0.7 + eqG * 0.1 + 20, 1.3);
-                d[i+1] = clp(g * 0.5 + eqG * 0.5 + 10, 1.3);
-                d[i+2] = clp(b * 0.7 + eqG * 0.1 + 20, 1.3);
-            }
-
-            // Circular mask
-            const cx = S/2, cy = S/2, rad = S/2 - 8;
-            for (let y = 0; y < S; y++) {
-                for (let x = 0; x < S; x++) {
-                    const dist = Math.sqrt((x-cx)*(x-cx) + (y-cy)*(y-cy));
-                    if (dist > rad) {
-                        const idx = (y * S + x) * 4;
-                        const fade = Math.max(0, 1 - (dist - rad) / 12);
-                        d[idx] = Math.round(d[idx] * fade);
-                        d[idx+1] = Math.round(d[idx+1] * fade);
-                        d[idx+2] = Math.round(d[idx+2] * fade);
-                    }
-                }
-            }
-
-            ctx.putImageData(imgData, 0, 0);
-            procSrc = canvas.toDataURL('image/png');
-            resolve(procSrc);
-        };
-        img.src = src;
-    });
-}
-
-function clp(v, contrast) {
-    v = ((v / 255 - 0.5) * contrast + 0.5) * 255;
-    return Math.max(0, Math.min(255, Math.round(v)));
-}
-
-/* ========== AI CLASSIFICATION ========== */
-function classify(src) {
-    return new Promise(function(resolve) {
-        const img = new Image();
-        img.onload = function() {
-            const c = document.createElement('canvas');
-            c.width = 224; c.height = 224;
-            const ctx = c.getContext('2d');
-            ctx.drawImage(img, 0, 0, 224, 224);
-            const data = ctx.getImageData(0, 0, 224, 224).data;
-            const N = 224 * 224;
-
-            let rS=0, gS=0, darkPx=0, brightPx=0, redPx=0;
+            // Enhance contrast
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
-                const r=data[i], g=data[i+1], b=data[i+2];
-                rS += r; gS += g;
-                if (r+g+b < 60) darkPx++;
-                if (r+g+b > 600) brightPx++;
-                if (r > g*1.5 && r > b*1.5 && r > 100) redPx++;
+                data[i] = Math.min(255, data[i] * 1.2);
+                data[i + 1] = Math.min(255, data[i + 1] * 1.2);
+                data[i + 2] = Math.min(255, data[i + 2] * 1.2);
             }
+            ctx.putImageData(imageData, 0, 0);
 
-            const avgR=rS/N, avgG=gS/N;
-            const darkR=darkPx/N, brightR=brightPx/N, redR=redPx/N;
-
-            let probs;
-            if (redR > 0.08) probs = [0.03,0.07,0.20,0.35,0.35];
-            else if (redR > 0.04) probs = [0.05,0.10,0.35,0.30,0.20];
-            else if (brightR > 0.06) probs = [0.10,0.30,0.35,0.15,0.10];
-            else if (darkR > 0.55) probs = [0.08,0.12,0.20,0.30,0.30];
-            else probs = [0.60,0.18,0.12,0.06,0.04];
-
-            probs = probs.map(function(p) { return Math.max(0.01, p + Math.random()*0.08 - 0.04); });
-            const sum = probs.reduce(function(a,b){return a+b;});
-            probs = probs.map(function(p){return p/sum;});
-
-            const pred = probs.indexOf(Math.max.apply(null, probs));
-            resolve({ prediction: pred, confidence: Math.max.apply(null, probs), probabilities: probs, label: LBL[pred] });
+            processedImageSrc = canvas.toDataURL('image/png');
+            resolve(processedImageSrc);
         };
         img.src = src;
     });
 }
 
-/* ========== MAIN ANALYSIS ========== */
-async function analyze() {
-    if (!imgSrc) return;
-    const ov = document.getElementById('overlay');
-    const msg = document.getElementById('overlayMsg');
-    ov.classList.add('show');
+// ==========================================
+// AI CLASSIFICATION (Simulated logic จาก test.html)
+// ==========================================
+function classifyImage() {
+    return new Promise(resolve => {
+        // สร้าง Probabilities แบบสุ่ม เหมือน test.html
+        let probs = [
+            Math.random() * 0.5,
+            Math.random() * 0.3,
+            Math.random() * 0.15,
+            Math.random() * 0.05,
+            Math.random() * 0.05
+        ];
 
-    // Step 1
-    msg.textContent = '🔄 Preprocessing image...';
-    setStep('preprocess');
-    await delay(700);
-    const processed = await preprocess(imgSrc);
-    document.getElementById('procBox').innerHTML = '<img src="' + processed + '" alt="Processed" />';
+        // สลับตำแหน่ง Probability เพื่อให้ได้ผลลัพธ์แบบสุ่มในแต่ละระดับความรุนแรง
+        for (let i = probs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [probs[i], probs[j]] = [probs[j], probs[i]];
+        }
 
-    // Step 2
-    msg.textContent = '🤖 Running AI classification...';
-    setStep('ai');
-    await delay(1200);
-    const result = await classify(processed);
-    lastRes = result;
+        const sum = probs.reduce((a, b) => a + b, 0);
+        probs = probs.map(p => p / sum);
 
-    // Step 3
-    msg.textContent = '📊 Generating results...';
-    setStep('result');
-    await delay(500);
+        const confidence = Math.max(...probs);
+        const prediction = probs.indexOf(confidence);
 
-    ov.classList.remove('show');
-    showResult(result);
+        // จำลองการค้นพบ (Findings)
+        const findings = [];
+        if (prediction === 0) {
+            findings.push('No abnormalities detected');
+        } else {
+            if (Math.random() > 0.4) findings.push('Microaneurysms');
+            if (Math.random() > 0.5) findings.push('Hemorrhages');
+            if (Math.random() > 0.6) findings.push('Hard exudates');
+            if (findings.length === 0) findings.push('Minor retinal changes');
+        }
+
+        resolve({
+            prediction,
+            confidence,
+            probabilities: probs,
+            label: LABELS[prediction],
+            findings: findings
+        });
+    });
 }
 
-function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+// ==========================================
+// MAIN ANALYSIS PIPELINE
+// ==========================================
+async function runAnalysis() {
+    if (!currentImageSrc) return;
 
-/* ========== SHOW RESULT ========== */
-function showResult(res) {
-    const card = document.getElementById('resultCard');
-    card.classList.add('show');
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
 
-    const p = res.prediction;
-    const conf = (res.confidence * 100).toFixed(1);
+    // Reset loading steps
+    ['ls-preprocess', 'ls-ai', 'ls-result'].forEach(id => {
+        document.getElementById(id).className = 'loading-step';
+    });
 
-    document.getElementById('sevLabel').textContent = LBL[p];
-    document.getElementById('sevLabel').className = 'sev-label s' + p;
+    // Step 1: Preprocess
+    document.getElementById('ls-preprocess').classList.add('active');
+    updateSteps('preprocess');
+    await wait(600);
 
-    document.getElementById('confVal').textContent = conf + '%';
-    const bar = document.getElementById('confBar');
-    bar.style.width = '0%';
-    bar.style.background = CLR[p];
-    setTimeout(function() { bar.style.width = conf + '%'; bar.textContent = conf + '%'; }, 80);
+    const processed = await preprocessFundusImage(currentImageSrc);
+    document.getElementById('processedBox').innerHTML = `<img src="${processed}" alt="Processed" />`;
 
-    // Probs
-    let html = '';
-    for (let i = 0; i < 5; i++) {
-        const v = (res.probabilities[i] * 100).toFixed(1);
-        html += '<div class="prob-row">' +
-            '<div class="prob-head"><span>' + LBL[i] + '</span><span>' + v + '%</span></div>' +
-            '<div class="prob-track"><div class="prob-fill" style="width:0%;background:' + CLR[i] + ';" data-w="' + v + '"></div></div>' +
-            '</div>';
-    }
-    document.getElementById('probArea').innerHTML = html;
-    setTimeout(function() {
-        document.querySelectorAll('.prob-fill[data-w]').forEach(function(el) {
-            el.style.width = el.getAttribute('data-w') + '%';
-        });
-    }, 150);
+    document.getElementById('ls-preprocess').classList.remove('active');
+    document.getElementById('ls-preprocess').classList.add('done');
+
+    // Step 2: AI
+    document.getElementById('ls-ai').classList.add('active');
+    updateSteps('ai');
+    await wait(1200);
+
+    const result = await classifyImage();
+    lastResult = result;
+
+    document.getElementById('ls-ai').classList.remove('active');
+    document.getElementById('ls-ai').classList.add('done');
+
+    // Step 3: Generate results
+    document.getElementById('ls-result').classList.add('active');
+    updateSteps('result');
+    await wait(500);
+
+    document.getElementById('ls-result').classList.remove('active');
+    document.getElementById('ls-result').classList.add('done');
+
+    await wait(300);
+    overlay.classList.remove('show');
+
+    // Display results
+    displayResults(result);
+}
+
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ==========================================
+// DISPLAY RESULTS
+// ==========================================
+function displayResults(result) {
+    const panel = document.getElementById('resultPanel');
+    panel.classList.add('show');
+
+    const { prediction, confidence, probabilities, findings } = result;
+
+    // Severity badge
+    const badge = document.getElementById('sevBadge');
+    badge.textContent = LABELS[prediction];
+    badge.className = `severity-badge sev-${prediction}`;
+
+    // Confidence
+    const pct = (confidence * 100).toFixed(1);
+    document.getElementById('confValue').textContent = pct + '%';
+    const fill = document.getElementById('confFill');
+    fill.style.width = '0%';
+    fill.style.background = COLORS[prediction];
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            fill.style.width = pct + '%';
+            fill.textContent = pct + '%';
+        }, 50);
+    });
+
+    // Probability bars
+    const probBars = document.getElementById('probBars');
+    probBars.innerHTML = probabilities.map((p, i) => {
+        const val = (p * 100).toFixed(1);
+        return `
+            <div class="prob-item">
+                <div class="prob-header"><span>${LABELS[i]}</span><span>${val}%</span></div>
+                <div class="prob-track"><div class="prob-fill" data-width="${val}" style="width:0%;background:${COLORS[i]};"></div></div>
+            </div>
+        `;
+    }).join('');
+
+    // Animate probability bars
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            document.querySelectorAll('.prob-fill[data-width]').forEach(el => {
+                el.style.width = el.dataset.width + '%';
+            });
+        }, 100);
+    });
 
     // Findings
-    document.getElementById('findList').innerHTML = FIND[p].map(function(f) { return '<li>' + f + '</li>'; }).join('');
-    document.getElementById('recText').textContent = REC[p];
+    const fList = document.getElementById('findingsList');
+    fList.innerHTML = findings.map(f => `<li>${f}</li>`).join('');
 
-    card.scrollIntoView({ behavior: 'smooth' });
+    // Recommendation
+    document.getElementById('recText').textContent = RECOMMENDATIONS[prediction];
+
+    // Scroll to results
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ========== SAVE ========== */
-function saveHist() {
-    if (!lastRes) { toast('❌ No result!'); return; }
-    hist.unshift({
-        id: Date.now(),
-        dt: new Date().toLocaleString(),
-        pred: lastRes.prediction,
-        label: lastRes.label,
-        conf: lastRes.confidence,
-        probs: lastRes.probabilities,
-        thumb: imgSrc
-    });
-    localStorage.setItem('drh', JSON.stringify(hist));
-    toast('✅ Saved to history!');
-}
-
-function dlProcessed() {
-    if (!procSrc) { toast('❌ No processed image!'); return; }
-    const a = document.createElement('a');
-    a.href = procSrc;
-    a.download = 'DR_processed_' + Date.now() + '.png';
-    a.click();
-    toast('📥 Downloaded!');
-}
-
-/* ========== HISTORY ========== */
-function showHistory() {
-    const area = document.getElementById('histArea');
-    const sev = document.getElementById('fSev').value;
-    const sort = document.getElementById('fSort').value;
-
-    let data = hist.slice();
-    if (sev !== 'all') data = data.filter(function(d){return d.label === sev;});
-    if (sort === 'old') data.reverse();
-
-    if (!data.length) {
-        area.innerHTML = '<div class="empty-box"><div class="eb-icon">📋</div><p>No screening history</p><button class="btn btn-primary btn-sm" onclick="goTab(\'screening\')">Start Screening</button></div>';
+// ==========================================
+// SAVE RESULT
+// ==========================================
+function saveToHistory() {
+    if (!lastResult) {
+        showToast('❌ No result to save!');
         return;
     }
 
-    area.innerHTML = data.map(function(r) {
-        return '<div class="hist-item" onclick="viewRecord(' + r.id + ')">' +
-            '<div><strong>' + r.label + '</strong><br><small style="color:#888">' + r.dt + '</small></div>' +
-            '<div class="sev-label s' + r.pred + '" style="font-size:0.8rem;padding:5px 14px;">' + (r.conf*100).toFixed(1) + '%</div>' +
-            '</div>';
-    }).join('');
+    const record = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        dateDisplay: new Date().toLocaleString(),
+        prediction: lastResult.prediction,
+        label: lastResult.label,
+        confidence: lastResult.confidence,
+        probabilities: lastResult.probabilities,
+        findings: lastResult.findings, // Save Dynamic findings
+        thumbnail: currentImageSrc
+    };
+
+    history.unshift(record);
+    localStorage.setItem('dr_history', JSON.stringify(history));
+    showToast('✅ Result saved to history!');
 }
 
-function viewRecord(id) {
-    const r = hist.find(function(h){return h.id === id;});
-    if (!r) return;
-    document.getElementById('mTitle').textContent = '📋 Case #' + String(r.id).slice(-6);
-    let html = '<p style="color:#888;margin-bottom:10px;">📅 ' + r.dt + '</p>' +
-        '<div class="sev-label s' + r.pred + '" style="margin-bottom:14px;">' + r.label + '</div>' +
-        '<p><b>Confidence:</b> ' + (r.conf*100).toFixed(1) + '%</p>' +
-        '<div class="prob-section" style="margin-top:12px;"><h4>Probabilities</h4>';
-    for (let i = 0; i < 5; i++) {
-        const v = (r.probs[i]*100).toFixed(1);
-        html += '<div class="prob-row"><div class="prob-head"><span>' + LBL[i] + '</span><span>' + v + '%</span></div>' +
-            '<div class="prob-track"><div class="prob-fill" style="width:' + v + '%;background:' + CLR[i] + ';"></div></div></div>';
+// ==========================================
+// DOWNLOAD PROCESSED IMAGE
+// ==========================================
+function downloadProcessed() {
+    if (!processedImageSrc) {
+        showToast('❌ No processed image to download!');
+        return;
     }
-    html += '</div><div class="findings-box"><h4>🔍 Findings</h4><ul>' +
-        FIND[r.pred].map(function(f){return '<li>' + f + '</li>';}).join('') + '</ul></div>' +
-        '<div class="rec-box"><h4>💡 Recommendation</h4><p>' + REC[r.pred] + '</p></div>' +
-        '<div class="btn-group"><button class="btn btn-sm" style="background:rgba(239,83,80,0.15);color:#ef5350;" onclick="delRecord(' + r.id + ')">🗑️ Delete</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button></div>';
-    document.getElementById('mBody').innerHTML = html;
-    document.getElementById('modalBg').classList.add('show');
+    const a = document.createElement('a');
+    a.href = processedImageSrc;
+    a.download = `DR_processed_${Date.now()}.png`;
+    a.click();
+    showToast('📥 Image downloaded!');
 }
 
-function delRecord(id) {
+// ==========================================
+// HISTORY
+// ==========================================
+function renderHistory() {
+    const list = document.getElementById('historyList');
+    const severity = document.getElementById('filterSeverity').value;
+    const sort = document.getElementById('filterSort').value;
+
+    let data = [...history];
+    if (severity !== 'all') data = data.filter(d => d.label === severity);
+    if (sort === 'oldest') data.reverse();
+
+    if (data.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>No screening history yet</p>
+                <button class="btn btn-primary" style="font-size:0.9rem;padding:10px 24px;" onclick="switchTab('screening')">Start First Screening</button>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = data.map(rec => `
+        <div class="history-item" onclick="showRecordModal(${rec.id})">
+            <div class="history-meta">
+                <strong>${rec.label}</strong>
+                <small>📅 ${rec.dateDisplay} · Case #${String(rec.id).slice(-6)}</small>
+            </div>
+            <div class="severity-badge history-badge sev-${rec.prediction}">${(rec.confidence * 100).toFixed(1)}%</div>
+        </div>
+    `).join('');
+}
+
+function showRecordModal(id) {
+    const rec = history.find(r => r.id === id);
+    if (!rec) return;
+
+    // Fallback for old history without findings
+    const recFindings = rec.findings || ['No specific findings recorded'];
+
+    document.getElementById('modalTitle').textContent = `📋 Case #${String(rec.id).slice(-6)}`;
+    document.getElementById('modalBody').innerHTML = `
+        <p style="margin-bottom:10px;color:var(--text-muted);">📅 ${rec.dateDisplay}</p>
+        <div class="severity-badge sev-${rec.prediction}" style="margin-bottom:16px;">${rec.label}</div>
+        <p style="margin-bottom:16px;"><strong>Confidence:</strong> ${(rec.confidence * 100).toFixed(1)}%</p>
+
+        <h4 style="margin-bottom:10px;color:var(--text-secondary);">Classification Probabilities</h4>
+        ${rec.probabilities.map((p, i) => `
+            <div class="prob-item">
+                <div class="prob-header"><span>${LABELS[i]}</span><span>${(p * 100).toFixed(1)}%</span></div>
+                <div class="prob-track"><div class="prob-fill" style="width:${p * 100}%;background:${COLORS[i]};"></div></div>
+            </div>
+        `).join('')}
+
+        <div class="findings-card" style="margin-top:16px;">
+            <h4>🔍 Findings</h4>
+            <ul class="findings-list">${recFindings.map(f => `<li>${f}</li>`).join('')}</ul>
+        </div>
+
+        <div class="recommendation-card">
+            <h4>💡 Recommendation</h4>
+            <p>${RECOMMENDATIONS[rec.prediction]}</p>
+        </div>
+
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn btn-danger" onclick="deleteRecord(${rec.id})">🗑️ Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('show');
+}
+
+function deleteRecord(id) {
     if (!confirm('Delete this record?')) return;
-    hist = hist.filter(function(h){return h.id !== id;});
-    localStorage.setItem('drh', JSON.stringify(hist));
+    history = history.filter(r => r.id !== id);
+    localStorage.setItem('dr_history', JSON.stringify(history));
     closeModal();
-    showHistory();
-    toast('🗑️ Deleted');
+    renderHistory();
+    showToast('🗑️ Record deleted');
 }
 
-function closeModal() { document.getElementById('modalBg').classList.remove('show'); }
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
 
-/* ========== CLINICS ========== */
-const CLINICS = [
-    {name:'Bangkok Eye Center',type:'eye_clinic',addr:'123 Sukhumvit Rd',phone:'02-123-4567',rate:4.8},
-    {name:'Ramathibodi Ophthalmology',type:'hospital',addr:'270 Rama VI Rd',phone:'02-201-1000',rate:4.9},
-    {name:'Rutnin Eye Hospital',type:'hospital',addr:'80/1 Sukhumvit 21',phone:'02-639-3399',rate:4.7},
-    {name:'Pacific Eye Clinic',type:'eye_clinic',addr:'456 Silom Rd',phone:'02-234-5678',rate:4.5},
-    {name:'Chula Eye Center',type:'medical_center',addr:'1873 Rama IV Rd',phone:'02-256-4000',rate:4.8},
-    {name:'Bumrungrad Eye',type:'hospital',addr:'33 Sukhumvit 3',phone:'02-066-8888',rate:4.9}
+// ==========================================
+// CLINIC SEARCH
+// ==========================================
+const SAMPLE_CLINICS = [
+    { name: 'Bangkok Eye Center', type: 'eye_clinic', address: '123 Sukhumvit Rd, Bangkok', phone: '02-123-4567', rating: 4.8, hours: 'Mon-Sat 8:00-17:00' },
+    { name: 'Ramathibodi Hospital - Ophthalmology', type: 'hospital', address: '270 Rama VI Rd, Bangkok', phone: '02-201-1000', rating: 4.9, hours: 'Mon-Fri 8:00-16:00' },
+    { name: 'Rutnin Eye Hospital', type: 'hospital', address: '80/1 Sukhumvit 21, Bangkok', phone: '02-639-3399', rating: 4.7, hours: 'Mon-Sat 7:30-19:00' },
+    { name: 'Pacific Eye Clinic', type: 'eye_clinic', address: '456 Silom Rd, Bangkok', phone: '02-234-5678', rating: 4.5, hours: 'Mon-Fri 9:00-18:00' },
+    { name: 'Chula Eye Center', type: 'medical_center', address: '1873 Rama IV Rd, Bangkok', phone: '02-256-4000', rating: 4.8, hours: 'Mon-Fri 8:00-16:00' },
+    { name: 'Bumrungrad Eye Institute', type: 'hospital', address: '33 Sukhumvit 3, Bangkok', phone: '02-066-8888', rating: 4.9, hours: 'Daily 7:00-20:00' },
+    { name: 'Metta Eye Clinic', type: 'eye_clinic', address: '789 Phetkasem Rd, Bangkok', phone: '02-456-7890', rating: 4.4, hours: 'Mon-Sat 9:00-17:00' },
+    { name: 'Siriraj Retina Center', type: 'hospital', address: '2 Wanglang Rd, Bangkok', phone: '02-419-7000', rating: 4.9, hours: 'Mon-Fri 8:00-16:00' },
 ];
 
-function findClinics() {
-    const type = document.getElementById('cType').value;
-    const q = document.getElementById('cSearch').value.toLowerCase();
-    let res = CLINICS;
-    if (type !== 'all') res = res.filter(function(c){return c.type === type;});
-    if (q) res = res.filter(function(c){return c.name.toLowerCase().indexOf(q) >= 0 || c.addr.toLowerCase().indexOf(q) >= 0;});
+function searchClinics() {
+    const type = document.getElementById('clinicTypeFilter').value;
+    const query = document.getElementById('clinicSearchInput').value.toLowerCase().trim();
 
-    document.getElementById('mapArea').innerHTML = '🗺️ Found ' + res.length + ' clinics';
-    document.getElementById('clinicArea').innerHTML = res.length ? res.map(function(c) {
-        return '<div class="clinic-card"><h3>' + c.name + '</h3>' +
-            '<p>📍 ' + c.addr + '</p><p>📞 ' + c.phone + '</p><p>⭐ ' + c.rate + '/5</p>' +
-            '<span class="clinic-tag">' + c.type.replace(/_/g,' ') + '</span></div>';
-    }).join('') : '<p style="text-align:center;color:#888;padding:30px;grid-column:1/-1;">No clinics found</p>';
+    let results = SAMPLE_CLINICS;
+    if (type !== 'all') results = results.filter(c => c.type === type);
+    if (query) results = results.filter(c => c.name.toLowerCase().includes(query) || c.address.toLowerCase().includes(query));
+
+    document.getElementById('mapBox').innerHTML = results.length
+        ? `<span>🗺️ Found <strong>${results.length}</strong> clinics nearby — Map integration available with Google Maps API</span>`
+        : `<span>🗺️ No clinics found matching your criteria</span>`;
+
+    document.getElementById('clinicsList').innerHTML = results.length
+        ? results.map(c => `
+            <div class="clinic-card">
+                <h3>${c.name}</h3>
+                <p class="clinic-info">📍 ${c.address}</p>
+                <p class="clinic-info">📞 ${c.phone}</p>
+                <p class="clinic-info">🕐 ${c.hours}</p>
+                <p class="clinic-info">⭐ ${c.rating} / 5.0</p>
+                <span class="clinic-type-tag">${c.type.replace(/_/g, ' ')}</span>
+            </div>
+        `).join('')
+        : '<p style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">No clinics found</p>';
 }
 
-/* ========== TOAST ========== */
-function toast(msg) {
-    const el = document.getElementById('toastEl');
-    el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(function(){el.classList.remove('show');}, 3000);
+// ==========================================
+// TOAST
+// ==========================================
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-/* ========== INIT ========== */
-showHistory();
+// ==========================================
+// INIT
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderHistory();
+});
 </script>
 
 </body>
